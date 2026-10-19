@@ -22,7 +22,7 @@ Play again is on the knockout and the podium. Progress (coins, skins, level, wor
 
 ## Graphics
 
-The game picks smooth graphics on coarse pointers, low memory, or few cores, and sharp graphics otherwise. Smooth turns shadows off, caps the pixel ratio at 1, and builds less scenery. Sharp caps the pixel ratio at 1.5. The menu and the pause screen can switch it. The choice is saved.
+The game picks smooth graphics on coarse pointers, low memory, or few cores, and sharp graphics otherwise. Smooth turns shadows off, caps the pixel ratio at 1, and builds less scenery. Sharp caps the pixel ratio at 1.5. Settings, opened from the menu, and the pause screen can switch it. The choice is saved.
 
 ## Sound
 

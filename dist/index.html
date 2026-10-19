@@ -113,17 +113,41 @@ body.touch .hint{display:none}
 .btn.ghost:active{transform:translateY(2px)}
 .btn.big{font-size:24px;padding:18px 40px}
 
-#scrMenu{align-items:flex-end;justify-content:flex-start;
-  background:linear-gradient(25deg,rgba(27,31,59,.88) 0%,rgba(27,31,59,.45) 42%,rgba(27,31,59,0) 68%)}
-.menu-wrap{padding:clamp(8px,3vw,40px);max-width:660px}
-.title{display:flex;font-family:'Bungee','Arial Black',sans-serif;font-size:clamp(58px,12vw,136px);line-height:.92;letter-spacing:-.01em}
+#scrMenu{align-items:center;justify-content:center;
+  background:radial-gradient(ellipse 72% 64% at 50% 46%,rgba(27,31,59,.4) 0%,rgba(27,31,59,.1) 54%,rgba(13,16,48,.16) 100%)}
+.menu-wrap{display:flex;flex-direction:column;align-items:center;gap:clamp(22px,4.6vh,42px);
+  width:min(760px,100%);padding:clamp(8px,2vh,20px) clamp(16px,4vw,36px);text-align:center}
+.title{display:flex;justify-content:center;font-family:'Bungee','Arial Black',sans-serif;font-size:clamp(52px,8.2vw,96px);line-height:.9;letter-spacing:-.01em}
 .title span{color:var(--c);display:inline-block;transform:rotate(var(--r));
   text-shadow:0 .055em 0 var(--ink),0 .1em 0 rgba(13,16,48,.45);animation:drop .7s cubic-bezier(.3,1.6,.5,1) both;animation-delay:var(--d)}
 @keyframes drop{from{transform:translateY(-1.2em) rotate(var(--r));opacity:0}to{transform:translateY(0) rotate(var(--r));opacity:1}}
-.tagline{font-size:clamp(18px,2.3vw,23px);font-weight:500;line-height:1.35;margin:16px 0 26px;max-width:30ch;text-shadow:0 2px 0 rgba(13,16,48,.5)}
-.menu-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.stats{margin-top:20px;display:flex;gap:22px;font-size:16px;font-weight:500;text-shadow:0 1px 0 rgba(13,16,48,.6)}
-.stats b{font-family:'Bungee',sans-serif;font-weight:400;color:var(--sun);margin-left:6px}
+#btnPlay{min-width:min(300px,78vw);font-size:clamp(26px,3.2vw,34px);padding:18px 64px}
+.menu-dock{display:flex;justify-content:center;align-items:flex-start;gap:clamp(8px,2vw,22px);width:100%}
+.dock-btn{appearance:none;-webkit-appearance:none;background:none;border:0;cursor:pointer;color:var(--paper);
+  display:flex;flex:none;flex-direction:column;align-items:center;gap:7px;padding:0;
+  font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px;line-height:1.1;text-shadow:0 2px 0 rgba(13,16,48,.6)}
+.dock-lbl{white-space:nowrap}
+.dock-ico{width:62px;height:62px;border-radius:20px;background:rgba(27,31,59,.78);
+  box-shadow:0 5px 0 var(--ink-deep);display:grid;place-items:center;font-size:28px;line-height:1;
+  transition:transform .08s,box-shadow .08s}
+.dock-btn:active .dock-ico{transform:translateY(4px);box-shadow:0 1px 0 var(--ink-deep)}
+.dock-ico svg{width:28px;height:28px;fill:var(--paper)}
+.dock-btn.locked .dock-ico{filter:grayscale(.35);opacity:.82}
+#menuBall{width:38px;height:38px;display:block}
+.menu-meta{position:absolute;top:calc(env(safe-area-inset-top,0px) + 16px);right:calc(env(safe-area-inset-right,0px) + 18px);
+  display:flex;flex-direction:column;align-items:flex-end;gap:1px;pointer-events:none;
+  font-weight:600;font-size:16px;line-height:1.25;text-shadow:0 2px 0 rgba(13,16,48,.55)}
+.menu-meta b{font-family:'Bungee',sans-serif;font-weight:400;color:var(--sun)}
+.meta-coin{display:flex;align-items:center;gap:7px}
+.meta-best{font-size:14px;opacity:.9}
+.set-list{display:grid;gap:10px;margin-top:18px;text-align:left}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--ink-2);
+  border-radius:18px;padding:8px 8px 8px 18px;font-weight:600;font-size:18px}
+#btnQuality{width:auto;min-width:88px;height:46px;padding:0 16px;border-radius:99px}
+#btnQuality .qmark{font-size:15px}
+.set-quiet{margin-top:14px;font-size:15px;font-weight:600;opacity:.85}
+.set-quiet b{font-family:'Bungee',sans-serif;font-weight:400;color:var(--sun)}
+.panel.sheet{width:min(480px,100%)}
 
 .how{text-align:left;margin-top:16px;display:grid;gap:12px}
 .how div{display:flex;gap:14px;align-items:flex-start;font-size:16px;line-height:1.4}
@@ -188,6 +212,20 @@ body[data-poster="square"] .poster-sub{font-size:3.4vw;margin-left:auto;margin-r
 #skinWatch{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:15px;padding:12px 16px;white-space:normal;max-width:100%}
 .qmark{font-family:'Bungee',sans-serif;font-size:13px;letter-spacing:.04em}
 
+@media (max-width:500px) and (min-height:700px){
+  .menu-wrap{transform:translateY(-7vh)}
+}
+@media (max-width:430px){
+  .title{font-size:clamp(46px,13.5vw,72px)}
+  .menu-wrap{gap:22px}
+  .menu-dock{gap:6px}
+  .dock-btn{font-size:11px;gap:5px}
+  .dock-ico{width:52px;height:52px;border-radius:16px;font-size:24px}
+  .dock-ico svg{width:24px;height:24px}
+  #menuBall{width:32px;height:32px}
+  #btnPlay{padding:16px 36px}
+  .menu-meta{font-size:15px;top:calc(env(safe-area-inset-top,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px)}
+}
 @media (max-width:640px){
   .perks{grid-template-columns:1fr}
   .perk{flex-direction:row;text-align:left;padding:12px 14px;gap:14px}
@@ -207,6 +245,17 @@ body[data-poster="square"] .poster-sub{font-size:3.4vw;margin-left:auto;margin-r
   .perk{padding:12px 10px}
   .perk .ico{width:44px;height:44px;font-size:22px}
   .actions{margin-top:16px}
+  .menu-wrap{gap:12px;padding:4px 16px}
+  .title{font-size:clamp(40px,9vh,62px)}
+  #btnPlay{font-size:22px;padding:12px 40px;min-width:min(220px,70vw)}
+  .dock-btn{font-size:12px;gap:4px}
+  .dock-ico{width:48px;height:48px;border-radius:16px;font-size:22px}
+  .dock-ico svg{width:22px;height:22px}
+  #menuBall{width:30px;height:30px}
+  .menu-dock{gap:12px}
+  .menu-meta{top:calc(env(safe-area-inset-top,0px) + 8px);right:calc(env(safe-area-inset-right,0px) + 12px);font-size:14px}
+  .set-list{margin-top:12px;gap:8px}
+  .set-row{font-size:16px;padding:6px 6px 6px 14px}
 }
 @media (min-width:641px){.perk div{display:contents}}
 @media (prefers-reduced-motion:reduce){
@@ -218,11 +267,6 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
 .btn:disabled{opacity:.45;cursor:default;transform:none;box-shadow:none}
 .coin{display:inline-block;flex:none;width:.95em;height:.95em;border-radius:50%;vertical-align:-.13em;
   background:radial-gradient(circle at 35% 30%,#fff6c4 0 18%,#ffcf3a 19% 62%,#d99a00 63%);box-shadow:inset 0 -2px 0 rgba(0,0,0,.2)}
-.menu-links{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-.menu-links .btn{font-size:16px;padding:11px 20px;display:flex;align-items:center}
-#menuBall{width:26px;height:26px;margin-right:9px}
-.stats span{display:flex;align-items:center;gap:2px}
-.stats .coin{margin-right:4px}
 .chip.coins{padding:10px 14px;display:flex;align-items:center;gap:8px;font-family:'Bungee',sans-serif;font-size:20px;color:var(--sun)}
 .chip.coins.bump{animation:bump .32s ease-out}
 @keyframes bump{40%{transform:scale(1.2)}}
@@ -270,11 +314,10 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
   .chip.coins{padding:8px 10px;font-size:16px}
 }
 .strip{min-width:0}
-.menu-corner{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);display:flex;gap:8px}
 .icon-btn.off{opacity:.6}
-.world-pick{display:flex;align-items:center;gap:10px;margin:0 0 20px;max-width:460px}
+.world-pick{display:flex;align-items:center;gap:10px;margin:18px auto 0;max-width:460px;text-align:left}
 .icon-btn.arrow{flex:none;font-size:26px;line-height:1;color:var(--paper);padding-bottom:3px}
-.world-card{flex:1;min-width:0;display:flex;align-items:center;gap:12px;background:rgba(27,31,59,.82);border-radius:20px;padding:9px 16px;box-shadow:0 5px 0 var(--ink-deep)}
+.world-card{flex:1;min-width:0;display:flex;align-items:center;gap:12px;background:var(--ink-2);border-radius:20px;padding:12px 16px;box-shadow:0 5px 0 var(--ink-deep)}
 .world-card .wicon{font-size:30px;flex:none}
 .world-card strong{display:block;font-family:'Bungee',sans-serif;font-weight:400;font-size:19px;line-height:1.15;color:var(--sun)}
 .world-card small{display:block;font-size:14px;line-height:1.3;opacity:.92}
@@ -331,30 +374,66 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
   </section>
 
   <section class="screen" id="scrMenu">
-    <div class="menu-corner">
-      <button class="icon-btn" id="btnQuality" aria-label="Graphics quality"><span class="qmark">HQ</span></button>
-      <button class="icon-btn" id="btnMusic2" aria-label="Turn music off"></button>
-      <button class="icon-btn" id="btnMute2" aria-label="Mute sound"></button>
+    <div class="menu-meta">
+      <span class="meta-coin"><i class="coin"></i><b id="stCoins">0</b></span>
+      <span class="meta-best">Best <b id="stBest">—</b></span>
     </div>
     <div class="menu-wrap">
       <h1 class="title" aria-label="Rollout">
         <span style="--c:#ffd23f;--r:-4deg;--d:.05s">R</span><span style="--c:#ff6b1a;--r:3deg;--d:.12s">O</span><span style="--c:#2de2c2;--r:-2deg;--d:.19s">L</span><span style="--c:#ff3d7f;--r:4deg;--d:.26s">L</span><span style="--c:#7aa7ff;--r:-3deg;--d:.33s">O</span><span style="--c:#b6f04a;--r:2deg;--d:.40s">U</span><span style="--c:#ffd23f;--r:-5deg;--d:.47s">T</span>
       </h1>
-      <p class="tagline">Thirty marbles, four stages, one way down. Finish too late and you're out.</p>
+      <button class="btn big" id="btnPlay">Play</button>
+      <nav class="menu-dock" aria-label="More">
+        <button class="dock-btn" id="btnSkins" type="button" aria-label="Marbles">
+          <span class="dock-ico"><canvas id="menuBall" width="76" height="76"></canvas></span>
+          <span class="dock-lbl">Marbles</span>
+        </button>
+        <button class="dock-btn" id="btnWorlds" type="button" aria-label="Worlds">
+          <span class="dock-ico" id="wCap">🧸</span>
+          <span class="dock-lbl">Worlds</span>
+        </button>
+        <button class="dock-btn" id="btnFriends" type="button" aria-label="Play with friends">
+          <span class="dock-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.6" cy="7.4" r="2.6"/><circle cx="15.6" cy="8.1" r="2.1"/><path d="M3.4 18.6c.3-3.3 2.5-5 5.2-5s4.9 1.7 5.2 5z"/><path d="M12.6 18.6c.2-2.4 1.8-3.7 3.8-3.7 2 0 3.5 1.3 3.7 3.7z"/></svg></span>
+          <span class="dock-lbl">Friends</span>
+        </button>
+        <button class="dock-btn" id="btnHow" type="button" aria-label="How to play">
+          <span class="dock-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17.4a1.45 1.45 0 1 0 .01 2.9 1.45 1.45 0 0 0-.01-2.9zM12 3.4c-3.15 0-5.3 1.95-5.3 4.35h3.05c0-1.05.9-1.85 2.25-1.85 1.3 0 2.2.7 2.2 1.8 0 1.15-.7 1.75-2.15 2.5-1.85.95-2.95 2.05-2.95 4.05v.55h3.05v-.45c0-.95.55-1.45 2.05-2.2 1.85-.95 3.2-2.25 3.2-4.5 0-2.9-2.35-4.25-5.4-4.25z"/></svg></span>
+          <span class="dock-lbl">How</span>
+        </button>
+        <button class="dock-btn" id="btnSettings" type="button" aria-label="Settings">
+          <span class="dock-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 7.2h9.4a2.35 2.35 0 1 0 0-2.4H3.5v2.4zm17 0V4.8h-3.2a2.35 2.35 0 1 0 0 2.4h3.2zM3.5 13.6h4.6a2.35 2.35 0 1 0 0-2.4H3.5v2.4zm17 0v-2.4h-8a2.35 2.35 0 1 0 0 2.4h8zM3.5 20h9.4a2.35 2.35 0 1 0 0-2.4H3.5V20zm17 0v-2.4h-3.2a2.35 2.35 0 1 0 0 2.4H20.5z"/></svg></span>
+          <span class="dock-lbl">Settings</span>
+        </button>
+      </nav>
+    </div>
+  </section>
+
+  <section class="screen dim" id="scrWorlds">
+    <div class="panel sheet">
+      <h2>Worlds</h2>
       <div class="world-pick">
-        <button class="icon-btn arrow" id="wPrev" aria-label="Previous world">‹</button>
+        <button class="icon-btn arrow" id="wPrev" type="button" aria-label="Previous world">‹</button>
         <div class="world-card" id="worldCard"><span class="wicon" id="wIcon">🧸</span><div><strong id="wName">Toy Box</strong><small id="wInfo"></small></div></div>
-        <button class="icon-btn arrow" id="wNext" aria-label="Next world">›</button>
+        <button class="icon-btn arrow" id="wNext" type="button" aria-label="Next world">›</button>
       </div>
-      <div class="menu-actions">
-        <button class="btn big" id="btnPlay">Play</button>
-        <button class="btn" id="btnFriends">Play with friends</button>
+      <p class="set-quiet">Five worlds. New ones unlock as you level up.</p>
+      <div class="actions">
+        <button class="btn" id="btnWorldPlay" type="button">Play this world</button>
+        <button class="btn ghost" id="btnWorldsBack" type="button">Back</button>
       </div>
-      <div class="menu-links">
-        <button class="btn ghost" id="btnSkins"><canvas id="menuBall" width="56" height="56"></canvas>Marbles</button>
-        <button class="btn ghost" id="btnHow">How to play</button>
+    </div>
+  </section>
+
+  <section class="screen dim" id="scrSettings">
+    <div class="panel sheet">
+      <h2>Settings</h2>
+      <div class="set-list">
+        <div class="set-row"><span>Music</span><button class="icon-btn" id="btnMusic2" type="button" aria-label="Turn music off"></button></div>
+        <div class="set-row"><span>Sound</span><button class="icon-btn" id="btnMute2" type="button" aria-label="Mute sound"></button></div>
+        <div class="set-row"><span>Graphics</span><button class="icon-btn" id="btnQuality" type="button" aria-label="Graphics quality"><span class="qmark">HQ</span></button></div>
       </div>
-      <div class="stats"><span>Wins<b id="stWins">0</b></span><span>Level<b id="stLevel">1</b></span><span><i class="coin"></i><b id="stCoins">0</b></span></div>
+      <p class="set-quiet">Level <b id="stLevel">1</b> · <b id="stWins">0</b> wins</p>
+      <div class="actions"><button class="btn ghost" id="btnSettingsBack" type="button">Done</button></div>
     </div>
   </section>
 
@@ -854,8 +933,7 @@ const Quality = {
     sun.castShadow = !this.low;
     if (typeof resize === 'function') resize();
     const label = this.low ? 'Smooth' : 'Sharp';
-    const mark = this.low ? 'LQ' : 'HQ';
-    for (const id of ['btnQuality']){ const b = $(id); if (!b) continue; b.querySelector('.qmark').textContent = mark; b.setAttribute('aria-label', 'Graphics: ' + label); }
+    for (const id of ['btnQuality']){ const b = $(id); if (!b) continue; b.querySelector('.qmark').textContent = label; b.setAttribute('aria-label', 'Graphics: ' + label); }
     const q2 = $('btnQuality2'); if (q2) q2.textContent = 'Graphics: ' + label;
   },
   toggle(){
@@ -2591,7 +2669,7 @@ press($('btnDash'), doDash);
 /* =========================================================
    UI
    ========================================================= */
-const SCREENS = ['scrLoad', 'scrMenu', 'scrHow', 'scrPerk', 'scrOut', 'scrResult', 'scrPause', 'scrSkins', 'scrFriends', 'scrLobby', 'scrWait'];
+const SCREENS = ['scrLoad', 'scrMenu', 'scrHow', 'scrPerk', 'scrOut', 'scrResult', 'scrPause', 'scrSkins', 'scrFriends', 'scrLobby', 'scrWait', 'scrWorlds', 'scrSettings'];
 function showScreen(id){
   for (const s of SCREENS) $(s).classList.toggle('on', s === id);
   const btn = id && $(id).querySelector('.btn:not([disabled]):not([hidden])');
@@ -2840,9 +2918,13 @@ function toMenu(){
 function renderWorldPick(){
   const w = WORLD_BY[G.world] || WORLDS[0], open = isUnlocked(w.id), st = G.stars[w.id] || 0;
   $('wIcon').textContent = w.icon; $('wName').textContent = w.name;
+  const cap = $('wCap'); if (cap) cap.textContent = w.icon;
   $('wInfo').innerHTML = open ? `<span class="stars">${'★'.repeat(st)}<em>${'★'.repeat(3 - st)}</em></span>${esc(w.blurb)}` : `🔒 Reach level ${w.level} to unlock`;
   $('worldCard').classList.toggle('locked', !open);
-  $('btnPlay').disabled = !open; $('btnPlay').textContent = open ? 'Play' : 'Locked';
+  const worlds = $('btnWorlds');
+  if (worlds){ worlds.classList.toggle('locked', !open); worlds.setAttribute('aria-label', 'Worlds, ' + w.name); }
+  const wp = $('btnWorldPlay');
+  if (wp){ wp.disabled = !open; wp.textContent = open ? 'Play this world' : 'Locked'; }
 }
 function shiftWorld(dir){
   const i = (WORLDS.findIndex(w => w.id === G.world) + dir + WORLDS.length) % WORLDS.length;
@@ -2871,12 +2953,29 @@ function renderStats(){
   $('stLevel').textContent = levelOf(G.xp);
   renderWorldPick();
   $('stCoins').textContent = G.coins;
+  const best = $('stBest');
+  if (best) best.textContent = G.stats.best ? (G.stats.best + ord(G.stats.best)) : '—';
   drawPreview($('menuBall').getContext('2d'), G.skin, 30);
 }
 
-$('btnPlay').addEventListener('click', () => { Sfx.ensure(); Sfx.play('click'); startSolo(); });
+function playSelected(){
+  Sfx.ensure(); Sfx.play('click');
+  const w = WORLD_BY[G.world] || WORLDS[0];
+  if (!isUnlocked(w.id)){
+    showScreen('scrWorlds');
+    toast('Reach level ' + w.level + ' to play ' + w.name);
+    return;
+  }
+  startSolo();
+}
+$('btnPlay').addEventListener('click', playSelected);
+$('btnWorldPlay').addEventListener('click', playSelected);
 $('btnFriends').addEventListener('click', () => { Sfx.ensure(); Sfx.play('click'); showFriends(''); });
 $('btnSkins').addEventListener('click', () => { Sfx.ensure(); Sfx.play('click'); openSkins(); });
+$('btnWorlds').addEventListener('click', () => { Sfx.ensure(); Sfx.play('click'); showScreen('scrWorlds'); });
+$('btnWorldsBack').addEventListener('click', () => { Sfx.play('click'); showScreen('scrMenu'); });
+$('btnSettings').addEventListener('click', () => { Sfx.ensure(); Sfx.play('click'); showScreen('scrSettings'); });
+$('btnSettingsBack').addEventListener('click', () => { Sfx.play('click'); showScreen('scrMenu'); });
 $('btnSkinsBack').addEventListener('click', () => { Sfx.play('click'); showScreen('scrMenu'); });
 $('btnHow').addEventListener('click', () => { Sfx.play('click'); showScreen('scrHow'); });
 $('btnHowBack').addEventListener('click', () => { Sfx.play('click'); showScreen('scrMenu'); });
