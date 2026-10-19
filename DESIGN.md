@@ -24,6 +24,8 @@ Play again is on the knockout and the podium. Progress (coins, skins, level, wor
 
 The game picks low graphics on very small devices, medium on phones and modest memory, and high otherwise. Low uses pixel ratio 1, no shadows, and fewer sparks and scenery pieces. Medium keeps small shadows and a 1.15 pixel-ratio cap. High caps the pixel ratio at 1.5. Settings and the pause screen can switch it. Volume, camera shake, touch sensitivity, joystick side, and an FPS counter are saved there too.
 
+Settings also stores the control layout. Arrow keys are the default: Up accelerates, Down brakes, Left and Right steer, Space jumps, Shift dashes. WASD is the same set with the letters first. Custom rebinds each action to a primary key and an optional second key. Bindings use the physical key and show the letter the keyboard prints. Holding accelerate adds a push that fades out by speed 24, and steering gets looser, so the extra speed is a line choice. Brake scrubs down to a crawl. Dash stays a separate charged burst. On a phone, Go and Brake sit with Jump and Dash, and a long upward drag accelerates too. The right mouse button accelerates. Hints, the coach, and How to play read the current keys.
+
 A profile chip on the menu holds the player name, a marble color, and games, wins, best place, level, and coins. When the CrazyGames user module is available and the player is logged in, the chip uses that username and avatar. Otherwise it keeps a guest profile on the device. Sign-in is a button that calls the SDK auth prompt. It never opens by itself.
 
 ## Sound
