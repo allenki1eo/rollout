@@ -4174,8 +4174,11 @@ function posterSetup(which){
         return {
           state: G.state, mode: G.mode, stage: G.stage, coach: G.coachStep, coaching: !!G.coaching,
           racers: G.racers.length, coins: G.coins, quality: Quality.tier, paused: !!G.paused,
-          s: p ? +p.s.toFixed(2) : 0, d: p ? +p.d.toFixed(2) : 0, vs: p ? +p.vs.toFixed(2) : 0,
-          accel: !!(p && p.input.accel), brake: !!(p && p.input.brake), chain: G.run.chain || 0,
+          s: p ? +p.s.toFixed(2) : 0, d: p ? +p.d.toFixed(2) : 0, y: p ? +p.y.toFixed(2) : 0,
+          vs: p ? +p.vs.toFixed(2) : 0, steer: p ? p.input.steer : 0,
+          accel: !!(p && p.input.accel), brake: !!(p && p.input.brake),
+          botVs: +((G.racers.filter(m => !m.isPlayer && !m.done).reduce((a, m) => a + m.vs, 0) / Math.max(1, G.racers.filter(m => !m.isPlayer && !m.done).length)) || 0).toFixed(2),
+          chain: G.run.chain || 0,
           mem: navigator.deviceMemory || 0, sdkMuted: Sfx.sdkMuted,
         };
       },
