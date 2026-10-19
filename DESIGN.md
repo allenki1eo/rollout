@@ -14,7 +14,7 @@ Bots now have a personality (safe lane, balanced, or the fast lane with the spin
 
 ## First thirty seconds
 
-A brand-new player skips the menu and drops into heat 1. A coach card asks for a steer, then a jump, then a dash, then gets out of the way. Skip is always there. The first upgrade pick waits until the next heat, so the opening is driving, not a menu. After that, or if you quit, the game remembers and opens on the menu. One click starts the next race. A room invite still opens the friends screen instead of the coach.
+A brand-new player skips the menu and drops into heat 1. A coach card asks for a steer, then a jump, then a dash, then gets out of the way. Skip is always there. The first upgrade pick waits until the next heat, so the opening is driving, not a menu. After that, or if you quit, the game remembers and opens on the menu. One click starts the next race. An invite link skips the menu and joins that room. Instant multiplayer opens a fresh room instead of the coach.
 
 ## Sessions
 
@@ -28,4 +28,8 @@ A profile chip on the menu holds the player name, a marble color, and games, win
 
 ## Sound
 
-Effects and music are still synthesized in WebAudio. There is a rising combo blip. Music and effects keep separate mute buttons. Ads mute only once an ad actually starts, and the context resumes on the next tap after the page was hidden.
+Effects and music are still synthesized in WebAudio. There is a rising combo blip. Music and effects keep separate mute buttons. Ads mute only once an ad actually starts, and the context resumes on the next tap after the page was hidden. CrazyGames `settings.muteAudio` silences both buses on top of those sliders and does not rewrite the saved volumes. The listener is `addSettingsChangeListener`.
+
+## Multiplayer
+
+Friends rooms hold up to 8 people. Bots fill the rest, and the host can start whenever. Creating a room calls `updateRoom`, `inviteLink`, and `showInviteButton` with the room code. Leaving calls `hideInviteButton` and `leftRoom`. The copied invite is the SDK link. `getInviteParam('room')` and `inviteParams` join that lobby on load, and `isInstantMultiplayer` creates one. Signalling is the public PeerJS broker at `0.peerjs.com`. Midgame ads run between rounds only, and a request during a multiplayer race is ignored so the room stays up.
