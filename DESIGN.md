@@ -22,7 +22,9 @@ Play again is on the knockout and the podium. Progress (coins, skins, level, wor
 
 ## Graphics
 
-The game picks smooth graphics on coarse pointers, low memory, or few cores, and sharp graphics otherwise. Smooth turns shadows off, caps the pixel ratio at 1, and builds less scenery. Sharp caps the pixel ratio at 1.5. The menu and the pause screen can switch it. The choice is saved.
+The game picks low graphics on very small devices, medium on phones and modest memory, and high otherwise. Low uses pixel ratio 1, no shadows, and fewer sparks and scenery pieces. Medium keeps small shadows and a 1.15 pixel-ratio cap. High caps the pixel ratio at 1.5. Settings and the pause screen can switch it. Volume, camera shake, touch sensitivity, joystick side, and an FPS counter are saved there too.
+
+A profile chip on the menu holds the player name, a marble color, and games, wins, best place, level, and coins. When the CrazyGames user module is available and the player is logged in, the chip uses that username and avatar. Otherwise it keeps a guest profile on the device. Sign-in is a button that calls the SDK auth prompt. It never opens by itself.
 
 ## Sound
 
