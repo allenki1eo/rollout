@@ -5,10 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <meta name="theme-color" content="#1b1f3b">
 <title>Rollout: 30-marble knockout</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23ffd23f'/%3E%3Ccircle cx='12' cy='12' r='4' fill='%23fff7ea'/%3E%3C/svg%3E">
 <style>
+@font-face{font-family:'Bungee';src:url('fonts/bungee-latin-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Fredoka';src:url('fonts/fredoka-latin-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Fredoka';src:url('fonts/fredoka-latin-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Fredoka';src:url('fonts/fredoka-latin-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
 :root{
   --ink:#1b1f3b; --ink-2:#2b3160; --ink-deep:#0d1030;
   --sun:#ffd23f; --sun-deep:#c99a10;
@@ -64,6 +66,11 @@ button:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
 #btnDash.ready span{color:var(--mint)}
 body.touch #btnJump{display:grid}
 body.touch #btnDash small{display:none}
+@media (hover: none), (pointer: coarse){
+  #btnJump{display:grid}
+  #btnDash small{display:none}
+  .hint{display:none}
+}
 .hint{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);
   display:flex;gap:16px;align-items:center;font-size:15px;font-weight:500;padding:8px 16px;white-space:nowrap}
 .hint span{display:flex;align-items:center;gap:5px}
@@ -148,9 +155,38 @@ body.touch .hint{display:none}
 
 #scrLoad{background:var(--ink);flex-direction:column;gap:16px}
 #scrLoad .display{font-size:44px;color:var(--sun)}
+#loadNote{font-weight:600;opacity:.8;min-height:1.3em}
 .loadbar{width:min(260px,70vw);height:12px;border-radius:99px;background:var(--ink-2);overflow:hidden}
-.loadbar i{display:block;height:100%;width:30%;background:var(--sun);border-radius:99px;animation:slide 1s ease-in-out infinite alternate}
-@keyframes slide{to{transform:translateX(233%)}}
+.loadbar i{display:block;height:100%;width:0%;background:var(--sun);border-radius:99px;transition:width .25s ease-out}
+.chip.combo{padding:8px 14px 10px;color:var(--ink);background:var(--mint);box-shadow:0 4px 0 #149e88}
+.chip.combo b{font-family:'Bungee',sans-serif;font-weight:400;font-size:22px;line-height:1}
+.coach{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 118px);transform:translateX(-50%);
+  z-index:14;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;max-width:min(520px,92vw)}
+.coach-card{background:var(--ink);border-radius:24px;padding:14px 18px 16px;text-align:center;box-shadow:0 6px 0 var(--ink-deep);
+  animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+.coach-card b{font-family:'Bungee',sans-serif;font-weight:400;font-size:26px;color:var(--sun);display:block}
+.coach-card p{margin-top:4px;font-weight:600;font-size:16px}
+.coach-keys{display:flex;gap:8px;justify-content:center;margin-top:10px}
+.coach-keys kbd{font-size:18px;min-width:42px;padding:6px 10px}
+#coachSkip{pointer-events:auto;font-size:15px;padding:8px 16px}
+#adBlock{z-index:40;background:rgba(13,16,48,.78)}
+#adBlock .panel{width:min(420px,100%)}
+#poster{display:none;position:absolute;inset:0;z-index:30;pointer-events:none;
+  padding:7vh 6vw;align-items:flex-end}
+body.poster #poster{display:flex}
+body.poster .hud,body.poster .screen,body.poster .toast,body.poster .banner{display:none !important}
+.poster-copy{text-shadow:0 .08em 0 rgba(13,16,48,.45)}
+.poster-title{font-family:'Bungee','Arial Black',sans-serif;font-weight:400;font-size:11vw;line-height:.88;letter-spacing:-.02em}
+.poster-title span{display:inline-block}
+.poster-sub{font-weight:600;font-size:clamp(18px,2.4vw,32px);margin-top:10px;max-width:18ch}
+body[data-poster="portrait"] #poster{align-items:flex-start;padding-top:9vh}
+body[data-poster="portrait"] .poster-title{font-size:15vw}
+body[data-poster="portrait"] .poster-sub{font-size:4.2vw}
+body[data-poster="square"] #poster{align-items:flex-end;justify-content:center;text-align:center}
+body[data-poster="square"] .poster-title{font-size:13vw}
+body[data-poster="square"] .poster-sub{font-size:3.4vw;margin-left:auto;margin-right:auto}
+#skinWatch{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:15px;padding:12px 16px;white-space:normal;max-width:100%}
+.qmark{font-family:'Bungee',sans-serif;font-size:13px;letter-spacing:.04em}
 
 @media (max-width:640px){
   .perks{grid-template-columns:1fr}
@@ -264,6 +300,7 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
         <div class="strip-bar" id="stripBar"></div>
       </div>
       <div class="chip coins" id="coinChip" aria-label="Coins grabbed this race"><i class="coin"></i><b id="hudCoins">0</b></div>
+      <div class="chip combo" id="comboChip" hidden><b id="comboNum">x2</b></div>
       <div class="hud-btns">
         <button class="icon-btn" id="btnMusic" aria-label="Turn music off"></button>
         <button class="icon-btn" id="btnMute" aria-label="Mute sound"></button>
@@ -278,14 +315,24 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
   </div>
   <div class="banner display" id="banner"></div>
   <div class="toast" id="toast" role="status"></div>
+  <div class="coach" id="coach" hidden>
+    <div class="coach-card">
+      <b id="coachTitle">Steer</b>
+      <p id="coachText">Slide left and right to pick a line.</p>
+      <div class="coach-keys" id="coachKeys"></div>
+    </div>
+    <button class="btn ghost" id="coachSkip" type="button">Skip intro</button>
+  </div>
 
   <section class="screen on" id="scrLoad">
     <div class="display">Rollout</div>
-    <div class="loadbar"><i></i></div>
+    <div class="loadbar"><i id="loadFill"></i></div>
+    <p id="loadNote">Setting the table…</p>
   </section>
 
   <section class="screen" id="scrMenu">
     <div class="menu-corner">
+      <button class="icon-btn" id="btnQuality" aria-label="Graphics quality"><span class="qmark">HQ</span></button>
       <button class="icon-btn" id="btnMusic2" aria-label="Turn music off"></button>
       <button class="icon-btn" id="btnMute2" aria-label="Mute sound"></button>
     </div>
@@ -316,8 +363,8 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
       <h2>How to play</h2>
       <div class="how">
         <div><i>🏁</i><span>Thirty marbles race down four tracks. Only the first 22 across stage 1 go through, then 15, then 8. First home in the final wins.</span></div>
-        <div><i>↔️</i><span>Steer with <kbd>A</kbd> <kbd>D</kbd> or the arrow keys. On a phone, drag anywhere on the screen.</span></div>
-        <div><i>🦘</i><span>Jump with <kbd>Space</kbd> or a quick flick up. Jump right at the lip of a ramp to clear the gap.</span></div>
+        <div><i>↔️</i><span>Steer with <kbd>A</kbd> <kbd>D</kbd>, <kbd>Q</kbd> (for AZERTY), or the arrow keys. On a phone, drag anywhere. With a mouse, drag to steer and click to jump.</span></div>
+        <div><i>🦘</i><span>Jump with <kbd>Space</kbd>, <kbd>W</kbd>, a click, or a quick flick up. Jump right at the lip of a ramp to clear the gap.</span></div>
         <div><i>💨</i><span>Dash with <kbd>Shift</kbd> for a burst of speed. It recharges after a few seconds.</span></div>
         <div><i>🔀</i><span>Some roads split into lanes. Boost lanes are fast but have a spinner. Honey lanes are safe but sticky. Bumper lanes are chaos.</span></div>
         <div><i>🟣</i><span>Purple pads launch you into the air. Pink bumpers knock you away, and blue blocks slide across the road.</span></div>
@@ -337,6 +384,7 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
           <strong id="skinName">Sunny</strong>
           <span id="skinNote"></span>
           <button class="btn" id="skinAct">In use</button>
+          <button class="btn ghost" id="skinWatch" type="button" hidden>Watch a video to unlock</button>
         </div>
         <div class="skin-grid" id="skinGrid"></div>
       </div>
@@ -423,17 +471,35 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
       <p id="pauseText">The race waits for you.</p>
       <div class="actions">
         <button class="btn" id="btnResume">Resume</button>
+        <button class="btn ghost" id="btnQuality2" type="button">Graphics: Sharp</button>
         <button class="btn ghost" id="btnQuit">Quit to menu</button>
       </div>
     </div>
   </section>
+
+  <section class="screen" id="adBlock" aria-hidden="true">
+    <div class="panel">
+      <h2>One moment</h2>
+      <p id="adNote">Hold tight. The next race is right behind this.</p>
+      <div class="loadbar" style="margin:18px auto 0"><i id="adFill" style="width:40%"></i></div>
+    </div>
+  </section>
+
+  <div id="poster" hidden>
+    <div class="poster-copy">
+      <div class="poster-title display" aria-hidden="true"><span style="color:#ffd23f">R</span><span style="color:#ff6b1a">O</span><span style="color:#2de2c2">L</span><span style="color:#ff3d7f">L</span><span style="color:#7aa7ff">O</span><span style="color:#b6f04a">U</span><span style="color:#ffd23f">T</span></div>
+      <p class="poster-sub">30-marble knockout</p>
+    </div>
+  </div>
 </div>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="vendor/three.min.js"></script>
 <script>
 (() => {
 'use strict';
+
+const PAGE_QUERY = new URLSearchParams(location.search);
 
 /* =========================================================
    Utilities
@@ -458,16 +524,18 @@ function loadScript(src, timeout = 4000){
    CrazyGames SDK wrapper (no-ops gracefully off-platform)
    ========================================================= */
 const memStore = {};
+const SAVE_KEYS = ['rollout_stats','rollout_coins','rollout_owned','rollout_skin','rollout_name','rollout_prog','rollout_world','rollout_muted','rollout_music','rollout_coach','rollout_quality','rollout_reward_at'];
 const CG = {
-  sdk: null, ready: false, playing: false,
+  sdk: null, ready: false, playing: false, adsBlocked: false, adLock: false,
   async init(){
     try {
-      const ok = await loadScript('https://sdk.crazygames.com/crazygames-sdk-v3.js');
+      const ok = await loadScript('https://sdk.crazygames.com/crazygames-sdk-v3.js', 5000);
       const s = ok && window.CrazyGames && window.CrazyGames.SDK;
       if (!s) return;
       await s.init();
       if (s.environment === 'disabled') return;
       this.sdk = s; this.ready = true;
+      this.migrate();
     } catch (e) { /* running outside CrazyGames */ }
   },
   call(fn){ if (!this.ready) return; try { fn(this.sdk); } catch (e) {} },
@@ -476,13 +544,50 @@ const CG = {
   loadingStart(){ this.call(s => s.game.loadingStart()); },
   loadingStop(){ this.call(s => s.game.loadingStop()); },
   happytime(){ this.call(s => s.game.happytime()); },
-  midgame(done){
-    if (!this.ready){ done(); return; }
-    let finished = false;
-    const fin = () => { if (finished) return; finished = true; Sfx.setAdMute(false); done(); };
+  canReward(){ return this.ready && !this.adsBlocked; },
+  migrate(){
+    if (!this.ready || !this.sdk.data) return;
+    for (const k of SAVE_KEYS){
+      let cur = null;
+      try { cur = this.sdk.data.getItem(k); } catch (e) { continue; }
+      if (cur != null) continue;
+      let v = null;
+      try { v = localStorage.getItem(k); } catch (e) {}
+      if (v != null){ try { this.sdk.data.setItem(k, v); } catch (e) {} }
+    }
+  },
+  requestAd(type, onDone, onReward){
+    if (!this.ready || this.adLock){ onDone(false); return; }
+    this.adLock = true;
+    G.adPause = true;
+    showAdBlock(true, type === 'rewarded' ? 'Playing your video…' : 'One moment…');
+    let finished = false, started = false;
+    const fin = (reward) => {
+      if (finished) return; finished = true; this.adLock = false;
+      Sfx.setAdMute(false); G.adPause = false; showAdBlock(false);
+      if (reward && onReward) onReward();
+      onDone(!!reward);
+    };
+    const watchdog = setTimeout(() => { if (!started) fin(false); }, 8000);
     try {
-      this.sdk.ad.requestAd('midgame', { adStarted: () => Sfx.setAdMute(true), adFinished: fin, adError: fin });
-    } catch (e) { fin(); }
+      this.sdk.ad.requestAd(type, {
+        adStarted: () => { started = true; clearTimeout(watchdog); Sfx.setAdMute(true); setTimeout(() => fin(false), 90000); },
+        adFinished: () => fin(type === 'rewarded'),
+        adError: (err) => {
+          const code = err && err.code;
+          if (code === 'adsDisabledBasicLaunch' || code === 'adblock') this.adsBlocked = true;
+          fin(false);
+        },
+      });
+    } catch (e) { clearTimeout(watchdog); fin(false); }
+  },
+  midgame(done){
+    if (!this.ready || this.adsBlocked){ done(); return; }
+    this.requestAd('midgame', () => done());
+  },
+  rewarded(onReward, onFail){
+    if (!this.canReward()){ onFail && onFail(); return; }
+    this.requestAd('rewarded', (ok) => { if (!ok && onFail) onFail(); }, onReward);
   },
   inviteLink(code){
     try { if (this.ready && this.sdk.game.inviteLink) return this.sdk.game.inviteLink({ roomId: code }); } catch (e) {}
@@ -492,13 +597,22 @@ const CG = {
     try { if (this.ready && this.sdk.game.getInviteParam){ const v = this.sdk.game.getInviteParam('roomId'); if (v) return v; } } catch (e) {}
     try { return new URLSearchParams(location.search).get('room'); } catch (e) { return null; }
   },
-  async load(key){
-    try { if (this.ready && this.sdk.data){ const v = await this.sdk.data.getItem(key); if (v != null) return v; } } catch (e) {}
+  load(key){
+    try {
+      if (this.ready && this.sdk.data){ const v = this.sdk.data.getItem(key); if (v != null) return v; }
+    } catch (e) {}
+    if (!this.ready){
+      try { const v = localStorage.getItem(key); if (v != null) return v; } catch (e) {}
+    }
     return memStore[key] ?? null;
   },
   save(key, val){
-    memStore[key] = val;
-    try { if (this.ready && this.sdk.data) this.sdk.data.setItem(key, val); } catch (e) {}
+    const s = String(val);
+    memStore[key] = s;
+    if (this.ready && this.sdk.data){
+      try { this.sdk.data.setItem(key, s); return; } catch (e) {}
+    }
+    try { localStorage.setItem(key, s); } catch (e) {}
   }
 };
 
@@ -578,6 +692,8 @@ const Sfx = {
       case 'win': [523, 659, 784, 1046, 1318, 1568].forEach((f, i) => this.tone(f, .34, 'triangle', .17, 0, i * .09));
         [1046, 1318, 1568].forEach(f => this.tone(f, 1.2, 'triangle', .1, 0, .6)); this.noise(2.2, .13, 1800, 'bandpass', .3, .5, .5); Music.duck(2.8); break;
       case 'pop': this.tone(520, .14, 'square', .1, 1.9); this.tone(1040, .08, 'sine', .08); break;
+      case 'chain': { const step = Math.min(8, k); this.tone(660 * Math.pow(1.08, step), .16, 'square', .07);
+        this.tone(880 * Math.pow(1.06, step), .22, 'triangle', .1, 0, .04); break; }
       case 'boing': this.tone(170, .45, 'sine', .3, 3.2); this.tone(340, .3, 'triangle', .06, 2.6); break;
       case 'whack': this.noise(.1, .3, 900); this.tone(150, .16, 'square', .1, .5); break;
       case 'buy': [784, 988, 1175, 1568].forEach((f, i) => this.tone(f, .2, 'square', .06, 0, i * .06)); break;
@@ -721,10 +837,41 @@ const Music = {
    Renderer & scene
    ========================================================= */
 const app = $('app');
-const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+const Quality = {
+  pref: 'auto', low: false,
+  detect(){
+    const mem = navigator.deviceMemory || 8;
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    return mem <= 4 || coarse;
+  },
+  read(){
+    try { const v = localStorage.getItem('rollout_quality'); if (v === 'low' || v === 'high') this.pref = v; } catch (e) {}
+    this.low = this.pref === 'low' || (this.pref !== 'high' && this.detect());
+  },
+  apply(){
+    renderer.setPixelRatio(this.low ? 1 : Math.min(window.devicePixelRatio || 1, 1.5));
+    renderer.shadowMap.enabled = !this.low;
+    sun.castShadow = !this.low;
+    if (typeof resize === 'function') resize();
+    const label = this.low ? 'Smooth' : 'Sharp';
+    const mark = this.low ? 'LQ' : 'HQ';
+    for (const id of ['btnQuality']){ const b = $(id); if (!b) continue; b.querySelector('.qmark').textContent = mark; b.setAttribute('aria-label', 'Graphics: ' + label); }
+    const q2 = $('btnQuality2'); if (q2) q2.textContent = 'Graphics: ' + label;
+  },
+  toggle(){
+    this.pref = this.low ? 'high' : 'low';
+    this.low = this.pref === 'low';
+    this.apply();
+    CG.save('rollout_quality', this.pref);
+    toast(this.low ? 'Smooth graphics. Easier on phones.' : 'Sharp graphics. More detail.');
+  },
+};
+Quality.read();
+if (PAGE_QUERY.get('poster')){ Quality.pref = 'high'; Quality.low = false; }
+const renderer = new THREE.WebGLRenderer({ antialias: !Quality.low, powerPreference: Quality.low ? 'low-power' : 'high-performance' });
+renderer.setPixelRatio(Quality.low ? 1 : Math.min(window.devicePixelRatio || 1, 1.5));
 renderer.outputEncoding = THREE.sRGBEncoding;
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled = !Quality.low;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 app.prepend(renderer.domElement);
 
@@ -735,8 +882,8 @@ scene.fog = new THREE.Fog(lin(HORIZON), 55, 230);
 const camera = new THREE.PerspectiveCamera(62, 1, 0.1, 600);
 
 const sun = new THREE.DirectionalLight(0xffffff, 1.05);
-sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
+sun.castShadow = !Quality.low;
+sun.shadow.mapSize.set(Quality.low ? 512 : 1024, Quality.low ? 512 : 1024);
 Object.assign(sun.shadow.camera, { left: -28, right: 28, top: 28, bottom: -28, near: 1, far: 140 });
 sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.03;
 scene.add(sun, sun.target);
@@ -767,6 +914,73 @@ const sky = (() => {
   [[22, 26, 12], [-26, 18, -16], [0, 30, -28]].forEach(p => { const m = new THREE.Mesh(new THREE.PlaneGeometry(16, 9), pmat); m.position.set(...p); m.lookAt(0, 0, 0); es.add(m); });
   scene.environment = pm.fromScene(es, 0.03).texture; pm.dispose();
 })();
+
+/* Sparks and a short speed trail. One shared point cloud, so phones stay cheap. */
+const Juice = { shake: 0, hit: 0 };
+const FX = {
+  N: Quality.low ? 80 : 160,
+  TN: 16,
+  hist: [],
+  init(){
+    this.pos = new Float32Array(this.N * 3);
+    this.vel = new Float32Array(this.N * 3);
+    this.life = new Float32Array(this.N);
+    for (let i = 0; i < this.N; i++) this.pos[i * 3 + 1] = -999;
+    this.geo = new THREE.BufferGeometry();
+    this.geo.setAttribute('position', new THREE.BufferAttribute(this.pos, 3));
+    this.pts = new THREE.Points(this.geo, new THREE.PointsMaterial({
+      color: 0xfff6df, size: Quality.low ? .14 : .2, transparent: true, opacity: .95, depthWrite: false, sizeAttenuation: true,
+    }));
+    this.pts.frustumCulled = false; scene.add(this.pts);
+    this.tpos = new Float32Array(this.TN * 3);
+    for (let i = 0; i < this.TN; i++) this.tpos[i * 3 + 1] = -999;
+    this.tgeo = new THREE.BufferGeometry();
+    this.tgeo.setAttribute('position', new THREE.BufferAttribute(this.tpos, 3));
+    this.trail = new THREE.Points(this.tgeo, new THREE.PointsMaterial({
+      color: 0xffd23f, size: .26, transparent: true, opacity: .8, depthWrite: false, sizeAttenuation: true,
+    }));
+    this.trail.frustumCulled = false; scene.add(this.trail);
+  },
+  burst(x, y, z, n, speed, up){
+    n = Math.min(n, Quality.low ? 8 : 18);
+    for (let i = 0; i < n; i++){
+      let slot = -1;
+      for (let k = 0; k < this.N; k++) if (this.life[k] <= 0){ slot = k; break; }
+      if (slot < 0) return;
+      const a = Math.random() * 6.2832, b = speed * (.4 + Math.random() * .6);
+      this.pos[slot * 3] = x; this.pos[slot * 3 + 1] = y; this.pos[slot * 3 + 2] = z;
+      this.vel[slot * 3] = Math.cos(a) * b; this.vel[slot * 3 + 1] = (up || 2) * (.35 + Math.random()); this.vel[slot * 3 + 2] = Math.sin(a) * b;
+      this.life[slot] = .28 + Math.random() * .32;
+    }
+  },
+  update(dt){
+    for (let i = 0; i < this.N; i++){
+      if (this.life[i] <= 0){ this.pos[i * 3 + 1] = -999; continue; }
+      this.life[i] -= dt;
+      this.vel[i * 3 + 1] -= 10 * dt;
+      this.pos[i * 3] += this.vel[i * 3] * dt;
+      this.pos[i * 3 + 1] += this.vel[i * 3 + 1] * dt;
+      this.pos[i * 3 + 2] += this.vel[i * 3 + 2] * dt;
+    }
+    this.geo.attributes.position.needsUpdate = true;
+    const m = G.camTarget;
+    const fast = m && m.mesh && (G.state === 'race' || G.state === 'countdown') && !m.falling && (Math.abs(m.vs) > 9 || m.glow > .05 || m.onPad);
+    if (fast){
+      const p = m.mesh.position;
+      this.hist.push(p.x, p.y, p.z);
+      if (this.hist.length > this.TN * 3) this.hist.splice(0, 3);
+    } else if (this.hist.length) this.hist.splice(0, 3);
+    for (let i = 0; i < this.TN; i++){
+      const src = this.hist.length / 3 - this.TN + i;
+      if (src < 0){ this.tpos[i * 3 + 1] = -999; continue; }
+      const k = src * 3;
+      this.tpos[i * 3] = this.hist[k]; this.tpos[i * 3 + 1] = this.hist[k + 1]; this.tpos[i * 3 + 2] = this.hist[k + 2];
+    }
+    this.tgeo.attributes.position.needsUpdate = true;
+    if (this.trail.material) this.trail.material.color.setHex(m && m.glow > .05 ? 0x2de2c2 : 0xffd23f);
+  },
+};
+FX.init();
 
 function canvasTex(w, h, draw, repeat){
   const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h);
@@ -956,6 +1170,7 @@ function stripeTex(){
 }
 
 function buildScenery(grp, rnd, cx, cz, spanX, spanZ, groundY){
+  const scaled = n => Math.max(4, Math.round(n * (Quality.low ? 0.4 : 1)));
   const place = (minR = 18, maxR = 110) => { const a = rnd() * Math.PI * 2, rr = minR + rnd() * (maxR - minR);
     return [cx + Math.cos(a) * rr + (rnd() - .5) * spanX, cz + Math.sin(a) * rr + (rnd() - .5) * spanZ]; };
   const add = (geo, mat, x, y, z, sx = 1, sy = 1, sz = 1, ry = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.scale.set(sx, sy, sz); m.rotation.y = ry; grp.add(m); return m; };
@@ -963,21 +1178,21 @@ function buildScenery(grp, rnd, cx, cz, spanX, spanZ, groundY){
 
   if (kind === 'toy'){
     const bg = new THREE.BoxGeometry(1, 1, 1), cg = new THREE.CylinderGeometry(.5, .5, 1, 20);
-    for (let k = 0; k < 70; k++){
+    for (let k = 0; k < scaled(70); k++){
       const sz = 3 + rnd() * 9, cyl = rnd() < .3, ht = cyl ? sz * 1.4 : sz, [x, z] = place();
       add(cyl ? cg : bg, BLOCK_COLORS[(rnd() * BLOCK_COLORS.length) | 0], x, groundY + ht / 2, z, sz, ht, sz, rnd() * Math.PI);
     }
   } else if (kind === 'savanna'){
     const trunk = new THREE.CylinderGeometry(.18, .32, 1, 7), canopy = new THREE.SphereGeometry(1, 14, 8), rock = new THREE.DodecahedronGeometry(1, 0), cone = new THREE.ConeGeometry(1, 1, 9);
     const mTrunk = scnMat('acTrunk', 0x5a3a22), mLeaf = scnMat('acLeaf', 0x6f8f3a, { roughness: .8 }), mRock = scnMat('rock', 0xa0866a, { roughness: .9 }), mMound = scnMat('mound', 0xb06a3a, { roughness: .9 }), mHill = scnMat('hill', 0xcf9655, { roughness: 1 });
-    for (let k = 0; k < 34; k++){
+    for (let k = 0; k < scaled(34); k++){
       const [x, z] = place(), h = 4 + rnd() * 5, w = 3 + rnd() * 3;
       add(trunk, mTrunk, x, groundY + h / 2, z, 1.4, h, 1.4);
       add(canopy, mLeaf, x, groundY + h, z, w, .5 + rnd() * .3, w * (.8 + rnd() * .4), rnd() * 3);
     }
-    for (let k = 0; k < 26; k++){ const [x, z] = place(), s = 1 + rnd() * 3; add(rock, mRock, x, groundY + s * .5, z, s * 1.3, s, s, rnd() * 3); }
-    for (let k = 0; k < 12; k++){ const [x, z] = place(), h = 3 + rnd() * 5; add(cone, mMound, x, groundY + h / 2, z, 1.4 + rnd(), h, 1.4 + rnd()); }
-    for (let k = 0; k < 9; k++){ const a = k / 9 * 6.28 + rnd(), r = 160 + rnd() * 60, s = 30 + rnd() * 40; add(canopy, mHill, cx + Math.cos(a) * r, groundY - s * .55, cz + Math.sin(a) * r, s * 1.6, s, s * 1.3); }
+    for (let k = 0; k < scaled(26); k++){ const [x, z] = place(), s = 1 + rnd() * 3; add(rock, mRock, x, groundY + s * .5, z, s * 1.3, s, s, rnd() * 3); }
+    for (let k = 0; k < scaled(12); k++){ const [x, z] = place(), h = 3 + rnd() * 5; add(cone, mMound, x, groundY + h / 2, z, 1.4 + rnd(), h, 1.4 + rnd()); }
+    for (let k = 0; k < scaled(9); k++){ const a = k / scaled(9) * 6.28 + rnd(), r = 160 + rnd() * 60, s = 30 + rnd() * 40; add(canopy, mHill, cx + Math.cos(a) * r, groundY - s * .55, cz + Math.sin(a) * r, s * 1.6, s, s * 1.3); }
     // a snow-capped mountain on the horizon
     const a = rnd() * 6.28, mx = cx + Math.cos(a) * 270, mz = cz + Math.sin(a) * 270;
     add(cone, scnMat('mtn', 0x7a6a72, { roughness: 1 }), mx, groundY + 45, mz, 150, 120, 150);
@@ -986,15 +1201,15 @@ function buildScenery(grp, rnd, cx, cz, spanX, spanZ, groundY){
     const stick = new THREE.CylinderGeometry(.18, .18, 1, 8), disc = new THREE.CylinderGeometry(1, 1, .45, 28), drop = new THREE.SphereGeometry(1, 18, 10, 0, Math.PI * 2, 0, Math.PI / 2);
     const mStick = scnMat('stick', 0xfff7ea), mSwirl = SCN.lolly || (SCN.lolly = new THREE.MeshStandardMaterial({ map: swirlTex(), roughness: .25 }));
     const drops = [0xff3d7f, 0x2de2c2, 0xffd23f, 0x8c5cff, 0xb6f04a, 0xff8f45].map((c, i) => scnMat('drop' + i, c, { roughness: .2 }));
-    for (let k = 0; k < 26; k++){
+    for (let k = 0; k < scaled(26); k++){
       const [x, z] = place(), h = 5 + rnd() * 7, r = 1.8 + rnd() * 2.2, ry = rnd() * 6.28;
       add(stick, mStick, x, groundY + h / 2, z, 1, h, 1);
       const d = add(disc, mSwirl, x, groundY + h + r * .8, z, r, 1, r, ry); d.rotation.x = Math.PI / 2; d.rotation.order = 'YXZ';
     }
-    for (let k = 0; k < 36; k++){ const [x, z] = place(), s = 1.5 + rnd() * 4; add(drop, drops[(rnd() * drops.length) | 0], x, groundY, z, s, s * 1.2, s); }
+    for (let k = 0; k < scaled(36); k++){ const [x, z] = place(), s = 1.5 + rnd() * 4; add(drop, drops[(rnd() * drops.length) | 0], x, groundY, z, s, s * 1.2, s); }
     const cane = new THREE.CylinderGeometry(.5, .5, 1, 14), hook = new THREE.TorusGeometry(1.4, .5, 10, 18, Math.PI);
     const mCane = SCN.cane || (SCN.cane = new THREE.MeshStandardMaterial({ map: stripeTex(), roughness: .3 }));
-    for (let k = 0; k < 10; k++){ const [x, z] = place(25, 120), h = 9 + rnd() * 8, ry = rnd() * 6.28;
+    for (let k = 0; k < scaled(10); k++){ const [x, z] = place(25, 120), h = 9 + rnd() * 8, ry = rnd() * 6.28;
       add(cane, mCane, x, groundY + h / 2, z, 1, h, 1, ry);
       add(hook, mCane, x + Math.cos(ry) * 1.4, groundY + h, z - Math.sin(ry) * 1.4, 1, 1, 1, ry); }
   } else if (kind === 'frost'){
@@ -1002,15 +1217,15 @@ function buildScenery(grp, rnd, cx, cz, spanX, spanZ, groundY){
     const mPine = scnMat('pine', 0x2f5d4a, { roughness: .9 }), mSnow = scnMat('snow', 0xffffff, { roughness: .85 }), mTrunk = scnMat('pTrunk', 0x4a3426);
     const mIce = SCN.ice || (SCN.ice = std(0xbfe8ff, { roughness: .05, metalness: .15, transparent: true, opacity: .85 }));
     if (!SCN.iceGlow){ SCN.iceGlow = true; mIce.emissive = lin(0x5cb8ff); mIce.emissiveIntensity = .2; }
-    for (let k = 0; k < 64; k++){
+    for (let k = 0; k < scaled(64); k++){
       const [x, z] = place(), h = 5 + rnd() * 7, w = h * .32;
       add(trunk, mTrunk, x, groundY + .6, z, 1, 1.2, 1);
       add(cone, mPine, x, groundY + 1 + h * .45, z, w, h * .9, w);
       add(cone, mSnow, x, groundY + 1 + h * .78, z, w * .55, h * .35, w * .55);
     }
-    for (let k = 0; k < 18; k++){ const [x, z] = place(), s = 1.2 + rnd() * 2.5; add(crystal, mIce, x, groundY + s * 1.4, z, s * .7, s * 1.8, s * .7, rnd() * 3); }
-    for (let k = 0; k < 20; k++){ const [x, z] = place(), s = 2 + rnd() * 5; add(mound, mSnow, x, groundY, z, s * 1.5, s * .6, s); }
-    for (let k = 0; k < 7; k++){ const a = k / 7 * 6.28 + rnd(), r = 170 + rnd() * 50, s = 40 + rnd() * 30;
+    for (let k = 0; k < scaled(18); k++){ const [x, z] = place(), s = 1.2 + rnd() * 2.5; add(crystal, mIce, x, groundY + s * 1.4, z, s * .7, s * 1.8, s * .7, rnd() * 3); }
+    for (let k = 0; k < scaled(20); k++){ const [x, z] = place(), s = 2 + rnd() * 5; add(mound, mSnow, x, groundY, z, s * 1.5, s * .6, s); }
+    for (let k = 0; k < scaled(7); k++){ const a = k / scaled(7) * 6.28 + rnd(), r = 170 + rnd() * 50, s = 40 + rnd() * 30;
       const mx = cx + Math.cos(a) * r, mz = cz + Math.sin(a) * r;
       add(cone, scnMat('rockMtn', 0x6f86a8, { roughness: 1 }), mx, groundY + s * .45, mz, s, s * 1.4, s);
       add(cone, mSnow, mx, groundY + s * .92, mz, s * .45, s * .5, s * .45); }
@@ -1018,9 +1233,9 @@ function buildScenery(grp, rnd, cx, cz, spanX, spanZ, groundY){
     const box = new THREE.BoxGeometry(1, 1, 1), ring = new THREE.TorusGeometry(1, .08, 8, 40);
     const mBld = SCN.bld || (SCN.bld = new THREE.MeshStandardMaterial({ color: 0x14163a, map: windowTex(), emissiveMap: windowTex(), roughness: .6 }));
     if (!SCN.bldGlow){ SCN.bldGlow = true; mBld.emissive = new THREE.Color(1, 1, 1); mBld.emissiveIntensity = .9; }
-    for (let k = 0; k < 70; k++){ const [x, z] = place(22, 150), h = 18 + rnd() * 45, w = 4 + rnd() * 7; add(box, mBld, x, groundY + h / 2, z, w, h, w * (.7 + rnd() * .6)); }
+    for (let k = 0; k < scaled(70); k++){ const [x, z] = place(22, 150), h = 18 + rnd() * 45, w = 4 + rnd() * 7; add(box, mBld, x, groundY + h / 2, z, w, h, w * (.7 + rnd() * .6)); }
     const rings = [0x2de2ff, 0xff3df0, 0xffd23f].map((c, i) => { const m = SCN['ring' + i] || (SCN['ring' + i] = new THREE.MeshBasicMaterial({ color: lin(c), fog: false })); return m; });
-    for (let k = 0; k < 14; k++){ const [x, z] = place(15, 90), s = 3 + rnd() * 6; const r = add(ring, rings[k % 3], x, groundY + 26 + rnd() * 20, z, s, s, s, rnd() * 6.28); r.rotation.x = rnd() * .6; }
+    for (let k = 0; k < scaled(14); k++){ const [x, z] = place(15, 90), s = 3 + rnd() * 6; const r = add(ring, rings[k % 3], x, groundY + 26 + rnd() * 20, z, s, s, s, rnd() * 6.28); r.rotation.x = rnd() * .6; }
   }
 }
 
@@ -1414,7 +1629,7 @@ function skinAsset(id){
   return (skinCache[id] = { c, t });
 }
 
-const marbleGeo = new THREE.SphereGeometry(R, 32, 20);
+const marbleGeo = new THREE.SphereGeometry(R, Quality.low ? 16 : 24, Quality.low ? 12 : 16);
 const pool = COLORS.map(col => {
   const tex = canvasTex(256, 128, (g, w, h) => { g.fillStyle = col; g.fillRect(0, 0, w, h); wave(g, w, 'rgba(255,255,255,.9)', 26, h / 2, 12); wave(g, w, 'rgba(0,0,0,.18)', 18, h / 2 + 30, 6, 1); });
   const mat = new THREE.MeshPhysicalMaterial({ map: tex, roughness: .22, metalness: .05, clearcoat: 1, clearcoatRoughness: .04, envMapIntensity: 1.1 });
@@ -1470,9 +1685,10 @@ function createMarbles(humans = [], list = null){
     }
     if (skin && !SKIN_BY[skin]) skin = 'sunny';
     const color = dressSlot(i, skin);
+    const skill0 = .08 + Math.random() * .92;
     return {
       id: i, isPlayer, human, remote: human && !isPlayer, name, skin, color, mesh: p.mesh, stats: baseStats(), perks: [],
-      skill: .5 + Math.random() * .45, lane: (Math.random() * 2 - 1),
+      skill: skill0, skill0, persona: Math.random(), lane: (Math.random() * 2 - 1), fx: 0, overGap: false, didJump: false, didDash: false,
       s: 0, d: 0, y: 0, vs: 0, vd: 0, vy: 0, grounded: true, falling: false, ghost: 0,
       done: false, out: false, finIdx: 0, place: 0, dashT: 0, jumpBuf: 0, airLeft: 0, glow: 0, onPad: false,
       input: { steer: 0, dash: false }, jumpRoll: false, willJump: false, buf: [],
@@ -1511,7 +1727,8 @@ const G = {
   stage: 0, finish: [], q: 0, cd: 0, cdShown: -1, stageT: 0, simT: 0, paused: false, spectating: false,
   camTarget: null, acc: 0, timers: [], seed: 1, grid: null, pendingGrid: null, snapT: 0,
   stats: { wins: 0, best: 0 }, coins: 0, owned: FREE_SKINS.slice(), skin: 'sunny', name: '',
-  run: { gems: 0, earned: 0, awarded: false }, pending: new Set(), perkTok: 0,
+  run: { gems: 0, earned: 0, awarded: false, chain: 0, chainT: 0, bestChain: 0, score: 0, lastPos: null }, pending: new Set(), perkTok: 0,
+  coachDone: false, coaching: false, coachStep: '', adPause: false, rewardAt: 0, happyChain: false,
   world: 'toy', trackWorld: 'toy', xp: 0, stars: {},
 };
 // Level L starts at xpFor(L): 0, 100, 250, 450, 700, 1000, 1350, ...
@@ -1529,7 +1746,9 @@ function setupStage(i, grid){
   buildTrackMeshes(G.track);
   const tr = G.track;
   G.racers = grid ? grid.map(r => G.marbles[r[0]]) : G.alive.slice();
+  tuneBots();
   G.finish = []; G.stageT = 0; G.acc = 0; G.simT = 0; G.snapT = 0;
+  G.run.lastPos = null;
   G.q = G.mode === 'attract' ? 8 : Math.min(STAGES[i], G.racers.length - 1);
   for (const m of G.marbles) m.mesh.visible = false;
 
@@ -1560,8 +1779,56 @@ function setupStage(i, grid){
 
 function resetRun(mode){
   G.mode = mode; G.timers = []; G.spectating = false; G.paused = false;
-  G.run = { gems: 0, earned: 0, awarded: false }; G.pending = new Set(); G.perkTok++;
-  clearBanner();
+  G.run = { gems: 0, earned: 0, awarded: false, chain: 0, chainT: 0, bestChain: 0, score: 0, lastPos: null };
+  G.pending = new Set(); G.perkTok++; G.happyChain = false;
+  clearBanner(); updateComboHud();
+}
+function tuneBots(){
+  const bands = [[.30, .64], [.42, .78], [.55, .90], [.68, .98]];
+  const [a, b] = bands[Math.min(3, G.stage | 0)];
+  for (const m of G.marbles) if (!m.human) m.skill = a + (m.skill0 ?? .5) * (b - a);
+}
+function playerJuice(power, soft){
+  const m = G.player;
+  if (m) m.fx = Math.max(m.fx || 0, power);
+  if (G.mode === 'attract') return;
+  Juice.shake = Math.min(1.15, Juice.shake + power * .65);
+  if (!soft && power >= .62) Juice.hit = Math.max(Juice.hit, Math.min(.05, .028 + power * .015));
+}
+function styleHit(label){
+  if (G.mode === 'attract' || !G.player || G.player.out || G.state !== 'race') return;
+  const run = G.run;
+  run.chain = (run.chain || 0) + 1;
+  run.chainT = 2.35;
+  run.score = (run.score || 0) + run.chain;
+  if (run.chain > (run.bestChain || 0)) run.bestChain = run.chain;
+  updateComboHud();
+  if (run.chain >= 2) Sfx.play('chain', run.chain);
+  if (run.chain === 3 || run.chain === 6 || run.chain === 10) banner('x' + run.chain, 'mint pop', label || '');
+  if (run.chain >= 8 && !G.happyChain){ G.happyChain = true; CG.happytime(); }
+}
+function tickStyle(dt){
+  const run = G.run;
+  if (!run.chain) return;
+  run.chainT -= dt;
+  if (run.chainT <= 0){ run.chain = 0; updateComboHud(); }
+}
+function updateComboHud(){
+  const c = G.run.chain || 0, el = $('comboChip');
+  if (!el) return;
+  el.hidden = c < 2;
+  $('comboNum').textContent = 'x' + c;
+}
+function checkPass(){
+  const p = G.player;
+  if (!p || G.state !== 'race' || G.stageT < 1.6 || p.out || p.done) return;
+  const rank = ranking();
+  const pos = rank.indexOf(p);
+  if (G.run.lastPos != null && pos >= 0 && pos < G.run.lastPos){
+    const behind = rank[pos + 1];
+    if (behind && p.s - behind.s < 2.4 && p.s - behind.s > -.2) styleHit('Overtake');
+  }
+  if (pos >= 0) G.run.lastPos = pos;
 }
 
 function startAttract(){
@@ -1584,6 +1851,12 @@ function startSolo(){
   G.player = G.marbles[0]; G.alive = G.marbles.slice();
   G.seed = (Math.random() * 1e9) | 0; G.stage = 0;
   buildTags();
+  if (!G.coachDone){
+    G.coaching = true; G.coachStep = 'steer';
+    beginStage();
+    showCoach('steer');
+    return;
+  }
   perkPhase(true);
 }
 
@@ -1605,8 +1878,8 @@ function beginStage(){
   showScreen(null); setHud(true);
   G.state = 'countdown'; G.cd = 3.2; G.cdShown = -1;
   if (G.player && G.racers.includes(G.player)) CG.gameplayStart();
-  if (G.stage === 0 && G.player && G.racers.includes(G.player)){
-    later(.4, () => toast(document.body.classList.contains('touch') ? 'Drag to steer. Flick up to jump.' : 'Steer with A and D. Jump with Space.'));
+  if (G.stage === 0 && G.player && G.racers.includes(G.player) && !G.coaching){
+    later(.4, () => toast(document.body.classList.contains('touch') ? 'Drag to steer. Flick up to jump. Dash button bursts.' : 'A and D steer. Space jumps. Shift dashes.'));
   }
 }
 
@@ -1686,6 +1959,7 @@ function endStage(){
 }
 
 function presentEnd(last, qual, out){
+  if (G.coaching) finishCoach();
   CG.gameplayStop();
   const p = G.player; if (!p) return;
   const raced = G.racers.includes(p) && !G.spectating;
@@ -1713,7 +1987,8 @@ function finishRun(place, cleared){
   if (place === 1) G.stats.wins++;
   if (!G.stats.best || place < G.stats.best) G.stats.best = place;
   const bonus = place === 1 ? 80 : place === 2 ? 40 : place === 3 ? 25 : 0;
-  G.run.earned = G.run.gems + cleared * 10 + bonus;
+  const styleBonus = Math.min(48, (G.run.bestChain || 0) * 2 + Math.floor((G.run.score || 0) / 5));
+  G.run.earned = G.run.gems + cleared * 10 + bonus + styleBonus;
   G.coins += G.run.earned;
   // XP, level-ups, world unlocks and stars
   const before = levelOf(G.xp);
@@ -1745,13 +2020,13 @@ function stepMarble(m, dt){
   tr.get(m.s, SA);
 
   const active = !m.done && G.state === 'race';
-  if (active && m.input.dash && m.dashT <= 0){
+    if (active && m.input.dash && m.dashT <= 0){
     m.vs += 6.5; m.dashT = st.dashCd; m.glow = 1;
-    if (m.isPlayer){ Sfx.play('dash'); m.input.dash = false; }
+    if (m.isPlayer){ Sfx.play('dash'); m.didDash = true; m.input.dash = false; playerJuice(.4, true); coachAdvance(); }
   }
   if (active && m.jumpBuf > 0 && !m.falling){
-    if (m.grounded){ m.vy = 7.2 * st.jump; m.grounded = false; m.jumpBuf = 0; m.airLeft = st.airJumps; if (m.isPlayer) Sfx.play('jump'); }
-    else if (m.airLeft > 0 && m.vy < 3){ m.vy = 6.6 * st.jump; m.airLeft--; m.jumpBuf = 0; if (m.isPlayer) Sfx.play('jump'); }
+    if (m.grounded){ m.vy = 7.2 * st.jump; m.grounded = false; m.jumpBuf = 0; m.airLeft = st.airJumps; if (m.isPlayer){ Sfx.play('jump'); m.didJump = true; coachAdvance(); } }
+    else if (m.airLeft > 0 && m.vy < 3){ m.vy = 6.6 * st.jump; m.airLeft--; m.jumpBuf = 0; if (m.isPlayer){ Sfx.play('jump'); m.didJump = true; coachAdvance(); } }
   }
 
   const steer = active ? m.input.steer : 0;
@@ -1773,6 +2048,11 @@ function stepMarble(m, dt){
         }
       }
     }
+    if (!m.human && G.mode === 'solo' && G.player && active && !m.done){
+      const gap = m.s - G.player.s;
+      if (gap > 18) a -= 1.35;
+      else if (gap < -16) a += .9;
+    }
     m.vs += a * dt;
     m.vd += (ad * iceK + SA.curv * m.vs * m.vs * .55 * st.curve * tr.curveK) * dt;
     m.vd *= Math.exp(-(iceK < 1 ? .6 : 3.2) * dt);
@@ -1792,11 +2072,11 @@ function stepMarble(m, dt){
   tr.get(m.s, SA);
 
   if (m.grounded){
-    if (!SA.floor){ m.grounded = false; m.vy = Math.max(0, -prevSlope) * m.vs; m.y = prevY; m.airLeft = st.airJumps; }
+    if (!SA.floor){ m.grounded = false; m.overGap = true; m.vy = Math.max(0, -prevSlope) * m.vs; m.y = prevY; m.airLeft = st.airJumps; }
     else {
       m.y = SA.y;
       if (!m.done) for (const p of tr.launch) if (inRect(m, p)){
-        m.grounded = false; m.vy = 9.5; m.airLeft = st.airJumps; if (m.isPlayer) Sfx.play('boing'); break;
+        m.grounded = false; m.vy = 9.5; m.airLeft = st.airJumps; if (m.isPlayer){ Sfx.play('boing'); playerJuice(.7); } break;
       }
     }
   } else {
@@ -1805,7 +2085,9 @@ function stepMarble(m, dt){
       if (SA.floor && m.y <= SA.y && m.vy <= 0){
         const offEdge = Math.abs(m.d) > SA.hw - R * .3;
         if (m.y > SA.y - .45 && !offEdge){
-          if (m.isPlayer && m.vy < -7) Sfx.play('land');
+          if (m.isPlayer && m.vy < -7){ Sfx.play('land'); playerJuice(.55); }
+          if (m.isPlayer && m.overGap) styleHit('Clean jump');
+          m.overGap = false;
           m.y = SA.y; m.vy = 0; m.grounded = true; m.airLeft = st.airJumps;
         } else m.falling = true;
       } else if (!SA.floor && m.y < SA.y - .45) m.falling = true;
@@ -1832,7 +2114,8 @@ function wallHit(m){
   const imp = Math.abs(m.vd);
   m.vs *= 1 - Math.min(.15, .025 * imp) / (1 + m.stats.rubber);
   m.vd = -m.vd * .35;
-  if (m.isPlayer && imp > 3) Sfx.play('bump', imp / 6);
+  if (m.isPlayer && imp > 3){ Sfx.play('bump', imp / 6); playerJuice(imp > 6 ? .8 : .45, imp < 5); }
+  else if (imp > 4) m.fx = Math.max(m.fx || 0, .4);
 }
 
 function collidePegs(m, dt){
@@ -1852,7 +2135,8 @@ function collidePegs(m, dt){
         const e = .35 + .2 * m.stats.rubber;
         m.vs -= (1 + e) * vn * nx; m.vd -= (1 + e) * vn * ny;
         m.vd += (ny >= 0 ? 1 : -1) * .7;
-        if (m.isPlayer && -vn > 2) Sfx.play('bump', -vn / 6);
+        if (m.isPlayer && -vn > 2){ Sfx.play('bump', -vn / 6); playerJuice(-vn > 5 ? .75 : .4, -vn < 4.5); }
+        else if (-vn > 4) m.fx = Math.max(m.fx || 0, .35);
       }
     }
   }
@@ -1892,7 +2176,7 @@ function collideObstacles(m, dt, prevD){
     const arr = tr.bumpB[k]; if (!arr) continue;
     for (const b of arr){
       const hit = hitCircle(m, b.s, b.d, b.r, .6, 3.5, dt, b.c || 0);
-      if (hit > .5){ b.hitT = t; if (m.isPlayer) Sfx.play('pop'); }
+      if (hit > .5){ b.hitT = t; if (m.isPlayer){ Sfx.play('pop'); playerJuice(.95); styleHit('Bumper'); } else m.fx = Math.max(m.fx || 0, .6); }
     }
   }
   // spinners
@@ -1908,7 +2192,7 @@ function collideObstacles(m, dt, prevD){
     m.s += nx * (rr - dist); m.d += ny * (rr - dist);
     const bvs = -sp.w * (pd - sp.d), bvd = sp.w * (ps - sp.s);
     const rvn = (m.vs - bvs) * nx + (m.vd - bvd) * ny;
-    if (rvn < 0){ m.vs -= 1.6 * rvn * nx; m.vd -= 1.6 * rvn * ny; if (m.isPlayer && -rvn > 2) Sfx.play('whack'); }
+    if (rvn < 0){ m.vs -= 1.6 * rvn * nx; m.vd -= 1.6 * rvn * ny; if (m.isPlayer && -rvn > 2){ Sfx.play('whack'); playerJuice(.85); } else if (-rvn > 3) m.fx = Math.max(m.fx || 0, .5); }
   }
   // sliding blocks
   for (const b of tr.sliders){
@@ -1922,7 +2206,7 @@ function collideObstacles(m, dt, prevD){
     else { nx = 0; ny = Math.sign(m.d - cd) || 1; pen = R + b.hd - Math.abs(m.d - cd); }
     m.s += nx * pen; m.d += ny * pen;
     const rvn = m.vs * nx + (m.vd - vdb) * ny;
-    if (rvn < 0){ m.vs -= 1.4 * rvn * nx; m.vd -= 1.4 * rvn * ny; if (m.isPlayer && -rvn > 2) Sfx.play('whack'); }
+    if (rvn < 0){ m.vs -= 1.4 * rvn * nx; m.vd -= 1.4 * rvn * ny; if (m.isPlayer && -rvn > 2){ Sfx.play('whack'); playerJuice(.7); } else if (-rvn > 3) m.fx = Math.max(m.fx || 0, .45); }
   }
 }
 
@@ -1949,8 +2233,9 @@ function collideMarbles(){
         b.vs += jimp * nx / mb; b.vd += jimp * ny / mb;
         if (-rv > 1.5){
           const f = G.camTarget;
-          if (a === f || b === f) Sfx.play('clack', -rv / 6);
+          if (a === f || b === f){ Sfx.play('clack', -rv / 6); if (a.isPlayer || b.isPlayer) playerJuice(-rv > 4 ? .7 : .4, -rv < 3.5); }
           else if (f && G.mode !== 'attract' && Math.abs(a.s - f.s) < 5 && -rv > 3) Sfx.play('clack', -rv / 18);
+          if (-rv > 2.2){ a.fx = Math.max(a.fx || 0, .4); b.fx = Math.max(b.fx || 0, .4); }
         }
       }
     }
@@ -1963,13 +2248,17 @@ function respawn(m){
   s = Math.max(2, s);
   m.s = s; m.d = (Math.random() - .5) * .6; m.vs = 6; m.vd = 0;
   tr.get(s, SA); m.y = SA.y; m.vy = 0; m.grounded = true; m.falling = false; m.ghost = 1.4; m.jumpRoll = false;
-  if (m.isPlayer){ Sfx.play('fall'); toast('You fell. Hit the boost and jump at the lip.'); }
+  if (m.isPlayer){ Sfx.play('fall'); playerJuice(.9); m.overGap = false; toast('You fell. Hit the boost and jump at the lip.'); }
 }
 
 /* ---------- Bot brains ---------- */
 function pickLane(m, f){
   const fast = f.lanes.findIndex(l => l.kind === 'fast');
-  if (Math.random() < .3 + .5 * m.skill) return fast;
+  const safe = f.lanes.findIndex(l => l.kind === 'safe');
+  const bold = (m.persona || .5) > .66, cautious = (m.persona || .5) < .34;
+  const pFast = (bold ? .72 : cautious ? .18 : .42) * (.55 + .6 * m.skill);
+  if (fast >= 0 && Math.random() < pFast) return fast;
+  if (cautious && safe >= 0 && Math.random() < .7) return safe;
   return (Math.random() * f.lanes.length) | 0;
 }
 function botThink(m){
@@ -2040,7 +2329,7 @@ const Net = {
   role: null, peer: null, code: '', slot: 0, roster: [], conns: new Map(), host: null, lastS: 0, lastT: 0,
   async lib(){
     if (window.Peer) return true;
-    return (await loadScript('https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 10000)) && !!window.Peer;
+    return (await loadScript('vendor/peerjs.min.js', 8000)) && !!window.Peer;
   },
   openPeer(id){
     return new Promise(res => {
@@ -2249,7 +2538,7 @@ function doDash(){
   } else p.input.dash = true;
 }
 
-const KEYMAP = { KeyA: 'L', ArrowLeft: 'L', KeyD: 'R', ArrowRight: 'R' };
+const KEYMAP = { KeyA: 'L', KeyQ: 'L', ArrowLeft: 'L', KeyD: 'R', ArrowRight: 'R' };
 addEventListener('keydown', e => {
   if (e.target && e.target.tagName === 'INPUT') return;
   if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
@@ -2262,6 +2551,13 @@ addEventListener('keydown', e => {
 }, { passive: false });
 addEventListener('keyup', e => { if (KEYMAP[e.code]) Input.keys.delete(KEYMAP[e.code]); });
 addEventListener('blur', () => Input.keys.clear());
+addEventListener('contextmenu', e => e.preventDefault());
+addEventListener('wheel', e => {
+  const sc = e.target && e.target.closest && e.target.closest('.screen, .skin-grid, .panel');
+  if (sc && sc.scrollHeight > sc.clientHeight + 8) return;
+  e.preventDefault();
+}, { passive: false });
+addEventListener('touchend', () => { if (Sfx.ctx && Sfx.ctx.state === 'suspended') Sfx.ctx.resume(); }, { passive: true });
 
 const cv = renderer.domElement;
 cv.addEventListener('pointerdown', e => {
@@ -2278,9 +2574,15 @@ cv.addEventListener('pointermove', e => {
   Input.touchSteer = clamp((e.clientX - Input.sx) / 55, -1, 1);
   if (!Input.flicked && Input.sy - e.clientY > 45 && performance.now() - Input.st < 320){ Input.flicked = true; doJump(); }
 });
-const endPtr = e => { if (e.pointerId !== Input.pid) return; Input.pid = null; Input.touchSteer = 0; };
+const endPtr = e => {
+  if (e.pointerId !== Input.pid) return;
+  const moved = Math.hypot(e.clientX - Input.sx, e.clientY - Input.sy);
+  const quick = performance.now() - Input.st < 280;
+  Input.pid = null; Input.touchSteer = 0;
+  if (e.pointerType === 'mouse' && moved < 10 && quick) doJump();
+};
 cv.addEventListener('pointerup', endPtr); cv.addEventListener('pointercancel', endPtr);
-if (matchMedia('(pointer: coarse)').matches) document.body.classList.add('touch');
+if (matchMedia('(pointer: coarse), (hover: none)').matches) document.body.classList.add('touch');
 
 const press = (el, fn) => el.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); Sfx.ensure(); fn(); });
 press($('btnJump'), doJump);
@@ -2323,6 +2625,9 @@ const toggleSound = () => { Sfx.ensure(); Sfx.muted = !Sfx.muted; Sfx.apply(); r
 const toggleMusic = () => { Sfx.ensure(); Sfx.musicOn = !Sfx.musicOn; Music.level(); renderMute(); CG.save('rollout_music', Sfx.musicOn ? '1' : '0'); toast(Sfx.musicOn ? 'Music on' : 'Music off'); };
 $('btnMute').addEventListener('click', toggleSound); $('btnMute2').addEventListener('click', toggleSound);
 $('btnMusic').addEventListener('click', toggleMusic); $('btnMusic2').addEventListener('click', toggleMusic);
+const cycleQuality = () => { Sfx.ensure(); Quality.toggle(); };
+$('btnQuality').addEventListener('click', cycleQuality);
+$('btnQuality2').addEventListener('click', cycleQuality);
 // browsers only allow sound after a tap or key press: start audio on the very first one
 const unlockAudio = () => { Sfx.ensure(); removeEventListener('pointerdown', unlockAudio, true); removeEventListener('keydown', unlockAudio, true); };
 addEventListener('pointerdown', unlockAudio, true); addEventListener('keydown', unlockAudio, true);
@@ -2347,7 +2652,7 @@ function togglePause(force){
   Music.level();
 }
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden && G.mode === 'solo') togglePause(true);
+  if (document.hidden && G.mode === 'solo' && !G.adPause) togglePause(true);
   if (Sfx.ctx){ try { document.hidden ? Sfx.ctx.suspend() : Sfx.ctx.resume(); } catch (e) {} }
 });
 
@@ -2388,6 +2693,12 @@ function renderSkins(){
   else if (owned){ act.textContent = 'Use this marble'; act.disabled = false; $('skinNote').textContent = 'You own this one.'; }
   else { act.innerHTML = `Buy for ${sk.price}`; act.disabled = G.coins < sk.price;
     $('skinNote').textContent = G.coins >= sk.price ? `You have ${G.coins} coins.` : `You need ${sk.price - G.coins} more coins. Grab them on the track.`; }
+  const watch = $('skinWatch');
+  const cooled = Date.now() - (G.rewardAt || 0) > 180000;
+  const offer = !owned && CG.canReward();
+  watch.hidden = !offer;
+  watch.disabled = !cooled;
+  watch.textContent = cooled ? 'Watch a video to unlock' : 'Video ready again soon';
 }
 $('skinAct').addEventListener('click', () => {
   const sk = SKIN_BY[skinSel];
@@ -2399,6 +2710,23 @@ $('skinAct').addEventListener('click', () => {
   } else Sfx.play('click');
   G.skin = sk.id; CG.save('rollout_skin', sk.id);
   renderSkins(); renderStats();
+});
+$('skinWatch').addEventListener('click', () => {
+  const sk = SKIN_BY[skinSel];
+  if (!sk || G.owned.includes(sk.id) || !CG.canReward()) return;
+  if (Date.now() - (G.rewardAt || 0) < 180000) return;
+  Sfx.ensure();
+  CG.rewarded(() => {
+    if (!G.owned.includes(sk.id)) G.owned.push(sk.id);
+    G.rewardAt = Date.now();
+    CG.save('rollout_owned', JSON.stringify(G.owned));
+    CG.save('rollout_reward_at', String(G.rewardAt));
+    Sfx.play('buy'); toast(`${sk.name} unlocked`);
+    renderSkins();
+  }, () => {
+    toast(CG.adsBlocked ? 'Videos are off here. Coins still unlock marbles.' : 'No video right now. You can still buy it with coins.');
+    renderSkins();
+  });
 });
 
 /* ---------- Friends & lobby ---------- */
@@ -2467,8 +2795,8 @@ function showPerks(first, onPick){
   showScreen('scrPerk');
 }
 function earnHTML(){
-  const e = G.run.earned || 0;
-  return `<i class="coin"></i> +${e} coins` + (G.run.gems ? `, ${G.run.gems} grabbed on the track` : '');
+  const e = G.run.earned || 0, chain = G.run.bestChain || 0;
+  return `<i class="coin"></i> +${e} coins` + (G.run.gems ? `, ${G.run.gems} grabbed on the track` : '') + (chain >= 2 ? `, best combo x${chain}` : '');
 }
 function showOut(){
   const p = G.player;
@@ -2505,6 +2833,7 @@ function showResult(){
 }
 
 function toMenu(){
+  if (G.coaching) finishCoach();
   CG.gameplayStop(); clearBanner(); G.paused = false;
   startAttract(); renderStats(); showScreen('scrMenu');
 }
@@ -2565,8 +2894,8 @@ $('btnAgain2').addEventListener('click', () => {
   if (G.mode === 'host') CG.midgame(startHostGame);
   else if (G.mode === 'solo') CG.midgame(startSolo);
 });
-$('btnMenu1').addEventListener('click', () => isMP() ? leaveRoom() : CG.midgame(toMenu));
-$('btnMenu2').addEventListener('click', () => isMP() ? leaveRoom() : CG.midgame(toMenu));
+$('btnMenu1').addEventListener('click', () => isMP() ? leaveRoom() : toMenu());
+$('btnMenu2').addEventListener('click', () => isMP() ? leaveRoom() : toMenu());
 $('btnWatch').addEventListener('click', () => {
   G.spectating = true; showScreen(null); setHud(true);
   banner('Spectating', 'small pop');
@@ -2609,7 +2938,7 @@ function checkGems(){
   if (!tr || !tr.gems || !canControl()) return;
   for (const g of tr.gems){
     if (g.taken || Math.abs(g.s - p.s) > .8) continue;
-    if (Math.abs(g.d - p.d) < .75 && Math.abs(p.y + R - g.y) < .85){ g.taken = true; G.run.gems++; Sfx.play('coin'); bumpCoins(); }
+    if (Math.abs(g.d - p.d) < .75 && Math.abs(p.y + R - g.y) < .85){ g.taken = true; G.run.gems++; Sfx.play('coin'); p.fx = Math.max(p.fx || 0, .55); styleHit('Coin'); bumpCoins(); }
   }
 }
 function forkHints(){
@@ -2656,6 +2985,7 @@ function syncMeshes(dt){
     if (sp > .01 && Math.hypot(dx, dz) < 3){ axis.set(vz, 0, -vx).normalize(); qRoll.setFromAxisAngle(axis, sp * dt / R); mesh.quaternion.premultiply(qRoll); }
     mesh.visible = m.ghost > 0 ? Math.floor(now / 80) % 2 === 0 : true;
     mesh.material.emissiveIntensity = (mesh.material.userData.base || 0) + Math.max(0, m.glow) * .9 + (m.onPad ? .35 : 0);
+    if (m.fx){ FX.burst(px, py, pz, m.fx > .7 ? 14 : 8, 1.3 + m.fx * 2, m.fx > .7 ? 3.2 : 1.8); m.fx = 0; }
   }
   for (const tg of tags){
     const on = G.racers.includes(tg.m) && tg.m.mesh.visible;
@@ -2693,6 +3023,12 @@ function updateCamera(dt){
   camera.position.copy(camPos); camera.lookAt(camLook);
   const fov = 60 + clamp((m.vs - 12) * .9, -2, 10);
   if (Math.abs(camera.fov - fov) > .05){ camera.fov += (fov - camera.fov) * (1 - Math.exp(-3 * dt)); camera.updateProjectionMatrix(); }
+  if (Juice.shake > .004 && G.mode !== 'attract'){
+    const mag = Juice.shake * .42;
+    camera.position.x += (Math.random() - .5) * mag;
+    camera.position.y += (Math.random() - .5) * mag * .65;
+    Juice.shake *= Math.exp(-7.5 * dt);
+  } else Juice.shake = 0;
   sky.position.copy(camera.position);
   sun.position.set(wp.x + 18, wp.y + 40, wp.z + 8); sun.target.position.copy(wp);
 }
@@ -2702,7 +3038,12 @@ function updateCamera(dt){
    ========================================================= */
 const STEP = 1 / 120;
 function update(dt){
-  if (G.paused) return;
+  if (Juice.hit > 0 && G.state === 'race' && G.mode !== 'attract'){
+    const cut = Math.min(dt, Juice.hit);
+    Juice.hit -= dt;
+    dt = Math.max(0, dt - cut * .9);
+  }
+  if (G.paused || G.adPause) return;
   for (let i = G.timers.length - 1; i >= 0; i--){ const tm = G.timers[i]; tm.t -= dt; if (tm.t <= 0){ G.timers.splice(i, 1); tm.fn(); } }
   if (!G.track) return;
 
@@ -2726,7 +3067,7 @@ function update(dt){
     while (G.acc >= STEP && n < 10){ for (const m of G.racers) stepMarble(m, STEP); collideMarbles(); G.simT += STEP; G.acc -= STEP; n++; }
     if (n >= 10) G.acc = 0;
     for (const m of G.racers) if (m.human) m.input.dash = false;
-    if (G.mode !== 'attract'){ checkGems(); forkHints(); }
+    if (G.mode !== 'attract'){ checkGems(); forkHints(); tickStyle(dt); checkPass(); coachAdvance(); }
     if (G.mode === 'host' && (G.state === 'race' || G.state === 'stageEnd')){
       G.snapT -= dt; if (G.snapT <= 0){ G.snapT = .05; Net.broadcast(makeSnap()); }
     }
@@ -2757,7 +3098,7 @@ function frame(now){
   lastFrame = performance.now();
   const dt = Math.min(.05, (now - last) / 1000); last = now;
   update(dt); syncMeshes(dt); updateCamera(dt); updateHUD(dt);
-  Roll.update(); Music.update(); updateSnow(dt);
+  Roll.update(); Music.update(); updateSnow(dt); FX.update(dt);
   if ($('scrSkins').classList.contains('on')) drawPreview($('skinBig').getContext('2d'), skinSel, now * .03);
   renderer.render(scene, camera);
 }
@@ -2774,31 +3115,127 @@ try {
 } catch (e) { /* workers unavailable: the host just needs to keep the tab open */ }
 
 /* =========================================================
+   First-race coach, ad curtain, poster frames
+   ========================================================= */
+function setLoad(p, note){
+  const i = $('loadFill'); if (i) i.style.width = Math.round(clamp(p, 0, 1) * 100) + '%';
+  if (note && $('loadNote')) $('loadNote').textContent = note;
+}
+function showAdBlock(on, note){
+  const el = $('adBlock');
+  el.classList.toggle('on', !!on);
+  el.setAttribute('aria-hidden', on ? 'false' : 'true');
+  if (note) $('adNote').textContent = note;
+}
+const COACH_COPY = {
+  steer: ['Steer', 'Hold a direction and pick a line.', ['A', 'D']],
+  jump: ['Jump', 'Tap at a ramp to clear the gap.', ['Space']],
+  dash: ['Dash', 'A short burst. It comes back in a few seconds.', ['Shift']],
+  go: ['You are in it', 'Top 22 through this heat. Too slow and you are out.', []],
+};
+function showCoach(step){
+  G.coaching = true; G.coachStep = step;
+  const touch = document.body.classList.contains('touch');
+  const copy = touch ? {
+    steer: ['Steer', 'Drag anywhere to slide left and right.', []],
+    jump: ['Jump', 'Flick up, or tap Jump.', []],
+    dash: ['Dash', 'Tap Dash when you want a burst.', []],
+    go: COACH_COPY.go,
+  }[step] : COACH_COPY[step];
+  if (!copy) return;
+  $('coachTitle').textContent = copy[0];
+  $('coachText').textContent = copy[1];
+  $('coachKeys').innerHTML = copy[2].map(k => `<kbd>${k}</kbd>`).join('');
+  $('coach').hidden = false;
+}
+function finishCoach(){
+  G.coaching = false; G.coachStep = 'done'; G.coachDone = true;
+  const el = $('coach'); if (el) el.hidden = true;
+  CG.save('rollout_coach', '1');
+}
+function coachAdvance(){
+  if (!G.coaching || !G.player || G.mode !== 'solo') return;
+  const p = G.player;
+  if (G.coachStep === 'steer'){
+    if (G.coachD == null) G.coachD = p.d;
+    if (Math.abs(Input.steer()) > .35 || Math.abs(p.d - G.coachD) > .55) showCoach('jump');
+  } else if (G.coachStep === 'jump' && p.didJump) showCoach('dash');
+  else if (G.coachStep === 'dash' && p.didDash){
+    showCoach('go');
+    later(1.5, () => { if (G.coachStep === 'go') finishCoach(); });
+  }
+}
+$('coachSkip').addEventListener('click', () => { Sfx.ensure(); Sfx.play('click'); finishCoach(); });
+
+function posterSetup(which){
+  const kind = which === 'portrait' || which === 'square' ? which : 'landscape';
+  document.body.classList.add('poster');
+  document.body.dataset.poster = kind;
+  $('poster').hidden = false;
+  G.coachDone = true;
+  resetRun('attract');
+  G.world = 'toy'; G.trackWorld = 'toy'; applyWorld('toy');
+  G.marbles = createMarbles([]);
+  ['sunny', 'cherry', 'ocean', 'gold', 'galaxy', 'bee', 'mint', 'lava'].forEach((id, i) => { if (G.marbles[i]) dressSlot(i, id); });
+  G.marbles.forEach(m => { for (let k = 0; k < 3; k++) givePerk(m, randPerk()); });
+  G.alive = G.marbles.slice();
+  G.player = null;
+  G.seed = 11;
+  setupStage(2);
+  G.state = 'race';
+  setHud(false);
+  showScreen(null);
+  camera.fov = kind === 'portrait' ? 58 : 66;
+  camera.updateProjectionMatrix();
+  setTimeout(() => { window.__posterReady = true; }, 700);
+}
+
+/* =========================================================
    Boot
    ========================================================= */
 (async function boot(){
-  resize(); renderMute();
-  await Promise.race([CG.init(), new Promise(r => setTimeout(r, 4500))]);
+  const poster = PAGE_QUERY.get('poster') || '';
+  resize(); renderMute(); Quality.apply();
+  setLoad(.08, 'Rolling out the track…');
   CG.loadingStart();
-  try { if (document.fonts) await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 2000))]); } catch (e) {}
-  const load = async (k, fn) => { try { const v = await CG.load(k); if (v != null) fn(v); } catch (e) {} };
-  await load('rollout_stats', v => Object.assign(G.stats, JSON.parse(v)));
-  await load('rollout_coins', v => G.coins = Math.max(0, parseInt(v, 10) || 0));
-  await load('rollout_owned', v => { const o = JSON.parse(v); if (Array.isArray(o)) G.owned = [...new Set([...FREE_SKINS, ...o.filter(id => SKIN_BY[id])])]; });
-  await load('rollout_skin', v => { if (SKIN_BY[v] && G.owned.includes(v)) G.skin = v; });
-  await load('rollout_name', v => G.name = cleanName(v));
-  await load('rollout_prog', v => { const o = JSON.parse(v); G.xp = Math.max(0, +o.xp || 0); if (o.stars && typeof o.stars === 'object') G.stars = o.stars; });
-  await load('rollout_world', v => { if (WORLD_BY[v]) G.world = v; });
-  await load('rollout_muted', v => { if (v === '1'){ Sfx.muted = true; renderMute(); } });
-  await load('rollout_music', v => { if (v === '0'){ Sfx.musicOn = false; renderMute(); } });
+  await Promise.race([CG.init(), new Promise(r => setTimeout(r, 4500))]);
+  setLoad(.42, 'Checking your marbles…');
+  try { if (document.fonts) await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1500))]); } catch (e) {}
+  const load = (k, fn) => { try { const v = CG.load(k); if (v != null) fn(v); } catch (e) {} };
+  load('rollout_stats', v => Object.assign(G.stats, JSON.parse(v)));
+  load('rollout_coins', v => G.coins = Math.max(0, parseInt(v, 10) || 0));
+  load('rollout_owned', v => { const o = JSON.parse(v); if (Array.isArray(o)) G.owned = [...new Set([...FREE_SKINS, ...o.filter(id => SKIN_BY[id])])]; });
+  load('rollout_skin', v => { if (SKIN_BY[v] && G.owned.includes(v)) G.skin = v; });
+  load('rollout_name', v => G.name = cleanName(v));
+  load('rollout_prog', v => { const o = JSON.parse(v); G.xp = Math.max(0, +o.xp || 0); if (o.stars && typeof o.stars === 'object') G.stars = o.stars; });
+  load('rollout_world', v => { if (WORLD_BY[v]) G.world = v; });
+  load('rollout_muted', v => { if (v === '1'){ Sfx.muted = true; renderMute(); } });
+  load('rollout_music', v => { if (v === '0'){ Sfx.musicOn = false; renderMute(); } });
+  load('rollout_coach', v => { if (v === '1') G.coachDone = true; });
+  load('rollout_reward_at', v => { G.rewardAt = parseInt(v, 10) || 0; });
+  load('rollout_quality', v => { if (v === 'low' || v === 'high'){ Quality.pref = v; Quality.low = v === 'low'; Quality.apply(); } });
   if (!G.name) G.name = 'Racer' + (10 + ((Math.random() * 89) | 0));
   renderStats();
-  startAttract();
+  setLoad(.88, 'Painting the world…');
   requestAnimationFrame(t => { last = t; frame(t); });
+  setLoad(1, 'Ready');
   CG.loadingStop();
-  showScreen('scrMenu');
   const invite = String(CG.inviteParam() || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-  if (invite.length === 5){ showFriends(invite); joinRoom(); }
+  if (poster){ posterSetup(poster); return; }
+  if (invite.length === 5){ startAttract(); showScreen('scrMenu'); showFriends(invite); joinRoom(); return; }
+  if (!G.coachDone){ setLoad(.94, 'Lining up the marbles…'); startSolo(); }
+  else { startAttract(); showScreen('scrMenu'); }
+  if (PAGE_QUERY.get('debug') === '1'){
+    window.__rollout = { snap: () => {
+      const p = G.player;
+      return {
+        state: G.state, mode: G.mode, stage: G.stage, coach: G.coachStep, coaching: !!G.coaching,
+        racers: G.racers.length, coins: G.coins, quality: Quality.low ? 'low' : 'high', paused: !!G.paused,
+        s: p ? +p.s.toFixed(2) : 0, d: p ? +p.d.toFixed(2) : 0, chain: G.run.chain || 0,
+        mem: navigator.deviceMemory || 0,
+      };
+    } };
+  }
 })();
 })();
 
