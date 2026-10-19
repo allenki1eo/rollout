@@ -22,11 +22,11 @@ Rounds are short. When you are knocked out you can watch the rest or jump straig
 
 ## Controls
 
-Keyboard: A and D, or the left and right arrows, steer. Q also steers left, so AZERTY keyboards work. Space, W, or the up arrow jumps. Shift or E dashes. P pauses.
+Keyboard: the Arrow layout is the default. Up accelerates, Down brakes, Left and Right steer, Space jumps, Shift dashes. WASD does the same jobs as a second set of keys (W accelerate, S brake, A and D steer). Settings can switch the labels to WASD or rebind every action. Keys are stored by physical key and shown with the letter your keyboard prints, so AZERTY can be rebound once. P or Esc pauses.
 
-Mouse: drag left and right to steer. Click to jump.
+Mouse: drag left and right to steer. Click to jump. Hold the right button to accelerate.
 
-Touch: drag anywhere to steer. Flick up or press Jump. Press Dash when the ring is full.
+Touch: drag anywhere to steer. Flick up or press Jump. Hold Go, or drag upward and keep holding, to accelerate. Brake slows you down. Press Dash when the ring is full. The joystick can sit on the left or the right.
 
 ## Tags
 

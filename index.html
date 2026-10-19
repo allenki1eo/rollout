@@ -54,7 +54,7 @@ button:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
 .icon-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink-deep)}
 
 .controls{position:absolute;right:calc(env(safe-area-inset-right,0px) + 18px);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);
-  display:flex;align-items:flex-end;gap:14px;pointer-events:auto}
+  display:flex;align-items:flex-end;gap:14px;pointer-events:auto;touch-action:none}
 body.joy-left .controls{right:auto;left:calc(env(safe-area-inset-left,0px) + 18px)}
 #fps{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);z-index:25;
   font-weight:600;font-size:13px;letter-spacing:.04em;color:var(--paper);pointer-events:none;
@@ -62,21 +62,31 @@ body.joy-left .controls{right:auto;left:calc(env(safe-area-inset-left,0px) + 18p
 .round{border:0;border-radius:50%;cursor:pointer;display:grid;place-items:center;position:relative}
 #btnJump{width:92px;height:92px;background:var(--sun);color:var(--ink);box-shadow:0 6px 0 var(--sun-deep);font-size:16px;display:none}
 #btnJump:active{transform:translateY(4px);box-shadow:0 2px 0 var(--sun-deep)}
+#btnGo,#btnBrake{width:76px;height:76px;font-size:15px;display:none}
+#btnGo{background:var(--mint);color:var(--ink);box-shadow:0 6px 0 #149e86}
+#btnBrake{background:var(--berry);color:#fff;box-shadow:0 6px 0 #c2184b}
+#btnGo:active,#btnBrake:active{transform:translateY(4px)}
 #btnDash{--p:1;width:84px;height:84px;background:conic-gradient(var(--mint) calc(var(--p)*1turn),var(--ink-2) 0);
   box-shadow:0 6px 0 var(--ink-deep)}
 #btnDash::before{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--ink)}
 #btnDash span{position:relative;display:flex;flex-direction:column;align-items:center;line-height:1.05;font-size:15px}
 #btnDash small{font-family:'Fredoka',sans-serif;font-size:12px;opacity:.7;margin-top:3px}
 #btnDash.ready span{color:var(--mint)}
-body.touch #btnJump{display:grid}
+body.touch #btnJump,body.touch #btnGo,body.touch #btnBrake{display:grid}
 body.touch #btnDash small{display:none}
 @media (hover: none), (pointer: coarse){
-  #btnJump{display:grid}
+  #btnJump,#btnGo,#btnBrake{display:grid}
   #btnDash small{display:none}
   .hint{display:none}
 }
+@media (max-height:520px){
+  #btnJump{width:68px;height:68px;font-size:14px}
+  #btnDash{width:62px;height:62px}
+  #btnGo,#btnBrake{width:60px;height:60px;font-size:13px}
+}
 .hint{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);
-  display:flex;gap:16px;align-items:center;font-size:15px;font-weight:500;padding:8px 16px;white-space:nowrap}
+  display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:15px;font-weight:500;padding:8px 16px;
+  max-width:min(820px, calc(100% - 24px))}
 .hint span{display:flex;align-items:center;gap:5px}
 kbd{font-family:inherit;font-size:13px;font-weight:600;min-width:24px;padding:2px 7px;border-radius:7px;background:var(--paper);
   color:var(--ink);box-shadow:0 2px 0 #c9bca6;text-align:center}
@@ -179,6 +189,18 @@ body.touch .hint{display:none}
 .stat-grid b{display:block;font-family:'Bungee',sans-serif;font-weight:400;color:var(--sun);font-size:20px;line-height:1.1}
 .stat-grid span{font-size:13px;font-weight:600;opacity:.85}
 #resetAsk{margin-top:8px}
+.set-h{font-family:'Bungee',sans-serif;font-weight:400;font-size:18px;text-align:center;margin:16px 0 8px;color:var(--sun)}
+.bind-keys{display:flex;gap:6px}
+.bind-key{min-width:58px;font-family:'Bungee',sans-serif;font-weight:400;font-size:14px;border:0;border-radius:12px;
+  padding:8px 10px;background:var(--ink);color:var(--paper);box-shadow:0 3px 0 var(--ink-deep);cursor:pointer}
+.bind-key.empty{opacity:.5}
+.bind-key.listen{background:var(--sun);color:var(--ink)}
+#ctrlListen{min-height:1.2em}
+@media (max-width:520px){
+  .set-row{font-size:15px;gap:8px;padding-left:12px}
+  .bind-key{min-width:46px;padding:8px 8px;font-size:13px}
+  #ctrlSeg button{padding:8px 8px}
+}
 
 .how{text-align:left;margin-top:16px;display:grid;gap:12px}
 .how div{display:flex;gap:14px;align-items:flex-start;font-size:16px;line-height:1.4}
@@ -383,10 +405,12 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
         <button class="icon-btn" id="btnPause" aria-label="Pause"><svg viewBox="0 0 20 20"><rect x="4" y="3" width="4" height="14" rx="1.5"/><rect x="12" y="3" width="4" height="14" rx="1.5"/></svg></button>
       </div>
     </div>
-    <div class="chip hint"><span><kbd>A</kbd><kbd>D</kbd> steer</span><span><kbd>Space</kbd> jump</span><span><kbd>Shift</kbd> dash</span></div>
+    <div class="chip hint" id="hintChip"><span><kbd>←</kbd><kbd>→</kbd> steer</span><span><kbd>↑</kbd> faster</span><span><kbd>Space</kbd> jump</span><span><kbd>Shift</kbd> dash</span></div>
     <div class="controls">
-      <button class="round display" id="btnJump" aria-label="Jump">Jump</button>
-      <button class="round display" id="btnDash" aria-label="Dash"><span>Dash<small>Shift</small></span></button>
+      <button class="round display" id="btnBrake" type="button" aria-label="Brake">Brake</button>
+      <button class="round display" id="btnJump" type="button" aria-label="Jump">Jump</button>
+      <button class="round display" id="btnDash" type="button" aria-label="Dash"><span>Dash<small>Shift</small></span></button>
+      <button class="round display" id="btnGo" type="button" aria-label="Accelerate">Go</button>
     </div>
   </div>
   <div class="banner display" id="banner"></div>
@@ -503,6 +527,15 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
           <button type="button" data-joy="left">Left</button>
           <button type="button" data-joy="right">Right</button>
         </span></div>
+        <h3 class="set-h" id="ctrlHead">Controls</h3>
+        <div class="set-row"><span>Layout</span><span class="set-seg" id="ctrlSeg">
+          <button type="button" data-layout="arrows">Arrows</button>
+          <button type="button" data-layout="wasd">WASD</button>
+          <button type="button" data-layout="custom">Custom</button>
+        </span></div>
+        <div id="ctrlBinds"></div>
+        <p class="set-quiet" id="ctrlListen">Click a key, then press a new one. Esc cancels.</p>
+        <div class="actions" style="margin-top:8px"><button class="btn ghost" id="btnCtrlReset" type="button">Reset to default</button></div>
         <div class="set-row"><span>Show FPS</span><button class="tog" id="togFps" type="button" aria-pressed="false">Off</button></div>
         <div class="set-row dim"><span>Language</span><span class="set-val" id="langVal">English</span></div>
         <div class="set-row" id="resetRow"><span>Progress</span><button class="tog" id="btnReset" type="button">Reset</button></div>
@@ -521,9 +554,10 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
       <h2>How to play</h2>
       <div class="how">
         <div><i>🏁</i><span>Thirty marbles race down four tracks. Only the first 22 across stage 1 go through, then 15, then 8. First home in the final wins.</span></div>
-        <div><i>↔️</i><span>Steer with <kbd>A</kbd> <kbd>D</kbd>, <kbd>Q</kbd> (for AZERTY), or the arrow keys. On a phone, drag anywhere. With a mouse, drag to steer and click to jump.</span></div>
-        <div><i>🦘</i><span>Jump with <kbd>Space</kbd>, <kbd>W</kbd>, a click, or a quick flick up. Jump right at the lip of a ramp to clear the gap.</span></div>
-        <div><i>💨</i><span>Dash with <kbd>Shift</kbd> for a burst of speed. It recharges after a few seconds.</span></div>
+        <div><i>↔️</i><span id="howSteer">Steer with the arrow keys or A and D. On a phone, drag anywhere. With a mouse, drag to steer and click to jump.</span></div>
+        <div><i>⚡</i><span id="howAccel">Hold Up or W to go faster. Down or S brakes for a tight corner. On a phone, hold Go or drag upward and keep holding. Brake slows you. Hold the right mouse button to accelerate.</span></div>
+        <div><i>🦘</i><span id="howJump">Jump with Space, a click, or a quick flick up. Jump at the lip of a ramp to clear the gap.</span></div>
+        <div><i>💨</i><span id="howDash">Dash with Shift for a charged burst. It comes back after a few seconds. Accelerate is the steady push.</span></div>
         <div><i>🔀</i><span>Some roads split into lanes. Boost lanes are fast but have a spinner. Honey lanes are safe but sticky. Bumper lanes are chaos.</span></div>
         <div><i>🟣</i><span>Purple pads launch you into the air. Pink bumpers knock you away, and blue blocks slide across the road.</span></div>
         <div><i>🪙</i><span>Grab coins on the track, often in risky spots or up in the air. Spend them on new marbles.</span></div>
@@ -682,7 +716,7 @@ function loadScript(src, timeout = 4000){
    CrazyGames SDK wrapper (no-ops gracefully off-platform)
    ========================================================= */
 const memStore = {};
-const SAVE_KEYS = ['rollout_stats','rollout_coins','rollout_owned','rollout_skin','rollout_name','rollout_prog','rollout_world','rollout_muted','rollout_music','rollout_coach','rollout_quality','rollout_reward_at','rollout_audio','rollout_opts','rollout_avatar'];
+const SAVE_KEYS = ['rollout_stats','rollout_coins','rollout_owned','rollout_skin','rollout_name','rollout_prog','rollout_world','rollout_muted','rollout_music','rollout_coach','rollout_quality','rollout_reward_at','rollout_audio','rollout_opts','rollout_avatar','rollout_controls'];
 const CG = {
   sdk: null, ready: false, playing: false, adsBlocked: false, adLock: false,
   async init(){
@@ -1987,7 +2021,7 @@ function createMarbles(humans = [], list = null){
       skill: skill0, skill0, persona: Math.random(), lane: (Math.random() * 2 - 1), fx: 0, overGap: false, didJump: false, didDash: false,
       s: 0, d: 0, y: 0, vs: 0, vd: 0, vy: 0, grounded: true, falling: false, ghost: 0,
       done: false, out: false, finIdx: 0, place: 0, dashT: 0, jumpBuf: 0, airLeft: 0, glow: 0, onPad: false,
-      input: { steer: 0, dash: false }, jumpRoll: false, willJump: false, buf: [],
+      input: { steer: 0, dash: false, accel: false, brake: false }, jumpRoll: false, willJump: false, buf: [],
     };
   });
 }
@@ -2064,7 +2098,7 @@ function setupStage(i, grid){
     m.s = s; m.d = d; tr.get(s, SA); m.y = SA.y;
     m.vs = 0; m.vd = 0; m.vy = 0; m.grounded = true; m.falling = false; m.ghost = 0; m.out = false;
     m.done = false; m.dashT = 0; m.jumpBuf = 0; m.glow = 0; m.airLeft = m.stats.airJumps; m.onPad = false;
-    m.input.steer = 0; m.input.dash = false; m.jumpRoll = false; m.forkId = -1; m.buf = [];
+    m.input.steer = 0; m.input.dash = false; m.input.accel = false; m.input.brake = false; m.jumpRoll = false; m.forkId = -1; m.buf = [];
     m.lane = Math.random() * 2 - 1;
     m.mesh.visible = true;
   }
@@ -2176,7 +2210,7 @@ function beginStage(){
   if (G.player && G.racers.includes(G.player)) CG.gameplayStart();
   syncCrazyRoom();
   if (G.stage === 0 && G.player && G.racers.includes(G.player) && !G.coaching){
-    later(.4, () => toast(document.body.classList.contains('touch') ? 'Drag to steer. Flick up to jump. Dash button bursts.' : 'A and D steer. Space jumps. Shift dashes.'));
+    later(.4, () => toast(stageHint()));
   }
 }
 
@@ -2328,8 +2362,11 @@ function stepMarble(m, dt){
     else if (m.airLeft > 0 && m.vy < 3){ m.vy = 6.6 * st.jump; m.airLeft--; m.jumpBuf = 0; if (m.isPlayer){ Sfx.play('jump'); m.didJump = true; coachAdvance(); } }
   }
 
+  const boosting = active && !!m.input.accel && !m.input.brake;
+  const braking = active && !!m.input.brake;
   const steer = active ? m.input.steer : 0;
-  const ad = steer * 24 * st.steer;
+  const ad = steer * 24 * st.steer * (boosting ? .72 : 1);
+  const curveK = boosting ? 1.28 : 1;
   let onPad = false, iceK = 1;
   if (m.grounded){
     const slope = Math.max(SA.slope, -0.12);
@@ -2346,6 +2383,9 @@ function stepMarble(m, dt){
           if (ds > .5 && ds < 3 && Math.abs(o.d - m.d) < .75){ a += 3 * st.draft; break; }
         }
       }
+      // Accelerate fades out by speed 24 so boost pads still matter. Brake is a strong shove down toward a crawl.
+      if (boosting) a += 4.8 * Math.min(1, Math.max(0, 24 - m.vs) / 8);
+      if (braking && m.vs > 2.2) a -= 11;
     }
     if (!m.human && G.mode === 'solo' && G.player && active && !m.done){
       const gap = m.s - G.player.s;
@@ -2353,16 +2393,19 @@ function stepMarble(m, dt){
       else if (gap < -16) a += .9;
     }
     m.vs += a * dt;
-    m.vd += (ad * iceK + SA.curv * m.vs * m.vs * .55 * st.curve * tr.curveK) * dt;
+    m.vd += (ad * iceK + SA.curv * m.vs * m.vs * .55 * st.curve * tr.curveK * curveK) * dt;
     m.vd *= Math.exp(-(iceK < 1 ? .6 : 3.2) * dt);
   } else {
     m.vd += ad * .3 * dt;
     m.vy -= GRAV * dt;
     m.vs -= st.drag * .6 * m.vs * Math.abs(m.vs) * dt;
+    if (boosting) m.vs += 2.2 * dt;
+    if (braking) m.vs -= 4 * dt;
   }
   if (onPad && !m.onPad && m.isPlayer) Sfx.play('boost');
   m.onPad = onPad;
   if (m.done) m.vs = Math.max(0, m.vs);
+  else if (braking && m.grounded && m.vs < 2.2) m.vs += (2.2 - m.vs) * Math.min(1, 8 * dt);
   else if (m.grounded && m.vs < .8) m.vs += (.8 - m.vs) * Math.min(1, 4 * dt);
 
   const prevSlope = SA.slope, prevY = SA.y, prevD = m.d;
@@ -2629,7 +2672,7 @@ function netMsg(e){
 }
 
 const Net = {
-  role: null, peer: null, code: '', slot: 0, roster: [], conns: new Map(), host: null, lastS: 0, lastT: 0,
+  role: null, peer: null, code: '', slot: 0, roster: [], conns: new Map(), host: null, lastS: 0, lastA: 0, lastB: 0, lastT: 0,
   live: false, reconnecting: false, signalGen: 0,
   async lib(){
     if (window.Peer) return true;
@@ -2728,6 +2771,8 @@ const Net = {
     const m = G.marbles[info.slot];
     if (msg.t === 'in' && m && m.remote && m.human){
       m.input.steer = clamp(+msg.s || 0, -1, 1);
+      if ('a' in msg) m.input.accel = !!msg.a;
+      if ('b' in msg) m.input.brake = !!msg.b;
       if (msg.j) m.jumpBuf = .15;
       if (msg.d) m.input.dash = true;
     } else if (msg.t === 'perk' && m && G.state === 'perk' && G.pending.has(info.slot)){
@@ -2742,7 +2787,7 @@ const Net = {
     this.pushRoster();
     if (G.mode === 'host'){
       const m = G.marbles[info.slot];
-      if (m && m.human){ m.human = false; m.remote = false; }   // a bot takes the marble over
+      if (m && m.human){ m.human = false; m.remote = false; m.input.accel = false; m.input.brake = false; }   // a bot takes the marble over
       if (G.pending.delete(info.slot)) closePerkCheck();
     }
     toast(`${info.name} left the room`);
@@ -2867,15 +2912,261 @@ function hostGone(){
 function leaveRoom(){ Net.leave(); toMenu(); }
 
 /* =========================================================
-   Input
+   Controls and input
    ========================================================= */
-const Input = { keys: new Set(), touchSteer: 0, pid: null, sx: 0, sy: 0, st: 0, flicked: false };
-Input.steer = () => { let s = 0; if (Input.keys.has('L')) s -= 1; if (Input.keys.has('R')) s += 1; return s || Input.touchSteer; };
+const CTRL_ACTIONS = [
+  { id: 'left', name: 'Steer left' },
+  { id: 'right', name: 'Steer right' },
+  { id: 'accel', name: 'Accelerate' },
+  { id: 'brake', name: 'Brake' },
+  { id: 'jump', name: 'Jump' },
+  { id: 'dash', name: 'Dash' },
+  { id: 'pause', name: 'Pause' },
+];
+const ARROW_LABEL = { ArrowLeft: '←', ArrowUp: '↑', ArrowRight: '→', ArrowDown: '↓' };
+function presetLabel(code){
+  if (ARROW_LABEL[code]) return ARROW_LABEL[code];
+  if (code === 'Space') return 'Space';
+  if (code === 'Escape') return 'Esc';
+  if (code.startsWith('Shift')) return 'Shift';
+  if (/^Key[A-Z]$/.test(code)) return code.slice(3);
+  if (/^Digit\d$/.test(code)) return code.slice(5);
+  return code.replace(/^Key/, '');
+}
+function keyLabel(slot){
+  if (!slot) return '';
+  if (ARROW_LABEL[slot.code]) return ARROW_LABEL[slot.code];
+  if (slot.code === 'Space') return 'Space';
+  if (slot.code === 'Escape') return 'Esc';
+  if (slot.code.startsWith('Shift')) return 'Shift';
+  if (slot.label && slot.label.length === 1) return slot.label.toUpperCase();
+  if (slot.label) return slot.label;
+  return presetLabel(slot.code);
+}
+function labelFromEvent(e){
+  const code = e.code || '';
+  if (ARROW_LABEL[code]) return ARROW_LABEL[code];
+  if (code === 'Space') return 'Space';
+  if (code === 'Escape') return 'Esc';
+  if (code.startsWith('Shift')) return 'Shift';
+  const k = e.key || '';
+  if (k.length === 1) return k.toUpperCase();
+  if (k && k !== 'Unidentified' && k.length <= 12) return k;
+  return presetLabel(code);
+}
+function cloneBinds(src){
+  const o = {};
+  for (const a of CTRL_ACTIONS) o[a.id] = (src[a.id] || []).slice(0, 2).map(s => s ? { code: s.code, label: s.label } : null);
+  return o;
+}
+const CTRL_PRESETS = {
+  arrows: {
+    left: [{ code: 'ArrowLeft', label: '←' }, { code: 'KeyA', label: 'A' }],
+    right: [{ code: 'ArrowRight', label: '→' }, { code: 'KeyD', label: 'D' }],
+    accel: [{ code: 'ArrowUp', label: '↑' }, { code: 'KeyW', label: 'W' }],
+    brake: [{ code: 'ArrowDown', label: '↓' }, { code: 'KeyS', label: 'S' }],
+    jump: [{ code: 'Space', label: 'Space' }],
+    dash: [{ code: 'ShiftLeft', label: 'Shift' }],
+    pause: [{ code: 'KeyP', label: 'P' }, { code: 'Escape', label: 'Esc' }],
+  },
+  wasd: {
+    left: [{ code: 'KeyA', label: 'A' }, { code: 'ArrowLeft', label: '←' }],
+    right: [{ code: 'KeyD', label: 'D' }, { code: 'ArrowRight', label: '→' }],
+    accel: [{ code: 'KeyW', label: 'W' }, { code: 'ArrowUp', label: '↑' }],
+    brake: [{ code: 'KeyS', label: 'S' }, { code: 'ArrowDown', label: '↓' }],
+    jump: [{ code: 'Space', label: 'Space' }],
+    dash: [{ code: 'ShiftLeft', label: 'Shift' }],
+    pause: [{ code: 'KeyP', label: 'P' }, { code: 'Escape', label: 'Esc' }],
+  },
+};
+const actionName = id => (CTRL_ACTIONS.find(a => a.id === id) || {}).name || 'That action';
+const Controls = {
+  layout: 'arrows',
+  binds: cloneBinds(CTRL_PRESETS.arrows),
+  listen: null,
+  sameKey(a, b){
+    if (!a || !b) return false;
+    if (a === b) return true;
+    return a.startsWith('Shift') && b.startsWith('Shift');
+  },
+  norm(list){
+    const a = (list || []).slice(0, 2).map(s => !s ? '' : (String(s.code).startsWith('Shift') ? 'Shift' : s.code));
+    while (a.length && !a[a.length - 1]) a.pop();
+    return a.join('|');
+  },
+  matchesPreset(){
+    const mine = CTRL_ACTIONS.map(a => this.norm(this.binds[a.id])).join(';');
+    if (mine === CTRL_ACTIONS.map(a => this.norm(CTRL_PRESETS.arrows[a.id])).join(';')) return 'arrows';
+    if (mine === CTRL_ACTIONS.map(a => this.norm(CTRL_PRESETS.wasd[a.id])).join(';')) return 'wasd';
+    return 'custom';
+  },
+  find(code){
+    for (const a of CTRL_ACTIONS){
+      const slots = this.binds[a.id] || [];
+      for (let i = 0; i < slots.length; i++){
+        if (slots[i] && this.sameKey(slots[i].code, code)) return { action: a.id, slot: i };
+      }
+    }
+    return null;
+  },
+  isDown(action){
+    for (const s of this.binds[action] || []){
+      if (!s) continue;
+      if (s.code.startsWith('Shift')){ if (Input.codes.has('ShiftLeft') || Input.codes.has('ShiftRight')) return true; }
+      else if (Input.codes.has(s.code)) return true;
+    }
+    return false;
+  },
+  slots(action){ return (this.binds[action] || []).filter(Boolean); },
+  primary(action){ const s = this.slots(action)[0]; return s ? keyLabel(s) : ''; },
+  labels(action){ return this.slots(action).map(keyLabel); },
+  applyPreset(name){
+    const src = CTRL_PRESETS[name]; if (!src) return;
+    this.layout = name; this.binds = cloneBinds(src); this.listen = null;
+    this.save(); this.render(); renderHints(); renderHow();
+    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Esc cancels.';
+  },
+  assign(action, slot, bind){
+    const slots = this.binds[action];
+    while (slots.length < 2) slots.push(null);
+    const prev = slots[slot] || null;
+    const hit = this.find(bind.code);
+    if (hit && hit.action === action && hit.slot === slot) slots[slot] = bind;
+    else if (hit && hit.action === action){ slots[hit.slot] = null; slots[slot] = bind; }
+    else if (hit){
+      const other = this.binds[hit.action];
+      while (other.length < 2) other.push(null);
+      if (prev && !this.sameKey(prev.code, bind.code)){
+        other[hit.slot] = prev;
+        toast('Swapped with ' + actionName(hit.action));
+      } else {
+        other[hit.slot] = null;
+        toast(other.some(Boolean) ? ('Moved off ' + actionName(hit.action)) : (actionName(hit.action) + ' has no key'));
+      }
+      slots[slot] = bind;
+    } else slots[slot] = bind;
+    this.layout = this.matchesPreset();
+    this.listen = null;
+    this.save(); this.render(); renderHints(); renderHow();
+    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Esc cancels.';
+  },
+  arm(action, slot){
+    this.listen = { action, slot };
+    const note = $('ctrlListen');
+    if (note) note.textContent = 'Press a key for ' + actionName(action) + '. Esc cancels.';
+    this.render();
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  },
+  cancel(){
+    this.listen = null;
+    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Esc cancels.';
+    this.render();
+  },
+  onCapture(e){
+    if (!this.listen) return false;
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.repeat) return true;
+    if (e.code === 'Escape'){ this.cancel(); return true; }
+    if (!e.code || !/^[A-Za-z0-9]+$/.test(e.code)) return true;
+    if (e.code.startsWith('Meta') || e.code.startsWith('OS')) return true;
+    this.assign(this.listen.action, this.listen.slot, { code: e.code, label: labelFromEvent(e) });
+    return true;
+  },
+  save(){
+    const binds = {};
+    for (const a of CTRL_ACTIONS) binds[a.id] = (this.binds[a.id] || []).slice(0, 2).map(s => s ? { code: s.code, label: s.label } : null);
+    CG.save('rollout_controls', JSON.stringify({ layout: this.layout, binds }));
+  },
+  load(raw){
+    try {
+      const o = JSON.parse(raw);
+      if (!o || typeof o.binds !== 'object' || !o.binds) return;
+      const binds = {};
+      for (const a of CTRL_ACTIONS){
+        binds[a.id] = [];
+        const arr = Array.isArray(o.binds[a.id]) ? o.binds[a.id] : [];
+        for (const s of arr.slice(0, 2)){
+          if (s == null){ binds[a.id].push(null); continue; }
+          if (typeof s.code !== 'string' || !/^[A-Za-z0-9]+$/.test(s.code)){ binds[a.id].push(null); continue; }
+          let label = typeof s.label === 'string' ? s.label.replace(/[\u0000-\u001f]/g, '').slice(0, 16) : '';
+          binds[a.id].push({ code: s.code, label: label || presetLabel(s.code) });
+        }
+      }
+      if (!CTRL_ACTIONS.some(a => binds[a.id].some(Boolean))) return;
+      this.binds = binds;
+      this.layout = o.layout === 'arrows' || o.layout === 'wasd' || o.layout === 'custom' ? o.layout : this.matchesPreset();
+    } catch (e) {}
+  },
+  render(){
+    const root = $('ctrlBinds'); if (!root) return;
+    document.querySelectorAll('#ctrlSeg button').forEach(b => b.classList.toggle('on', b.dataset.layout === this.layout));
+    root.innerHTML = CTRL_ACTIONS.map(a => {
+      const slots = this.binds[a.id] || [];
+      const keys = [0, 1].map(i => {
+        const s = slots[i];
+        const listening = this.listen && this.listen.action === a.id && this.listen.slot === i;
+        const cls = 'bind-key' + (s ? '' : ' empty') + (listening ? ' listen' : '');
+        const txt = listening ? '…' : (s ? esc(keyLabel(s)) : '—');
+        return `<button type="button" class="${cls}" data-act="${a.id}" data-slot="${i}" aria-label="${esc(a.name)} key ${i + 1}">${txt}</button>`;
+      }).join('');
+      return `<div class="set-row"><span>${esc(a.name)}</span><span class="bind-keys">${keys}</span></div>`;
+    }).join('');
+  },
+};
+function kbd(t){ return `<kbd>${esc(t)}</kbd>`; }
+function renderHints(){
+  const chip = $('hintChip'); if (!chip) return;
+  const pair = (a, b) => [Controls.primary(a), Controls.primary(b)].filter(Boolean).map(kbd).join('');
+  const one = a => { const t = Controls.primary(a); return t ? kbd(t) : ''; };
+  chip.innerHTML =
+    `<span>${pair('left', 'right')} steer</span>` +
+    `<span>${one('accel')} faster</span>` +
+    `<span>${one('brake')} brake</span>` +
+    `<span>${one('jump')} jump</span>` +
+    `<span>${one('dash')} dash</span>`;
+  const small = $('btnDash') && $('btnDash').querySelector('small');
+  if (small) small.textContent = Controls.primary('dash') || 'Dash';
+}
+function renderHow(){
+  const L = Controls.primary('left') || '←', R = Controls.primary('right') || '→';
+  const A = Controls.primary('accel') || '↑', B = Controls.primary('brake') || '↓';
+  const J = Controls.primary('jump') || 'Space', D = Controls.primary('dash') || 'Shift';
+  const steer = $('howSteer'), acc = $('howAccel'), jump = $('howJump'), dash = $('howDash');
+  if (steer) steer.innerHTML = `Steer with ${kbd(L)} and ${kbd(R)}. On a phone, drag anywhere. With a mouse, drag to steer and click to jump.`;
+  if (acc) acc.innerHTML = `Hold ${kbd(A)} to go faster. ${kbd(B)} brakes for a tight corner. On a phone, hold Go or drag upward and keep holding. Brake slows you. Hold the right mouse button to accelerate.`;
+  if (jump) jump.innerHTML = `Jump with ${kbd(J)}, a click, or a quick flick up. Jump at the lip of a ramp to clear the gap.`;
+  if (dash) dash.innerHTML = `Dash with ${kbd(D)} for a charged burst. It comes back after a few seconds. Accelerate is the steady push.`;
+}
+function stageHint(){
+  if (document.body.classList.contains('touch')) return 'Drag to steer. Hold Go to speed up. Brake slows you. Flick up to jump.';
+  const L = Controls.primary('left'), R = Controls.primary('right'), A = Controls.primary('accel'), J = Controls.primary('jump'), D = Controls.primary('dash');
+  return `${L} and ${R} steer. ${A} speeds up. ${J} jumps. ${D} dashes.`;
+}
+function boundTo(code, action){
+  return (Controls.binds[action] || []).some(s => s && Controls.sameKey(s.code, code));
+}
+function inputPacket(extra){
+  return Object.assign({ t: 'in', s: Input.steer(), a: Input.accel() ? 1 : 0, b: Input.brake() ? 1 : 0 }, extra || {});
+}
+
+const Input = {
+  codes: new Set(), touchSteer: 0, pid: null, sx: 0, sy: 0, st: 0, flicked: false,
+  mouseAccel: false, touchAccel: false, btnAccel: false, btnBrake: false,
+};
+Input.steer = () => {
+  let s = 0;
+  if (Controls.isDown('left')) s -= 1;
+  if (Controls.isDown('right')) s += 1;
+  return s || Input.touchSteer;
+};
+Input.accel = () => Controls.isDown('accel') || Input.mouseAccel || Input.touchAccel || Input.btnAccel;
+Input.brake = () => Controls.isDown('brake') || Input.btnBrake;
 const canControl = () => G.mode !== 'attract' && G.player && !G.player.out && !G.player.done && !G.spectating
   && G.state === 'race' && !G.paused && G.racers.includes(G.player);
 function doJump(){
   if (!canControl()) return;
-  if (G.mode === 'client'){ Net.send({ t: 'in', s: Input.steer(), j: 1 }); Sfx.play('jump'); }
+  if (G.mode === 'client'){ Net.send(inputPacket({ j: 1 })); Sfx.play('jump'); }
   else G.player.jumpBuf = .15;
 }
 function doDash(){
@@ -2883,23 +3174,24 @@ function doDash(){
   const p = G.player;
   if (G.mode === 'client'){
     if (p.dashT > 0) return;
-    p.dashT = p.stats.dashCd; Net.send({ t: 'in', s: Input.steer(), d: 1 }); Sfx.play('dash');
+    p.dashT = p.stats.dashCd; Net.send(inputPacket({ d: 1 })); Sfx.play('dash');
   } else p.input.dash = true;
 }
 
-const KEYMAP = { KeyA: 'L', KeyQ: 'L', ArrowLeft: 'L', KeyD: 'R', ArrowRight: 'R' };
 addEventListener('keydown', e => {
-  if (e.target && e.target.tagName === 'INPUT') return;
+  if (Controls.listen){ Controls.onCapture(e); return; }
+  const tag = e.target && e.target.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
   if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
   Sfx.ensure();
-  if (KEYMAP[e.code]) Input.keys.add(KEYMAP[e.code]);
+  if (e.code) Input.codes.add(e.code);
   if (e.repeat) return;
-  if (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp') doJump();
-  if (e.code === 'ShiftLeft' || e.code === 'ShiftRight' || e.code === 'KeyE') doDash();
-  if (e.code === 'Escape' || e.code === 'KeyP') togglePause();
+  if (boundTo(e.code, 'jump')) doJump();
+  if (boundTo(e.code, 'dash')) doDash();
+  if (boundTo(e.code, 'pause')) togglePause();
 }, { passive: false });
-addEventListener('keyup', e => { if (KEYMAP[e.code]) Input.keys.delete(KEYMAP[e.code]); });
-addEventListener('blur', () => Input.keys.clear());
+addEventListener('keyup', e => { if (e.code) Input.codes.delete(e.code); });
+addEventListener('blur', () => { Input.codes.clear(); Input.mouseAccel = false; Input.touchAccel = false; Input.btnAccel = false; Input.btnBrake = false; });
 addEventListener('contextmenu', e => e.preventDefault());
 addEventListener('wheel', e => {
   const sc = e.target && e.target.closest && e.target.closest('.screen, .skin-grid, .panel');
@@ -2912,8 +3204,10 @@ const cv = renderer.domElement;
 cv.addEventListener('pointerdown', e => {
   Sfx.ensure();
   if (e.pointerType !== 'mouse') document.body.classList.add('touch');
+  if (e.pointerType === 'mouse' && e.button === 2){ Input.mouseAccel = true; e.preventDefault(); return; }
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
   if (Input.pid !== null) return;
-  Input.pid = e.pointerId; Input.sx = e.clientX; Input.sy = e.clientY; Input.st = performance.now(); Input.flicked = false;
+  Input.pid = e.pointerId; Input.sx = e.clientX; Input.sy = e.clientY; Input.st = performance.now(); Input.flicked = false; Input.touchAccel = false;
   try { cv.setPointerCapture(e.pointerId); } catch (_) {}
 });
 cv.addEventListener('pointermove', e => {
@@ -2921,21 +3215,49 @@ cv.addEventListener('pointermove', e => {
   const dx = e.clientX - Input.sx, sens = Opts.sens || 1, reach = 55 / sens, limit = 70 / sens;
   if (dx > limit) Input.sx = e.clientX - limit; if (dx < -limit) Input.sx = e.clientX + limit;
   Input.touchSteer = clamp((e.clientX - Input.sx) / reach, -1, 1);
-  if (!Input.flicked && Input.sy - e.clientY > 45 && performance.now() - Input.st < 320){ Input.flicked = true; doJump(); }
+  const dy = Input.sy - e.clientY, held = performance.now() - Input.st;
+  if (!Input.flicked && dy > 45 && held < 320){ Input.flicked = true; doJump(); }
+  if (e.pointerType !== 'mouse' && dy > 50 && held > 280) Input.touchAccel = true;
+  else if (e.pointerType !== 'mouse' && dy < 24) Input.touchAccel = false;
 });
 const endPtr = e => {
+  if (e.button === 2){ Input.mouseAccel = false; if (e.pointerId !== Input.pid) return; }
   if (e.pointerId !== Input.pid) return;
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
   const moved = Math.hypot(e.clientX - Input.sx, e.clientY - Input.sy);
   const quick = performance.now() - Input.st < 280;
-  Input.pid = null; Input.touchSteer = 0;
+  Input.pid = null; Input.touchSteer = 0; Input.touchAccel = false;
   if (e.pointerType === 'mouse' && moved < 10 && quick) doJump();
 };
 cv.addEventListener('pointerup', endPtr); cv.addEventListener('pointercancel', endPtr);
+addEventListener('pointerup', e => { if (e.button === 2) Input.mouseAccel = false; });
 if (matchMedia('(pointer: coarse), (hover: none)').matches) document.body.classList.add('touch');
 
 const press = (el, fn) => el.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); Sfx.ensure(); fn(); });
 press($('btnJump'), doJump);
 press($('btnDash'), doDash);
+const holdBtn = (el, set) => {
+  if (!el) return;
+  const down = e => { e.preventDefault(); e.stopPropagation(); Sfx.ensure(); set(true); try { el.setPointerCapture(e.pointerId); } catch (_) {} };
+  const up = e => { if (e.pointerId != null && el.hasPointerCapture && el.hasPointerCapture(e.pointerId)){ /* keep until up */ } set(false); };
+  el.addEventListener('pointerdown', down);
+  el.addEventListener('pointerup', up);
+  el.addEventListener('pointercancel', up);
+};
+holdBtn($('btnGo'), v => { Input.btnAccel = v; });
+holdBtn($('btnBrake'), v => { Input.btnBrake = v; });
+$('ctrlSeg').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || !b.dataset.layout) return;
+  Sfx.ensure(); Sfx.play('click');
+  if (b.dataset.layout === 'custom'){ toast('Click a key below, then press a new one.'); return; }
+  Controls.applyPreset(b.dataset.layout);
+});
+$('ctrlBinds').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || !b.dataset.act) return;
+  Sfx.ensure();
+  Controls.arm(b.dataset.act, +b.dataset.slot || 0);
+});
+$('btnCtrlReset').addEventListener('click', () => { Sfx.ensure(); Sfx.play('click'); Controls.applyPreset('arrows'); toast('Controls reset'); });
 
 /* =========================================================
    UI
@@ -3366,7 +3688,7 @@ function langLabel(){
   return names[code] || 'English';
 }
 function openSettings(){
-  paintAudio(); Opts.apply();
+  paintAudio(); Opts.apply(); Controls.render();
   document.querySelectorAll('#qSeg button').forEach(b => b.classList.toggle('on', b.dataset.q === Quality.tier));
   const lang = $('langVal'); if (lang) lang.textContent = langLabel();
   $('resetAsk').hidden = true; $('resetRow').hidden = false;
@@ -3453,7 +3775,7 @@ $('btnReset').addEventListener('click', () => { $('resetRow').hidden = true; $('
 $('btnResetNo').addEventListener('click', () => { $('resetAsk').hidden = true; $('resetRow').hidden = false; Sfx.play('click'); });
 $('btnResetYes').addEventListener('click', () => { Sfx.play('click'); resetProgress(); $('resetAsk').hidden = true; $('resetRow').hidden = false; });
 $('btnSkinsBack').addEventListener('click', () => { Sfx.play('click'); showScreen('scrMenu'); });
-$('btnHow').addEventListener('click', () => { Sfx.play('click'); showScreen('scrHow'); });
+$('btnHow').addEventListener('click', () => { Sfx.play('click'); renderHow(); showScreen('scrHow'); });
 $('btnHowBack').addEventListener('click', () => { Sfx.play('click'); showScreen('scrMenu'); });
 $('btnFriendsBack').addEventListener('click', () => { Sfx.play('click'); showScreen('scrMenu'); });
 $('btnHost').addEventListener('click', hostRoom);
@@ -3640,8 +3962,15 @@ function update(dt){
   if (['race', 'stageEnd', 'done', 'perk'].includes(G.state)){
     if (G.state === 'race') G.stageT += dt;
     for (const m of G.racers){ if (m.isPlayer || (m.remote && m.human)) continue; botThink(m); }
-    if (canControl()) G.player.input.steer = Input.steer();
-    else if (G.player) G.player.input.steer = 0;
+    if (canControl()){
+      G.player.input.steer = Input.steer();
+      G.player.input.accel = Input.accel();
+      G.player.input.brake = Input.brake();
+    } else if (G.player){
+      G.player.input.steer = 0;
+      G.player.input.accel = false;
+      G.player.input.brake = false;
+    }
     G.acc += dt; let n = 0;
     while (G.acc >= STEP && n < 10){ for (const m of G.racers) stepMarble(m, STEP); collideMarbles(); G.simT += STEP; G.acc -= STEP; n++; }
     if (n >= 10) G.acc = 0;
@@ -3659,9 +3988,14 @@ function clientTick(dt){
   const p = G.player;
   if (p && p.dashT > 0) p.dashT -= dt;
   if (canControl()){
-    const s = Input.steer(), now = performance.now();
-    if (Math.abs(s - Net.lastS) > .05 || now - Net.lastT > 150){ Net.lastS = s; Net.lastT = now; Net.send({ t: 'in', s }); }
+    const s = Input.steer(), a = Input.accel() ? 1 : 0, b = Input.brake() ? 1 : 0, now = performance.now();
+    if (Math.abs(s - Net.lastS) > .05 || a !== Net.lastA || b !== Net.lastB || now - Net.lastT > 150){
+      Net.lastS = s; Net.lastA = a; Net.lastB = b; Net.lastT = now; Net.send({ t: 'in', s, a, b });
+    }
     checkGems(); forkHints();
+  } else if (Net.lastA || Net.lastB || Net.lastS){
+    Net.lastS = 0; Net.lastA = 0; Net.lastB = 0; Net.lastT = performance.now();
+    Net.send({ t: 'in', s: 0, a: 0, b: 0 });
   }
 }
 
@@ -3715,24 +4049,27 @@ function showAdBlock(on, note){
   if (note) $('adNote').textContent = note;
 }
 const COACH_COPY = {
-  steer: ['Steer', 'Hold a direction and pick a line.', ['A', 'D']],
-  jump: ['Jump', 'Tap at a ramp to clear the gap.', ['Space']],
-  dash: ['Dash', 'A short burst. It comes back in a few seconds.', ['Shift']],
   go: ['You are in it', 'Top 22 through this heat. Too slow and you are out.', []],
 };
 function showCoach(step){
   G.coaching = true; G.coachStep = step;
   const touch = document.body.classList.contains('touch');
+  const keys = (...ids) => ids.map(id => Controls.primary(id)).filter(Boolean);
   const copy = touch ? {
     steer: ['Steer', 'Drag anywhere to slide left and right.', []],
-    jump: ['Jump', 'Flick up, or tap Jump.', []],
-    dash: ['Dash', 'Tap Dash when you want a burst.', []],
+    jump: ['Jump', 'Flick up, or tap Jump. Hold Go to speed up.', []],
+    dash: ['Dash', 'Tap Dash when the ring is full. Brake slows you for a tight corner.', []],
     go: COACH_COPY.go,
-  }[step] : COACH_COPY[step];
+  }[step] : {
+    steer: ['Steer', 'Hold a direction and pick a line.', keys('left', 'right')],
+    jump: ['Jump', 'Tap at a ramp to clear the gap. Hold accelerate on the straights.', keys('jump', 'accel')],
+    dash: ['Dash', 'A short burst. It comes back in a few seconds. Brake scrubs speed.', keys('dash', 'brake')],
+    go: COACH_COPY.go,
+  }[step];
   if (!copy) return;
   $('coachTitle').textContent = copy[0];
   $('coachText').textContent = copy[1];
-  $('coachKeys').innerHTML = copy[2].map(k => `<kbd>${k}</kbd>`).join('');
+  $('coachKeys').innerHTML = copy[2].map(k => `<kbd>${esc(k)}</kbd>`).join('');
   $('coach').hidden = false;
 }
 function finishCoach(){
@@ -3817,6 +4154,8 @@ function posterSetup(which){
     Opts.apply();
   });
   load('rollout_avatar', v => { if (AVATARS.some(a => a.id === v)) G.avatar = v; });
+  load('rollout_controls', v => Controls.load(v));
+  renderHints(); renderHow();
   if (!G.name){
     const pool = ['Pebble', 'Zippy', 'Marble', 'Dasher', 'Sunny', 'Bumper', 'Skipper', 'Roly'];
     G.name = pool[(Math.random() * pool.length) | 0] + (10 + ((Math.random() * 89) | 0));
@@ -3835,7 +4174,11 @@ function posterSetup(which){
         return {
           state: G.state, mode: G.mode, stage: G.stage, coach: G.coachStep, coaching: !!G.coaching,
           racers: G.racers.length, coins: G.coins, quality: Quality.tier, paused: !!G.paused,
-          s: p ? +p.s.toFixed(2) : 0, d: p ? +p.d.toFixed(2) : 0, chain: G.run.chain || 0,
+          s: p ? +p.s.toFixed(2) : 0, d: p ? +p.d.toFixed(2) : 0, y: p ? +p.y.toFixed(2) : 0,
+          vs: p ? +p.vs.toFixed(2) : 0, steer: p ? p.input.steer : 0,
+          accel: !!(p && p.input.accel), brake: !!(p && p.input.brake),
+          botVs: +((G.racers.filter(m => !m.isPlayer && !m.done).reduce((a, m) => a + m.vs, 0) / Math.max(1, G.racers.filter(m => !m.isPlayer && !m.done).length)) || 0).toFixed(2),
+          chain: G.run.chain || 0,
           mem: navigator.deviceMemory || 0, sdkMuted: Sfx.sdkMuted,
         };
       },
@@ -3856,6 +4199,8 @@ function posterSetup(which){
         Sfx.apply(); saveAudio();
       },
       mute: (v) => CG.onSettings({ muteAudio: !!v }),
+      held: (code, down) => { if (!code) return Input.codes.size; if (down) Input.codes.add(code); else Input.codes.delete(code); },
+      controls: () => ({ layout: Controls.layout, binds: JSON.parse(JSON.stringify(Controls.binds)) }),
       adDuringRace: () => {
         const prev = { mode: G.mode, state: G.state, ad: G.adPause };
         G.mode = 'host'; G.state = 'race';
