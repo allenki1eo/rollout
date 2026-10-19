@@ -511,7 +511,7 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
           <span class="set-seg"><button type="button" id="btnResetYes">Reset</button><button type="button" id="btnResetNo">Cancel</button></span>
         </div>
       </div>
-      <p class="set-quiet">Saved on this device. Ads play between races.</p>
+      <p class="set-quiet">Saved on this device. Ads play between races. CrazyGames can mute the game from the site, and your volume sliders stay as you set them.</p>
       <div class="actions"><button class="btn ghost" id="btnSettingsBack" type="button">Done</button></div>
     </div>
   </section>
@@ -553,8 +553,8 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
   <section class="screen dim" id="scrFriends">
     <div class="panel">
       <h2>Play with friends</h2>
-      <p>Race up to 7 friends online. Bots fill the rest of the 30 spots.</p>
-      <label class="field"><span>Your name</span><input id="inpName" maxlength="12" autocomplete="off" spellcheck="false"></label>
+      <p>Up to 8 players. Bots fill the rest of the 30 spots, so you can start any time.</p>
+      <label class="field"><span>Your name</span><input id="inpName" maxlength="16" autocomplete="off" spellcheck="false"></label>
       <div class="actions"><button class="btn" id="btnHost">Create a room</button></div>
       <p class="or">Got a code from a friend?</p>
       <div class="joinrow"><input id="inpCode" maxlength="5" placeholder="CODE" autocomplete="off" spellcheck="false" aria-label="Room code"><button class="btn" id="btnJoin">Join</button></div>
@@ -695,6 +695,8 @@ const CG = {
       this.sdk = s; this.ready = true;
       this.migrate();
       this.listenUser();
+      this.listenSettings();
+      this.listenJoin();
     } catch (e) { /* running outside CrazyGames */ }
   },
   call(fn){ if (!this.ready) return; try { fn(this.sdk); } catch (e) {} },
@@ -717,6 +719,7 @@ const CG = {
   },
   requestAd(type, onDone, onReward){
     if (!this.ready || this.adLock){ onDone(false); return; }
+    if (typeof isMP === 'function' && isMP() && ['countdown', 'race', 'stageEnd'].includes(G.state)){ onDone(false); return; }
     this.adLock = true;
     G.adPause = true;
     showAdBlock(true, type === 'rewarded' ? 'Playing your video…' : 'One moment…');
@@ -748,13 +751,94 @@ const CG = {
     if (!this.canReward()){ onFail && onFail(); return; }
     this.requestAd('rewarded', (ok) => { if (!ok && onFail) onFail(); }, onReward);
   },
+  cachedLink: '', cachedCode: '', inviteShown: false, roomLive: false,
+  roomParams(code){ return { room: String(code) }; },
+  instantMultiplayer(){
+    try { return !!(this.ready && this.sdk.game && this.sdk.game.isInstantMultiplayer); } catch (e) { return false; }
+  },
   inviteLink(code){
-    try { if (this.ready && this.sdk.game.inviteLink) return this.sdk.game.inviteLink({ roomId: code }); } catch (e) {}
-    try { const u = new URL(location.href); u.search = '?room=' + code; u.hash = ''; return u.toString(); } catch (e) { return code; }
+    const room = String(code || '');
+    try {
+      if (this.ready && this.sdk.game && typeof this.sdk.game.inviteLink === 'function'){
+        const link = this.sdk.game.inviteLink(this.roomParams(room));
+        if (typeof link === 'string' && link){ this.cachedLink = link; this.cachedCode = room; return link; }
+      }
+    } catch (e) {}
+    return this.cachedCode === room ? this.cachedLink : '';
+  },
+  publishRoom(code, joinable){
+    if (!this.ready || !this.sdk || !this.sdk.game) return;
+    const game = this.sdk.game, room = String(code), params = this.roomParams(room);
+    this.roomLive = true; this.cachedCode = room;
+    try {
+      if (typeof game.updateRoom === 'function'){
+        const body = { roomId: room, isJoinable: !!joinable };
+        if (joinable) body.inviteParams = params;
+        game.updateRoom(body);
+      }
+    } catch (e) {}
+    try {
+      if (joinable){
+        if (typeof game.inviteLink === 'function'){
+          const link = game.inviteLink(params);
+          if (typeof link === 'string' && link) this.cachedLink = link;
+        }
+        if (typeof game.showInviteButton === 'function'){
+          const link = game.showInviteButton(params);
+          if (typeof link === 'string' && link) this.cachedLink = link;
+          this.inviteShown = true;
+        }
+      } else if (this.inviteShown && typeof game.hideInviteButton === 'function'){
+        game.hideInviteButton();
+        this.inviteShown = false;
+      }
+    } catch (e) {}
+  },
+  clearRoom(){
+    if (!this.ready || !this.sdk || !this.sdk.game || !this.roomLive) return;
+    const game = this.sdk.game;
+    this.roomLive = false; this.inviteShown = false; this.cachedLink = ''; this.cachedCode = '';
+    try { if (typeof game.hideInviteButton === 'function') game.hideInviteButton(); } catch (e) {}
+    try { if (typeof game.leftRoom === 'function') game.leftRoom(); } catch (e) {}
   },
   inviteParam(){
-    try { if (this.ready && this.sdk.game.getInviteParam){ const v = this.sdk.game.getInviteParam('roomId'); if (v) return v; } } catch (e) {}
-    try { return new URLSearchParams(location.search).get('room'); } catch (e) { return null; }
+    try {
+      const game = this.ready && this.sdk && this.sdk.game;
+      if (game){
+        const bag = game.inviteParams;
+        if (bag && (bag.room || bag.roomId)) return bag.room || bag.roomId;
+        if (typeof game.getInviteParam === 'function'){
+          const v = game.getInviteParam('room') || game.getInviteParam('roomId');
+          if (v) return v;
+        }
+      }
+    } catch (e) {}
+    try {
+      const q = new URLSearchParams(location.search);
+      return q.get('room') || q.get('roomId');
+    } catch (e) { return null; }
+  },
+  onSettings(settings){
+    const mute = !!(settings && settings.muteAudio);
+    if (typeof Sfx !== 'undefined' && Sfx.setSdkMute) Sfx.setSdkMute(mute);
+  },
+  listenSettings(){
+    const game = this.sdk && this.sdk.game;
+    if (!game) return;
+    try { this.onSettings(game.settings); } catch (e) {}
+    if (typeof game.addSettingsChangeListener !== 'function' || this.settingsListening) return;
+    this.settingsListening = true;
+    try { game.addSettingsChangeListener(s => this.onSettings(s || game.settings)); } catch (e) {}
+  },
+  onJoinRoom(params){
+    const code = params && (params.room || params.roomId);
+    if (code && typeof enterInvite === 'function') enterInvite(code);
+  },
+  listenJoin(){
+    const game = this.sdk && this.sdk.game;
+    if (!game || typeof game.addJoinRoomListener !== 'function' || this.joinListening) return;
+    this.joinListening = true;
+    try { game.addJoinRoomListener(params => this.onJoinRoom(params)); } catch (e) {}
   },
   cgUser: null,
   safePic(url){
@@ -813,7 +897,7 @@ const CG = {
            └─ music bus
    ========================================================= */
 const Sfx = {
-  ctx: null, master: null, sfx: null, music: null, muted: false, adMuted: false, musicOn: true,
+  ctx: null, master: null, sfx: null, music: null, muted: false, adMuted: false, sdkMuted: false, musicOn: true,
   masterVol: .85, musicVol: 1, sfxVol: 1,
   noiseBuf: null, brownBuf: null, lastClack: 0,
   ensure(){
@@ -835,12 +919,13 @@ const Sfx = {
   apply(){
     if (!this.master) return;
     const t = this.ctx.currentTime;
-    this.master.gain.setTargetAtTime((this.muted || this.adMuted) ? 0 : this.masterVol, t, .03);
+    this.master.gain.setTargetAtTime((this.muted || this.adMuted || this.sdkMuted) ? 0 : this.masterVol, t, .03);
     if (this.sfx) this.sfx.gain.setTargetAtTime(.9 * this.sfxVol, t, .03);
     Music.level();
   },
   setAdMute(v){ this.adMuted = v; this.apply(); },
-  live(){ return this.ctx && !this.muted && !this.adMuted; },
+  setSdkMute(v){ this.sdkMuted = !!v; this.apply(); },
+  live(){ return this.ctx && !this.muted && !this.adMuted && !this.sdkMuted; },
   env(node, t, vol, dur, attack = .004){
     const g = this.ctx.createGain();
     g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + attack); g.gain.exponentialRampToValueAtTime(.0008, t + dur);
@@ -971,7 +1056,7 @@ const Music = {
     if (this.nextT < c.currentTime - .25) this.nextT = c.currentTime + .05;   // after a stall, don't burst-play missed notes
     while (this.nextT < c.currentTime + .12){
       if (this.step % 16 === 0) this.onBar();
-      if (Sfx.musicOn && !Sfx.muted && !Sfx.adMuted) this.play(this.step, this.nextT);
+      if (Sfx.musicOn && !Sfx.muted && !Sfx.adMuted && !Sfx.sdkMuted) this.play(this.step, this.nextT);
       this.nextT += 60 / this.bpm / 4;
       this.step = (this.step + 1) % 128;
     }
@@ -2089,6 +2174,7 @@ function beginStage(){
   showScreen(null); setHud(true);
   G.state = 'countdown'; G.cd = 3.2; G.cdShown = -1;
   if (G.player && G.racers.includes(G.player)) CG.gameplayStart();
+  syncCrazyRoom();
   if (G.stage === 0 && G.player && G.racers.includes(G.player) && !G.coaching){
     later(.4, () => toast(document.body.classList.contains('touch') ? 'Drag to steer. Flick up to jump. Dash button bursts.' : 'A and D steer. Space jumps. Shift dashes.'));
   }
@@ -2115,6 +2201,7 @@ function showThrough(m){
 /* ---------- Upgrade picks between stages ---------- */
 function perkPhase(first){
   G.state = 'perk'; setHud(false); CG.gameplayStop();
+  syncCrazyRoom();
   const me = G.player, alive = !!me && G.alive.includes(me);
   if (G.mode === 'solo'){ showPerks(first, pk => { givePerk(me, pk); botPerks(); beginStage(); }); return; }
   if (G.mode === 'host'){
@@ -2524,21 +2611,26 @@ function botThink(m){
    Online multiplayer (peer-to-peer, host runs the race)
    ========================================================= */
 const PEER_PREFIX = 'rollout-race-', CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', MAX_HUMANS = 8;
+// No custom host: PeerJS uses its public cloud broker at 0.peerjs.com for signalling.
+// ICE is public STUN only. The cloud broker is shared and has no uptime guarantee.
 const PEER_OPTS = { debug: 0, config: { iceServers: [
   { urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478' },
 ] } };
-const cleanName = s => String(s || '').replace(/[^\p{L}\p{N} _.-]/gu, '').trim().slice(0, 12) || 'Racer';
+const cleanName = s => String(s || '').replace(/[^\p{L}\p{N} _.-]/gu, '').trim().slice(0, 16) || 'Racer';
 function netMsg(e){
   switch (e && e.type){
     case 'browser-incompatible': return 'This browser cannot play online. Try Chrome, Edge or Firefox.';
-    case 'network': case 'server-error': case 'socket-error': case 'socket-closed': case 'timeout':
-      return 'Could not reach the game server. Check your connection and try again.';
+    case 'peer-unavailable': return 'No room with that code. Check the letters and try again.';
+    case 'unavailable-id': return 'That room code is already in use. Try again.';
+    case 'network': case 'server-error': case 'socket-error': case 'socket-closed': case 'timeout': case 'disconnected':
+      return 'Could not reach the room server. Check your connection and try again.';
     default: return 'The connection failed. Try again.';
   }
 }
 
 const Net = {
   role: null, peer: null, code: '', slot: 0, roster: [], conns: new Map(), host: null, lastS: 0, lastT: 0,
+  live: false, reconnecting: false, signalGen: 0,
   async lib(){
     if (window.Peer) return true;
     return (await loadScript('vendor/peerjs.min.js', 8000)) && !!window.Peer;
@@ -2553,6 +2645,47 @@ const Net = {
       setTimeout(() => { if (!done){ try { p.destroy(); } catch (_) {} } fin({ err: { type: 'timeout' } }); }, 10000);
     });
   },
+  markLive(){
+    const p = this.peer; if (!p || this.live) return;
+    this.live = true;
+    p.on('disconnected', () => this.onSignalDrop());
+    p.on('open', () => {
+      if (!this.reconnecting) return;
+      this.reconnecting = false; this.signalGen++;
+      toast('Reconnected to the room.');
+    });
+    p.on('error', e => {
+      if (!this.live || this.peer !== p) return;
+      const t = e && e.type;
+      if (t === 'network' || t === 'socket-error' || t === 'socket-closed' || t === 'server-error' || t === 'disconnected') this.onSignalDrop();
+    });
+  },
+  onSignalDrop(){
+    if (!this.live || !this.peer || this.reconnecting) return;
+    this.reconnecting = true;
+    toast('Room server disconnected. Reconnecting…');
+    try { this.peer.reconnect(); } catch (e) {}
+    const gen = ++this.signalGen;
+    setTimeout(() => this.finishReconnect(gen), 8000);
+  },
+  finishReconnect(gen){
+    if (gen !== this.signalGen || !this.reconnecting) return;
+    this.reconnecting = false;
+    const p = this.peer;
+    if (p && p.open){ toast('Reconnected to the room.'); return; }
+    const dataUp = this.role === 'host'
+      ? [...this.conns.values()].some(x => x.c && x.c.open)
+      : !!(this.host && this.host.open);
+    const racing = isMP() && ['countdown', 'race', 'stageEnd', 'perk'].includes(G.state);
+    if (racing && dataUp){
+      toast('The room server is still down. This race can finish, but new players cannot join.');
+      return;
+    }
+    const msg = 'Could not reconnect to the room server. Check your connection and try again.';
+    this.leave();
+    showFriends('');
+    const err = $('netErr'); if (err) err.textContent = msg;
+  },
   async create(){
     if (!await this.lib()) throw new Error('Online play could not load. Check your internet connection.');
     for (let k = 0; k < 4 && !this.peer; k++){
@@ -2564,8 +2697,9 @@ const Net = {
     if (!this.peer) throw new Error('Could not create a room. Try again.');
     this.role = 'host'; this.slot = 0; this.conns.clear();
     this.peer.on('connection', c => this.accept(c));
-    this.peer.on('disconnected', () => { try { this.peer && this.peer.reconnect(); } catch (e) {} });
-    this.roster = [{ slot: 0, name: G.name, skin: G.skin, host: true }];
+    this.markLive();
+    this.roster = [{ slot: 0, name: displayName(), skin: G.skin, host: true }];
+    syncCrazyRoom();
   },
   accept(c){
     c.on('data', msg => this.onHostData(c, msg));
@@ -2627,7 +2761,7 @@ const Net = {
       await new Promise((res, rej) => {
         let done = false; const fin = e => { if (done) return; done = true; e ? rej(e) : res(); };
         c.on('open', () => fin());
-        this.peer.on('error', e => fin(new Error(e.type === 'peer-unavailable' ? 'No room with that code. Check the letters and try again.' : netMsg(e))));
+        this.peer.on('error', e => fin(new Error(netMsg(e))));
         setTimeout(() => fin(new Error('Could not reach that room. Check the code, or try another network.')), 12000);
       });
     } catch (e) { this.leave(); throw e; }
@@ -2635,12 +2769,15 @@ const Net = {
     c.on('data', onClientData);
     c.on('close', hostGone);
     c.on('error', () => {});
-    this.send({ t: 'hello', name: G.name, skin: G.skin });
+    this.markLive();
+    this.send({ t: 'hello', name: displayName(), skin: G.skin });
   },
   leave(){
     if (this.role === 'host') this.broadcast({ t: 'bye' });
     const p = this.peer;
+    this.live = false; this.reconnecting = false; this.signalGen++;
     this.peer = null; this.role = null; this.host = null; this.conns.clear(); this.roster = []; this.code = '';
+    syncCrazyRoom();
     setTimeout(() => { try { p && p.destroy(); } catch (e) {} }, 250);
   },
 };
@@ -2681,7 +2818,7 @@ function interp(m, rt){
 function onClientData(msg){
   if (!msg || typeof msg !== 'object') return;
   switch (msg.t){
-    case 'welcome': Net.slot = msg.slot; Net.code = msg.code; showLobby(); break;
+    case 'welcome': Net.slot = msg.slot; Net.code = msg.code; syncCrazyRoom(); showLobby(); break;
     case 'deny': { const why = msg.why; Net.leave(); showFriends(''); $('netErr').textContent = why; break; }
     case 'roster': Net.roster = Array.isArray(msg.r) ? msg.r : []; renderLobby(); break;
     case 'bye': hostGone(); break;
@@ -2956,8 +3093,27 @@ $('skinWatch').addEventListener('click', () => {
 });
 
 /* ---------- Friends & lobby ---------- */
+let roomTimer = 0;
+function roomCodeOf(raw){ return String(raw || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+function roomJoinable(){
+  if (!Net.role || !Net.code) return false;
+  if (Net.roster.length >= MAX_HUMANS) return false;
+  if (isMP() && G.state !== 'done') return false;
+  return true;
+}
+function syncCrazyRoom(){
+  clearTimeout(roomTimer);
+  if (!Net.role || !Net.code){ CG.clearRoom(); return; }
+  const code = Net.code;
+  const run = () => { if (Net.role && Net.code === code) CG.publishRoom(code, roomJoinable()); };
+  if (!CG.roomLive) run();
+  else roomTimer = setTimeout(run, 280);
+}
 function showFriends(code){
-  $('inpName').value = G.name; $('inpCode').value = code || ''; $('netErr').textContent = '';
+  const linked = !!(CG.cgUser && CG.cgUser.name);
+  $('inpName').value = linked ? CG.cgUser.name : G.name;
+  $('inpName').readOnly = linked;
+  $('inpCode').value = code || ''; $('netErr').textContent = '';
   setNetBusy(false); showScreen('scrFriends');
 }
 function setNetBusy(on, which){
@@ -2993,8 +3149,34 @@ function renderLobby(){
   $('lobbyNote').textContent = host
     ? `${Net.roster.length} of ${MAX_HUMANS} players. World: ${WORLD_BY[playableWorld()].icon} ${WORLD_BY[playableWorld()].name}. Bots fill the other spots, so you can start any time.`
     : 'Waiting for the host to start the race.';
+  syncCrazyRoom();
 }
-function inviteLink(){ return CG.inviteLink(Net.code); }
+async function enterInvite(raw){
+  const code = roomCodeOf(raw);
+  if (code.length !== 5) return;
+  if (Net.code === code && Net.role){ if (!isMP()) showLobby(); return; }
+  if (Net.role) Net.leave();
+  startAttract();
+  $('lobbyCode').textContent = code;
+  $('roster').innerHTML = '';
+  $('btnStartRoom').hidden = true;
+  $('lobbyNote').textContent = 'Joining the room…';
+  showScreen('scrLobby');
+  try { await Net.join(code); }
+  catch (e) { showFriends(code); $('netErr').textContent = e.message || 'Could not join that room.'; }
+}
+async function enterInstant(){
+  if (Net.role === 'host' && Net.code){ showLobby(); return; }
+  if (Net.role) Net.leave();
+  startAttract();
+  $('lobbyCode').textContent = '-----';
+  $('roster').innerHTML = '';
+  $('btnStartRoom').hidden = true;
+  $('lobbyNote').textContent = 'Opening a room for your party…';
+  showScreen('scrLobby');
+  try { await Net.create(); showLobby(); }
+  catch (e) { showFriends(''); $('netErr').textContent = e.message || 'Could not open a room.'; }
+}
 
 /* ---------- Perks, results ---------- */
 function buildChips(el, m){
@@ -3056,6 +3238,7 @@ function showResult(){
   $('btnMenu2').textContent = isMP() ? 'Leave room' : 'Menu';
   showScreen('scrResult');
   G.state = 'done';
+  syncCrazyRoom();
 }
 
 function toMenu(){
@@ -3277,9 +3460,13 @@ $('btnHost').addEventListener('click', hostRoom);
 $('btnJoin').addEventListener('click', joinRoom);
 $('inpCode').addEventListener('keydown', e => { if (e.key === 'Enter') joinRoom(); });
 $('btnCopyCode').addEventListener('click', () => copyText(Net.code));
-$('btnCopyLink').addEventListener('click', () => copyText(inviteLink()));
+$('btnCopyLink').addEventListener('click', () => {
+  const link = CG.inviteLink(Net.code);
+  if (!link || /^https?:\/\/(localhost|127\.0\.0\.1)/i.test(link)){ toast('The CrazyGames invite link is not available yet.'); return; }
+  copyText(link);
+});
 $('btnStartRoom').addEventListener('click', () => { if (Net.role === 'host') startHostGame(); });
-$('btnLeave1').addEventListener('click', () => { Net.leave(); showScreen('scrMenu'); });
+$('btnLeave1').addEventListener('click', () => leaveRoom());
 $('btnAgain1').addEventListener('click', () => { clearBanner(); CG.midgame(startSolo); });
 $('btnAgain2').addEventListener('click', () => {
   clearBanner();
@@ -3641,22 +3828,51 @@ function posterSetup(which){
   requestAnimationFrame(t => { last = t; frame(t); });
   setLoad(1, 'Ready');
   CG.loadingStop();
-  const invite = String(CG.inviteParam() || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (PAGE_QUERY.get('debug') === '1'){
+    window.__rollout = {
+      snap: () => {
+        const p = G.player;
+        return {
+          state: G.state, mode: G.mode, stage: G.stage, coach: G.coachStep, coaching: !!G.coaching,
+          racers: G.racers.length, coins: G.coins, quality: Quality.tier, paused: !!G.paused,
+          s: p ? +p.s.toFixed(2) : 0, d: p ? +p.d.toFixed(2) : 0, chain: G.run.chain || 0,
+          mem: navigator.deviceMemory || 0, sdkMuted: Sfx.sdkMuted,
+        };
+      },
+      room: () => ({
+        role: Net.role, code: Net.code, n: Net.roster.length,
+        names: Net.roster.map(r => r.name + (r.host ? '*' : '')),
+        live: CG.roomLive, invite: CG.inviteShown, joinable: roomJoinable(), link: CG.inviteLink(Net.code),
+        instant: CG.instantMultiplayer(),
+        listeners: { settings: !!CG.settingsListening, join: !!CG.joinListening },
+      }),
+      audio: () => ({
+        sdk: Sfx.sdkMuted, muted: Sfx.muted, vol: Sfx.masterVol, music: Sfx.musicVol, sfx: Sfx.sfxVol,
+        gain: Sfx.master ? Sfx.master.gain.value : null, ctx: Sfx.ctx ? Sfx.ctx.state : 'none', saved: CG.load('rollout_audio'),
+      }),
+      setVol: (o) => {
+        Sfx.ensure();
+        Sfx.masterVol = o.master; Sfx.musicVol = o.music; Sfx.sfxVol = o.sfx; Sfx.muted = false; Sfx.musicOn = true;
+        Sfx.apply(); saveAudio();
+      },
+      mute: (v) => CG.onSettings({ muteAudio: !!v }),
+      adDuringRace: () => {
+        const prev = { mode: G.mode, state: G.state, ad: G.adPause };
+        G.mode = 'host'; G.state = 'race';
+        let called = false;
+        CG.requestAd('midgame', () => { called = true; });
+        const out = { called, adPause: !!G.adPause };
+        G.mode = prev.mode; G.state = prev.state; G.adPause = prev.ad;
+        return out;
+      },
+    };
+  }
+  const invite = roomCodeOf(CG.inviteParam());
   if (poster){ posterSetup(poster); return; }
-  if (invite.length === 5){ startAttract(); showScreen('scrMenu'); showFriends(invite); joinRoom(); return; }
+  if (invite.length === 5){ await enterInvite(invite); return; }
+  if (CG.instantMultiplayer()){ await enterInstant(); return; }
   if (!G.coachDone){ setLoad(.94, 'Lining up the marbles…'); startSolo(); }
   else { startAttract(); showScreen('scrMenu'); }
-  if (PAGE_QUERY.get('debug') === '1'){
-    window.__rollout = { snap: () => {
-      const p = G.player;
-      return {
-        state: G.state, mode: G.mode, stage: G.stage, coach: G.coachStep, coaching: !!G.coaching,
-        racers: G.racers.length, coins: G.coins, quality: Quality.tier, paused: !!G.paused,
-        s: p ? +p.s.toFixed(2) : 0, d: p ? +p.d.toFixed(2) : 0, chain: G.run.chain || 0,
-        mem: navigator.deviceMemory || 0,
-      };
-    } };
-  }
 })();
 })();
 

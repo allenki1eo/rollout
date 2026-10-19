@@ -47,3 +47,15 @@ All three are rendered from the game (Toy Box track, the same title treatment). 
 ## Progress save
 
 In the submission form, turn on progress save and choose the CrazyGames SDK data module. The game will not behave correctly on CrazyGames if that toggle is left off.
+
+## Multiplayer
+
+Tick “The game is an online multiplayer game”.
+
+- Lobby size: Min 2, Max 8
+- The host can start with one player. Bots fill the empty spots.
+- Invite links, the invite button, room status, and instant multiplayer use the CrazyGames SDK.
+
+## Audio
+
+Tick “supports CrazyGames muting audio through SDK”. The game reads `settings.muteAudio` on startup and follows `addSettingsChangeListener`. Platform mute silences music and effects without changing the saved volume sliders.
