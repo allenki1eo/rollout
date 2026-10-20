@@ -111,7 +111,7 @@ body.touch #btnDash{display:none}
 }
 .hint{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);
   display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:15px;font-weight:500;padding:8px 16px;
-  max-width:min(820px, calc(100% - 24px))}
+  max-width:min(560px, calc(100% - 200px))}
 .hint span{display:flex;align-items:center;gap:5px}
 kbd{font-family:inherit;font-size:13px;font-weight:600;min-width:24px;padding:2px 7px;border-radius:7px;background:var(--paper);
   color:var(--ink);box-shadow:0 2px 0 #c9bca6;text-align:center}
@@ -131,7 +131,7 @@ body.touch .hint{display:none}
 
 .toast{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 74px);transform:translate(-50%,10px);z-index:12;
   background:var(--ink);padding:9px 18px;border-radius:99px;font-weight:600;font-size:16px;opacity:0;transition:.25s;pointer-events:none;
-  box-shadow:0 4px 0 var(--ink-deep);white-space:nowrap}
+  box-shadow:0 4px 0 var(--ink-deep);white-space:normal;text-align:center;max-width:min(440px, calc(100% - 24px))}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
 /* ---------- Screens ---------- */
@@ -287,7 +287,6 @@ body[data-poster="portrait"] .poster-sub{font-size:4.2vw}
 body[data-poster="square"] #poster{align-items:flex-end;justify-content:center;text-align:center}
 body[data-poster="square"] .poster-title{font-size:13vw}
 body[data-poster="square"] .poster-sub{font-size:3.4vw;margin-left:auto;margin-right:auto}
-#skinWatch{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:15px;padding:12px 16px;white-space:normal;max-width:100%}
 .qmark{font-family:'Bungee',sans-serif;font-size:13px;letter-spacing:.04em}
 
 @media (max-width:520px){
@@ -317,6 +316,13 @@ body[data-poster="square"] .poster-sub{font-size:3.4vw;margin-left:auto;margin-r
   .hint{display:none}
 }
 @media (max-height:520px){
+  #rankOf{display:none}
+  #rankNum{font-size:28px}
+  .strip{padding:6px 10px 8px}
+  .strip-head{font-size:13px}
+  .chip.coins{padding:8px 10px;font-size:16px}
+  .icon-btn{width:40px;height:40px}
+  .hint{font-size:13px;gap:8px;padding:6px 10px;bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
   .banner{top:24%}
   .panel{padding:18px 22px 22px}
   .perks{margin-top:12px}
@@ -641,7 +647,7 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
           <button type="button" data-layout="custom">Custom</button>
         </span></div>
         <div id="ctrlBinds"></div>
-        <p class="set-quiet" id="ctrlListen">Click a key, then press a new one. Esc cancels.</p>
+        <p class="set-quiet" id="ctrlListen">Click a key, then press a new one. Click it again to cancel.</p>
         <div class="actions" style="margin-top:8px"><button class="btn ghost" id="btnCtrlReset" type="button">Reset to default</button></div>
         <div class="set-row"><span>Show FPS</span><button class="tog" id="togFps" type="button" aria-pressed="false">Off</button></div>
         <div class="set-row dim"><span>Language</span><span class="set-val" id="langVal">English</span></div>
@@ -687,7 +693,6 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
           <strong id="skinName">Sunny</strong>
           <span id="skinNote"></span>
           <button class="btn" id="skinAct">In use</button>
-          <button class="btn ghost" id="skinWatch" type="button" hidden>Watch a video to unlock</button>
         </div>
         <div class="skin-grid" id="skinGrid"></div>
       </div>
@@ -850,7 +855,6 @@ const CG = {
   loadingStart(){ this.call(s => s.game.loadingStart()); },
   loadingStop(){ this.call(s => s.game.loadingStop()); },
   happytime(){ this.call(s => s.game.happytime()); },
-  canReward(){ return this.ready && !this.adsBlocked; },
   migrate(){
     if (!this.ready || !this.sdk.data) return;
     for (const k of SAVE_KEYS){
@@ -891,10 +895,6 @@ const CG = {
   midgame(done){
     if (!this.ready || this.adsBlocked){ done(); return; }
     this.requestAd('midgame', () => done());
-  },
-  rewarded(onReward, onFail){
-    if (!this.canReward()){ onFail && onFail(); return; }
-    this.requestAd('rewarded', (ok) => { if (!ok && onFail) onFail(); }, onReward);
   },
   cachedLink: '', cachedCode: '', inviteShown: false, roomLive: false,
   roomParams(code){ return { room: String(code) }; },
@@ -1379,7 +1379,7 @@ const FX = {
     this.tgeo = new THREE.BufferGeometry();
     this.tgeo.setAttribute('position', new THREE.BufferAttribute(this.tpos, 3));
     this.trail = new THREE.Points(this.tgeo, new THREE.PointsMaterial({
-      color: 0xffd23f, size: .26, transparent: true, opacity: .8, depthWrite: false, sizeAttenuation: true,
+      color: 0xffd23f, size: .34, transparent: true, opacity: .85, depthWrite: false, sizeAttenuation: true,
     }));
     this.trail.frustumCulled = false; scene.add(this.trail);
   },
@@ -1411,6 +1411,10 @@ const FX = {
       const p = m.mesh.position;
       this.hist.push(p.x, p.y, p.z);
       if (this.hist.length > this.TN * 3) this.hist.splice(0, 3);
+      if (m.grounded && (this.dustT = (this.dustT || 0) - dt) <= 0){
+        this.dustT = .09;
+        this.burst(p.x, p.y - .15, p.z, 3, .55, .35);
+      }
     } else if (this.hist.length) this.hist.splice(0, 3);
     for (let i = 0; i < this.TN; i++){
       const src = this.hist.length / 3 - this.TN + i;
@@ -1471,6 +1475,23 @@ const sliderTex = canvasTex(64, 64, (g, w, h) => {
 }, true);
 MAT.slider = new THREE.MeshStandardMaterial({ map: sliderTex, roughness: .4 });
 MAT.coin = std(0xffcf3a, { metalness: .8, roughness: .22 }); MAT.coin.emissive = lin(0x8a5a00); MAT.coin.emissiveIntensity = .5;
+const chevTex = canvasTex(64, 128, (g, w, h) => {
+  g.clearRect(0, 0, w, h);
+  g.fillStyle = '#fff7ea';
+  g.beginPath();
+  g.moveTo(w * .5, 8);
+  g.lineTo(w - 6, 86);
+  g.lineTo(w - 22, 86);
+  g.lineTo(w * .5, 36);
+  g.lineTo(22, 86);
+  g.lineTo(6, 86);
+  g.closePath();
+  g.fill();
+}, true);
+MAT.chev = new THREE.MeshStandardMaterial({
+  map: chevTex, transparent: true, roughness: .4, side: THREE.DoubleSide, depthWrite: false,
+  polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+});
 const BLOCK_COLORS = [0xff6b1a, 0xffd23f, 0x2de2c2, 0xff3d7f, 0x7aa7ff, 0xb6f04a, 0xfff3df].map(c => std(c, { roughness: .6 }));
 
 /* =========================================================
@@ -1899,6 +1920,7 @@ function buildTrackMeshes(tr){
     mesh(stripGeo(a, b, i => edge(tr, i, -hw(i), 0), i => edge(tr, i, hw(i), 0), {
       col: i => { const s = i * DS; if (Math.abs(s - tr.finishS) < .6 || Math.abs(s - tr.startS) < .6) return deckC; return Math.floor(s / 3) % 2 ? deckA : deckB; }
     }), MAT.deck);
+    mesh(stripGeo(a, b, i => edge(tr, i, -.32, .035), i => edge(tr, i, .32, .035), { uv: i => i * DS / 2.4 }), MAT.chev);
     for (const sg of [-1, 1]){
       mesh(stripGeo(a, b, i => edge(tr, i, sg * hw(i), 0), i => edge(tr, i, sg * hw(i), RH)), MAT.rail, true);
       mesh(stripGeo(a, b, i => edge(tr, i, sg * hw(i), RH), i => edge(tr, i, sg * (hw(i) + T), RH)), MAT.rail);
@@ -1999,12 +2021,49 @@ function buildTrackMeshes(tr){
   ground.rotation.x = -Math.PI / 2; ground.position.set((minX + maxX) / 2, groundY, (minZ + maxZ) / 2); grp.add(ground);
 
   buildScenery(grp, mulberry32(tr.n * 7 + tr.stage), (minX + maxX) / 2, (minZ + maxZ) / 2, maxX - minX, maxZ - minZ, groundY);
+  dressRoadside(grp, tr);
+}
+
+// Props just outside the rails, so the chase camera sees a world instead of an empty ribbon.
+function dressRoadside(grp, tr){
+  const step = Quality.tier === 'low' ? 16 : Quality.tier === 'medium' ? 11 : 8;
+  const box = new THREE.BoxGeometry(1, 1, 1);
+  const pole = new THREE.CylinderGeometry(.05, .05, 1, 6);
+  const flag = new THREE.BoxGeometry(.08, .55, .7);
+  const mats = curWorld.scenery === 'toy' ? BLOCK_COLORS : [MAT.peg, MAT.bumper, MAT.rail, MAT.pillar];
+  let n = 0;
+  for (let s = 6; s < tr.finishS - 2; s += step){
+    tr.get(s, SA);
+    if (!SA.floor) continue;
+    const side = n % 2 ? 1 : -1;
+    const d = side * (SA.hw + .95);
+    const x = SA.x - Math.cos(SA.h) * d, z = SA.z + Math.sin(SA.h) * d;
+    const h = 1.1 + (n % 4) * .35;
+    const m = new THREE.Mesh(box, mats[n % mats.length]);
+    m.position.set(x, SA.y + h * .35, z);
+    m.scale.set(.55 + (n % 3) * .12, h, .55);
+    m.rotation.y = SA.h;
+    m.castShadow = Quality.tier === 'high';
+    grp.add(m);
+    if (n % 3 === 0){
+      const px = SA.x - Math.cos(SA.h) * side * (SA.hw + 1.7);
+      const pz = SA.z + Math.sin(SA.h) * side * (SA.hw + 1.7);
+      const p = new THREE.Mesh(pole, MAT.pillar);
+      p.position.set(px, SA.y + .7, pz); grp.add(p);
+      const f = new THREE.Mesh(flag, n % 2 ? MAT.bumper : MAT.coin);
+      f.position.set(px - Math.sin(SA.h) * side * .28, SA.y + 1.15, pz - Math.cos(SA.h) * side * .28);
+      f.rotation.y = SA.h; grp.add(f);
+    }
+    n++;
+  }
 }
 
 /* =========================================================
    Marbles & skins
    ========================================================= */
 const COUNT = 30;
+const blobs = new THREE.InstancedMesh(new THREE.CircleGeometry(.48, 14), new THREE.MeshBasicMaterial({ color: 0x0d1030, transparent: true, opacity: .32, depthWrite: false }), COUNT);
+blobs.frustumCulled = false; blobs.renderOrder = 1; scene.add(blobs);
 const STAGES = [22, 15, 8, 1];
 const PERK_TIME = 15;
 const NAMES = ['Comet','Pebble','Mango','Tide','Ember','Juniper','Biscuit','Nova','Pickle','Zuri','Rocket','Marlo','Kibo','Sable','Fizz','Olive','Bolt','Taji','Pip','Cosmo','Nyota','Ruby','Skye','Clover','Dune','Echo','Honey','Indigo','Jua','Bao'];
@@ -2094,9 +2153,39 @@ function dressSlot(i, skinId){
   return sk ? sk.color : p.color;
 }
 
-// player marker
+// player marker: a ring on the track plus a YOU tag, so the marble stays obvious in the pack
 const marker = new THREE.Mesh(new THREE.ConeGeometry(.22, .45, 16), new THREE.MeshBasicMaterial({ color: lin(0xffd23f), fog: false }));
 marker.rotation.x = Math.PI; marker.visible = false; scene.add(marker);
+const youRing = new THREE.Mesh(new THREE.TorusGeometry(.62, .07, 8, 28), new THREE.MeshBasicMaterial({ color: lin(0xffd23f), fog: false }));
+youRing.rotation.x = Math.PI / 2; youRing.visible = false; scene.add(youRing);
+const youTag = (() => {
+  const tex = canvasTex(256, 72, (g, w, h) => {
+    g.font = '700 40px Fredoka, ui-rounded, sans-serif';
+    g.fillStyle = '#1b1f3b'; g.beginPath();
+    g.moveTo(56, 8); g.lineTo(200, 8); g.arc(200, 36, 28, -Math.PI / 2, Math.PI / 2);
+    g.lineTo(56, 64); g.arc(56, 36, 28, Math.PI / 2, Math.PI * 1.5); g.fill();
+    g.fillStyle = '#ffd23f'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('YOU', w / 2, 38);
+  });
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, fog: false, transparent: true }));
+  sp.scale.set(1.35, .38, 1); sp.visible = false; sp.renderOrder = 6; scene.add(sp); return sp;
+})();
+let rivalSprite = null;
+function setRivalTag(){
+  if (rivalSprite){ scene.remove(rivalSprite); rivalSprite.material.map.dispose(); rivalSprite.material.dispose(); rivalSprite = null; }
+  const r = G.rival;
+  if (!r || G.mode !== 'solo') return;
+  const tex = canvasTex(256, 64, (g, w, h) => {
+    g.font = '600 28px Fredoka, ui-rounded, sans-serif';
+    const label = r.name.slice(0, 12);
+    const tw = Math.min(w - 8, g.measureText(label).width + 36), x0 = (w - tw) / 2;
+    g.fillStyle = 'rgba(27,31,59,.9)'; g.beginPath();
+    g.moveTo(x0 + 22, 10); g.lineTo(x0 + tw - 22, 10); g.arc(x0 + tw - 22, 32, 22, -Math.PI / 2, Math.PI / 2);
+    g.lineTo(x0 + 22, 54); g.arc(x0 + 22, 32, 22, Math.PI / 2, Math.PI * 1.5); g.fill();
+    g.fillStyle = '#ff3d7f'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(label, w / 2, h / 2 + 1);
+  });
+  rivalSprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: true, fog: false, transparent: true }));
+  rivalSprite.scale.set(1.5, .38, 1); rivalSprite.visible = false; rivalSprite.renderOrder = 4; scene.add(rivalSprite);
+}
 
 const baseStats = () => ({ drag: .0115, steer: 1, curve: 1, jump: 1, mass: 1, dashCd: 6, draft: 0, rubber: 0, boost: 1, airJumps: 0 });
 
@@ -2170,7 +2259,7 @@ const G = {
   camTarget: null, acc: 0, timers: [], seed: 1, grid: null, pendingGrid: null, snapT: 0,
   stats: { wins: 0, best: 0, played: 0 }, coins: 0, owned: FREE_SKINS.slice(), skin: 'sunny', name: '', avatar: 'skin',
   run: { gems: 0, earned: 0, awarded: false, chain: 0, chainT: 0, bestChain: 0, score: 0, lastPos: null }, pending: new Set(), perkTok: 0,
-  coachDone: false, coaching: false, coachStep: '', adPause: false, rewardAt: 0, happyChain: false,
+  coachDone: false, coaching: false, coachStep: '', adPause: false, happyChain: false,
   world: 'toy', trackWorld: 'toy', xp: 0, stars: {},
 };
 // Level L starts at xpFor(L): 0, 100, 250, 450, 700, 1000, 1350, ...
@@ -2280,13 +2369,16 @@ function checkPass(){
 }
 function pickRival(){
   G.rival = null;
-  if (G.mode !== 'solo') return;
-  const bots = G.marbles.filter(m => !m.isPlayer);
-  if (!bots.length) return;
-  const r = bots[Math.abs(G.seed | 0) % bots.length];
-  r.rival = true;
-  if (!G.coaching) r.skill0 = Math.min(.96, (r.skill0 ?? .5) + .08);
-  G.rival = r;
+  if (G.mode === 'solo'){
+    const bots = G.marbles.filter(m => !m.isPlayer);
+    if (bots.length){
+      const r = bots[Math.abs(G.seed | 0) % bots.length];
+      r.rival = true;
+      if (!G.coaching) r.skill0 = Math.min(.96, (r.skill0 ?? .5) + .08);
+      G.rival = r;
+    }
+  }
+  setRivalTag();
 }
 function placeOrbs(){
   G.orbs = [];
@@ -2315,7 +2407,7 @@ function placeOrbs(){
 }
 
 function startAttract(){
-  resetRun('attract'); G.player = null;
+  resetRun('attract'); G.player = null; G.rival = null; setRivalTag();
   G.trackWorld = G.world; applyWorld(G.world);
   G.marbles = createMarbles([]);
   G.marbles.forEach(m => { for (let k = 0; k < 2; k++) givePerk(m, randPerk()); });
@@ -2341,7 +2433,7 @@ function startSolo(){
     showCoach('steer');
     return;
   }
-  perkPhase(true);
+  beginStage();
 }
 
 function startHostGame(){
@@ -3140,7 +3232,7 @@ const CTRL_PRESETS = {
     brake: [{ code: 'ArrowDown', label: '↓' }, { code: 'KeyS', label: 'S' }],
     jump: [{ code: 'Space', label: 'Space' }],
     dash: [{ code: 'ShiftLeft', label: 'Shift' }],
-    pause: [{ code: 'KeyP', label: 'P' }, { code: 'Escape', label: 'Esc' }],
+    pause: [{ code: 'KeyP', label: 'P' }],
   },
   wasd: {
     left: [{ code: 'KeyA', label: 'A' }, { code: 'ArrowLeft', label: '←' }],
@@ -3149,7 +3241,7 @@ const CTRL_PRESETS = {
     brake: [{ code: 'KeyS', label: 'S' }, { code: 'ArrowDown', label: '↓' }],
     jump: [{ code: 'Space', label: 'Space' }],
     dash: [{ code: 'ShiftLeft', label: 'Shift' }],
-    pause: [{ code: 'KeyP', label: 'P' }, { code: 'Escape', label: 'Esc' }],
+    pause: [{ code: 'KeyP', label: 'P' }],
   },
 };
 const actionName = id => (CTRL_ACTIONS.find(a => a.id === id) || {}).name || 'That action';
@@ -3197,7 +3289,7 @@ const Controls = {
     const src = CTRL_PRESETS[name]; if (!src) return;
     this.layout = name; this.binds = cloneBinds(src); this.listen = null;
     this.save(); this.render(); renderHints(); renderHow();
-    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Esc cancels.';
+    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Click it again to cancel.';
   },
   assign(action, slot, bind){
     const slots = this.binds[action];
@@ -3221,18 +3313,18 @@ const Controls = {
     this.layout = this.matchesPreset();
     this.listen = null;
     this.save(); this.render(); renderHints(); renderHow();
-    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Esc cancels.';
+    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Click it again to cancel.';
   },
   arm(action, slot){
     this.listen = { action, slot };
     const note = $('ctrlListen');
-    if (note) note.textContent = 'Press a key for ' + actionName(action) + '. Esc cancels.';
+    if (note) note.textContent = 'Press a key for ' + actionName(action) + '. Click it again to cancel.';
     this.render();
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
   },
   cancel(){
     this.listen = null;
-    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Esc cancels.';
+    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Click it again to cancel.';
     this.render();
   },
   onCapture(e){
@@ -3261,7 +3353,7 @@ const Controls = {
         const arr = Array.isArray(o.binds[a.id]) ? o.binds[a.id] : [];
         for (const s of arr.slice(0, 2)){
           if (s == null){ binds[a.id].push(null); continue; }
-          if (typeof s.code !== 'string' || !/^[A-Za-z0-9]+$/.test(s.code)){ binds[a.id].push(null); continue; }
+          if (typeof s.code !== 'string' || !/^[A-Za-z0-9]+$/.test(s.code) || s.code === 'Escape'){ binds[a.id].push(null); continue; }
           let label = typeof s.label === 'string' ? s.label.replace(/[\u0000-\u001f]/g, '').slice(0, 16) : '';
           binds[a.id].push({ code: s.code, label: label || presetLabel(s.code) });
         }
@@ -3312,9 +3404,9 @@ function renderHow(){
   if (dash) dash.innerHTML = `Dash with ${kbd(D)}. On a phone, double-tap Go when it glows. The burst comes back after a few seconds.`;
 }
 function stageHint(){
-  if (document.body.classList.contains('touch')) return 'Drag the wheel to steer. Hold Go. Swipe up to jump.';
+  if (document.body.classList.contains('touch')) return 'The yellow ring is you. Hold Go. Drag that side to steer. Swipe up to jump.';
   const L = Controls.primary('left'), R = Controls.primary('right'), A = Controls.primary('accel'), J = Controls.primary('jump'), D = Controls.primary('dash');
-  return `${L} and ${R} steer. ${A} speeds up. ${J} jumps. ${D} dashes.`;
+  return `The yellow ring is you. ${A} speeds up. ${L} and ${R} steer. ${J} jumps. ${D} dashes.`;
 }
 function boundTo(code, action){
   return (Controls.binds[action] || []).some(s => s && Controls.sameKey(s.code, code));
@@ -3491,7 +3583,9 @@ $('ctrlSeg').addEventListener('click', e => {
 $('ctrlBinds').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || !b.dataset.act) return;
   Sfx.ensure();
-  Controls.arm(b.dataset.act, +b.dataset.slot || 0);
+  const slot = +b.dataset.slot || 0;
+  if (Controls.listen && Controls.listen.action === b.dataset.act && Controls.listen.slot === slot){ Controls.cancel(); return; }
+  Controls.arm(b.dataset.act, slot);
 });
 $('btnCtrlReset').addEventListener('click', () => { Sfx.ensure(); Sfx.play('click'); Controls.applyPreset('arrows'); toast('Controls reset'); });
 
@@ -3614,12 +3708,6 @@ function renderSkins(){
   else if (owned){ act.textContent = 'Use this marble'; act.disabled = false; $('skinNote').textContent = 'You own this one.'; }
   else { act.innerHTML = `Buy for ${sk.price}`; act.disabled = G.coins < sk.price;
     $('skinNote').textContent = G.coins >= sk.price ? `You have ${G.coins} coins.` : `You need ${sk.price - G.coins} more coins. Grab them on the track.`; }
-  const watch = $('skinWatch');
-  const cooled = Date.now() - (G.rewardAt || 0) > 180000;
-  const offer = !owned && CG.canReward();
-  watch.hidden = !offer;
-  watch.disabled = !cooled;
-  watch.textContent = cooled ? 'Watch a video to unlock' : 'Video ready again soon';
 }
 $('skinAct').addEventListener('click', () => {
   const sk = SKIN_BY[skinSel];
@@ -3632,24 +3720,6 @@ $('skinAct').addEventListener('click', () => {
   G.skin = sk.id; CG.save('rollout_skin', sk.id);
   renderSkins(); renderStats();
 });
-$('skinWatch').addEventListener('click', () => {
-  const sk = SKIN_BY[skinSel];
-  if (!sk || G.owned.includes(sk.id) || !CG.canReward()) return;
-  if (Date.now() - (G.rewardAt || 0) < 180000) return;
-  Sfx.ensure();
-  CG.rewarded(() => {
-    if (!G.owned.includes(sk.id)) G.owned.push(sk.id);
-    G.rewardAt = Date.now();
-    CG.save('rollout_owned', JSON.stringify(G.owned));
-    CG.save('rollout_reward_at', String(G.rewardAt));
-    Sfx.play('buy'); toast(`${sk.name} unlocked`);
-    renderSkins();
-  }, () => {
-    toast(CG.adsBlocked ? 'Videos are off here. Coins still unlock marbles.' : 'No video right now. You can still buy it with coins.');
-    renderSkins();
-  });
-});
-
 /* ---------- Friends & lobby ---------- */
 let roomTimer = 0;
 function roomCodeOf(raw){ return String(raw || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
@@ -4435,8 +4505,23 @@ function syncMeshes(dt){
     const vx = tx * m.vs + rx * m.vd, vz = tz * m.vs + rz * m.vd, sp = Math.hypot(vx, vz);
     if (sp > .01 && Math.hypot(dx, dz) < 3){ axis.set(vz, 0, -vx).normalize(); qRoll.setFromAxisAngle(axis, sp * dt / R); mesh.quaternion.premultiply(qRoll); }
     mesh.visible = m.ghost > 0 ? Math.floor(now / 80) % 2 === 0 : true;
-    mesh.material.emissiveIntensity = (mesh.material.userData.base || 0) + Math.max(0, m.glow) * .9 + (m.onPad ? .35 : 0);
+    let glow = (mesh.material.userData.base || 0) + Math.max(0, m.glow) * .9 + (m.onPad ? .35 : 0);
+    if (m.isPlayer && G.mode !== 'attract') glow += .16 + .07 * Math.sin(now / 200);
+    mesh.material.emissiveIntensity = glow;
     if (m.fx){ FX.burst(px, py, pz, m.fx > .7 ? 14 : 8, 1.3 + m.fx * 2, m.fx > .7 ? 3.2 : 1.8); m.fx = 0; }
+    const sit = mesh.visible && !m.falling;
+    dummy.position.set(px, (m.grounded ? m.y : SA.y) + .045, pz);
+    dummy.rotation.set(-Math.PI / 2, 0, SA.h);
+    dummy.scale.setScalar(sit ? (m.grounded ? 1 : .6) : .0001);
+    dummy.updateMatrix(); blobs.setMatrixAt(m.id, dummy.matrix);
+  }
+  if (blobs && G.marbles){
+    for (const m of G.marbles){
+      if (G.racers.includes(m)) continue;
+      dummy.position.set(0, -999, 0); dummy.scale.setScalar(.0001); dummy.updateMatrix();
+      blobs.setMatrixAt(m.id, dummy.matrix);
+    }
+    blobs.instanceMatrix.needsUpdate = true;
   }
   for (const tg of tags){
     const on = G.racers.includes(tg.m) && tg.m.mesh.visible;
@@ -4444,10 +4529,21 @@ function syncMeshes(dt){
     if (on) tg.sp.position.set(tg.m.mesh.position.x, tg.m.mesh.position.y + 1.05, tg.m.mesh.position.z);
   }
   const p = G.player;
-  if (p && G.mode !== 'attract' && !p.out && !G.spectating && G.racers.includes(p)){
-    marker.visible = true;
-    marker.position.set(p.mesh.position.x, p.mesh.position.y + .95 + Math.sin(now / 220) * .1, p.mesh.position.z);
-  } else marker.visible = false;
+  const showYou = p && G.mode !== 'attract' && !p.out && !G.spectating && G.racers.includes(p) && p.mesh.visible;
+  marker.visible = youRing.visible = youTag.visible = !!showYou;
+  if (showYou){
+    const bob = Math.sin(now / 220) * .1;
+    marker.position.set(p.mesh.position.x, p.mesh.position.y + .95 + bob, p.mesh.position.z);
+    youRing.position.set(p.mesh.position.x, p.y + .1, p.mesh.position.z);
+    youRing.scale.setScalar(1 + .05 * Math.sin(now / 180));
+    youTag.position.set(p.mesh.position.x, p.mesh.position.y + 1.42 + bob, p.mesh.position.z);
+  }
+  if (rivalSprite){
+    const r = G.rival;
+    const on = r && G.mode === 'solo' && G.racers.includes(r) && r.mesh.visible && !r.out;
+    rivalSprite.visible = !!on;
+    if (on) rivalSprite.position.set(r.mesh.position.x, r.mesh.position.y + 1.05, r.mesh.position.z);
+  }
 }
 
 function pickCamTarget(){
@@ -4630,13 +4726,13 @@ function showCoach(step){
   const touch = document.body.classList.contains('touch');
   const keys = (...ids) => ids.map(id => Controls.primary(id)).filter(Boolean);
   const copy = touch ? {
-    steer: ['Steer', 'Drag the wheel, or anywhere on that side.', []],
+    steer: ['This one is you', 'The yellow ring is your marble. Hold Go, and drag that side to steer.', []],
     jump: ['Jump', 'Swipe up. Hold Go to speed up, and let go to coast.', []],
     dash: ['Dash', 'When Go glows, double-tap it. Swipe down to brake.', []],
     go: COACH_COPY.go,
   }[step] : {
-    steer: ['Steer', 'Hold a direction and pick a line.', keys('left', 'right')],
-    jump: ['Jump', 'Tap at a ramp to clear the gap. Hold accelerate on the straights.', keys('jump', 'accel')],
+    steer: ['This one is you', 'The yellow ring is your marble. Hold accelerate and steer.', keys('accel', 'left', 'right')],
+    jump: ['Jump', 'Tap at a ramp to clear the gap. Keep holding accelerate on the straights.', keys('jump', 'accel')],
     dash: ['Dash', 'A short burst. It comes back in a few seconds. Brake scrubs speed.', keys('dash', 'brake')],
     go: COACH_COPY.go,
   }[step];
@@ -4656,7 +4752,8 @@ function coachAdvance(){
   const p = G.player;
   if (G.coachStep === 'steer'){
     if (G.coachD == null) G.coachD = p.d;
-    if (Math.abs(Input.steer()) > .35 || Math.abs(p.d - G.coachD) > .55) showCoach('jump');
+    const moved = Math.abs(Input.steer()) > .35 || Math.abs(p.d - G.coachD) > .55;
+    if (moved || Input.accel()) showCoach('jump');
   } else if (G.coachStep === 'jump' && p.didJump) showCoach('dash');
   else if (G.coachStep === 'dash' && p.didDash){
     showCoach('go');
@@ -4713,7 +4810,6 @@ function posterSetup(which){
   load('rollout_daily', v => Daily.load(v));
   load('rollout_missions', v => Missions.load(v));
   load('rollout_week', v => Week.load(v));
-  load('rollout_reward_at', v => { G.rewardAt = parseInt(v, 10) || 0; });
   load('rollout_quality', v => { if (Quality.labels[v]){ Quality.pref = v; Quality.apply(); } });
   load('rollout_audio', v => {
     const o = JSON.parse(v);
