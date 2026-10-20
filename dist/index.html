@@ -2069,7 +2069,7 @@ function dressRoadside(grp, tr){
    Marbles & skins
    ========================================================= */
 const COUNT = 30;
-blobs = new THREE.InstancedMesh(new THREE.CircleGeometry(.48, 14), new THREE.MeshBasicMaterial({ color: 0x0d1030, transparent: true, opacity: .32, depthWrite: false }), COUNT);
+const blobs = new THREE.InstancedMesh(new THREE.CircleGeometry(.48, 14), new THREE.MeshBasicMaterial({ color: 0x0d1030, transparent: true, opacity: .32, depthWrite: false }), COUNT);
 blobs.frustumCulled = false; blobs.renderOrder = 1; scene.add(blobs);
 const STAGES = [22, 15, 8, 1];
 const PERK_TIME = 15;
@@ -2176,7 +2176,6 @@ const youTag = (() => {
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, fog: false, transparent: true }));
   sp.scale.set(1.35, .38, 1); sp.visible = false; sp.renderOrder = 6; scene.add(sp); return sp;
 })();
-let blobs = null;
 let rivalSprite = null;
 function setRivalTag(){
   if (rivalSprite){ scene.remove(rivalSprite); rivalSprite.material.map.dispose(); rivalSprite.material.dispose(); rivalSprite = null; }
