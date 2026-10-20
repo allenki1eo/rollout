@@ -3452,7 +3452,7 @@ function onTouchMove(e){
 }
 function onTouchUp(e){
   if (e.pointerType === 'mouse' || e.pointerId !== TouchG.id) return;
-  TouchG.id = null; Input.touchSteer = 0; Input.swipeBrake = false;
+  TouchG.id = null; TouchG.gesture = ''; Input.touchSteer = 0; Input.swipeBrake = false;
 }
 addEventListener('pointerdown', onTouchDown);
 addEventListener('pointermove', onTouchMove);
@@ -4812,6 +4812,7 @@ function posterSetup(which){
         return window.__rollout.daily();
       },
       loadDaily: (raw) => { Daily.load(raw); return window.__rollout.daily(); },
+      charge: () => { if (G.player) G.player.dashT = 0; return G.player ? G.player.dashT : null; },
       adDuringRace: () => {
         const prev = { mode: G.mode, state: G.state, ad: G.adPause };
         G.mode = 'host'; G.state = 'race';
