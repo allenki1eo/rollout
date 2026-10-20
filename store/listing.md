@@ -18,7 +18,7 @@ Steer with the keyboard, a mouse drag, or a finger. Jump the gaps. Dash for a bu
 
 Coins buy new marble skins. Leveling up opens more worlds: Toy Box, Savanna, Candy Canyon, Frost Peak, and Neon Night. Play solo against the pack, or open a room and race friends, with bots filling the empty spots.
 
-Come back once a day for a streak that pays 20 coins and climbs to 150 on day 7. Miss a day and it starts over. Three daily missions, the same for every player on that date, pay coins and XP the moment you finish them. A weekly goal pays a bigger purse once. In solo, one marble is your rival, a blue orb blocks a wall hit, and a gold orb pulls coins in. The rank chip shows whether you are safe, close to the cut, or out.
+Come back once a day for a streak that pays 20 coins and climbs to 150 on day 7, then starts a new cycle at day 1. A week badge counts each cycle you finish. Miss a day and the current cycle starts over. Three daily missions, the same for every player on that date, pay coins and XP the moment you finish them. A weekly goal pays a bigger purse once. In solo, one marble is your rival, a blue orb blocks a wall hit, and a gold orb pulls coins in. The rank chip shows whether you are safe, close to the cut, or out.
 
 Rounds are short. When you are knocked out you can watch the rest or jump straight into another race.
 
@@ -28,7 +28,7 @@ Keyboard: the Arrow layout is the default. Up accelerates, Down brakes, Left and
 
 Mouse: drag left and right to steer. Click to jump. Hold the right button to accelerate.
 
-Touch: drag anywhere to steer. Flick up or press Jump. Hold Go, or drag upward and keep holding, to accelerate. Brake slows you down. Press Dash when the ring is full. The joystick can sit on the left or the right.
+Touch: two controls. A steering wheel sits on the joystick side (left or right in Settings). Drag the wheel, or anywhere on that half, to steer. Hold Go on the other side, and let go to coast. Swipe up to jump. Swipe down to brake. When Go glows, double-tap it to dash.
 
 ## Tags
 
