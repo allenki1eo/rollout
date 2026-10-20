@@ -55,34 +55,59 @@ button:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
 
 .controls{position:absolute;right:calc(env(safe-area-inset-right,0px) + 18px);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);
   display:flex;align-items:flex-end;gap:14px;pointer-events:auto;touch-action:none}
-body.joy-left .controls{right:auto;left:calc(env(safe-area-inset-left,0px) + 18px)}
 #fps{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 8px);transform:translateX(-50%);z-index:25;
   font-weight:600;font-size:13px;letter-spacing:.04em;color:var(--paper);pointer-events:none;
   text-shadow:0 2px 0 rgba(13,16,48,.7)}
 .round{border:0;border-radius:50%;cursor:pointer;display:grid;place-items:center;position:relative}
-#btnJump{width:92px;height:92px;background:var(--sun);color:var(--ink);box-shadow:0 6px 0 var(--sun-deep);font-size:16px;display:none}
-#btnJump:active{transform:translateY(4px);box-shadow:0 2px 0 var(--sun-deep)}
-#btnGo,#btnBrake{width:76px;height:76px;font-size:15px;display:none}
-#btnGo{background:var(--mint);color:var(--ink);box-shadow:0 6px 0 #149e86}
-#btnBrake{background:var(--berry);color:#fff;box-shadow:0 6px 0 #c2184b}
-#btnGo:active,#btnBrake:active{transform:translateY(4px)}
+/* Phone race: a steering wheel on the joystick side, Go on the other. Jump, brake and dash are gestures. */
+.steer-pad{display:none;position:absolute;z-index:11;pointer-events:auto;touch-action:none;
+  right:calc(env(safe-area-inset-right,0px) + 16px);bottom:calc(env(safe-area-inset-bottom,0px) + 16px);
+  width:min(44vw,200px);height:78px;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;opacity:.9}
+body.joy-left .steer-pad{right:auto;left:calc(env(safe-area-inset-left,0px) + 16px)}
+.steer-track{position:relative;width:100%;height:48px;border-radius:99px;background:rgba(27,31,59,.5);
+  box-shadow:inset 0 0 0 3px rgba(255,247,234,.35),0 5px 0 rgba(13,16,48,.28)}
+.steer-track i{position:absolute;top:50%;left:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;
+  background:rgba(255,247,234,.94);box-shadow:0 4px 0 rgba(13,16,48,.4)}
+.steer-pad b{font-family:'Fredoka',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--paper);text-shadow:0 2px 0 rgba(13,16,48,.65)}
+#btnGo{--p:1;display:none;position:absolute;z-index:11;pointer-events:auto;touch-action:none;
+  left:calc(env(safe-area-inset-left,0px) + 16px);bottom:calc(env(safe-area-inset-bottom,0px) + 16px);
+  width:104px;height:104px;background:rgba(45,226,194,.78);color:var(--ink);box-shadow:0 6px 0 rgba(20,158,134,.85);
+  font-family:'Bungee',sans-serif;font-weight:400;font-size:22px;opacity:.86}
+body.joy-left #btnGo{left:auto;right:calc(env(safe-area-inset-right,0px) + 16px)}
+#btnGo span{position:relative;display:flex;flex-direction:column;align-items:center;line-height:1;z-index:1}
+#btnGo small{display:none;font-family:'Fredoka',sans-serif;font-size:11px;font-weight:700;letter-spacing:.04em;margin-top:3px}
+#btnGo .go-ring{position:absolute;inset:-6px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(var(--paper) calc(var(--p)*1turn),transparent 0);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));opacity:.95}
+#btnGo.charged{opacity:1;background:rgba(45,226,194,.94);box-shadow:0 0 0 6px rgba(45,226,194,.38),0 6px 0 #149e86}
+#btnGo.charged small{display:block}
+#btnGo:active{transform:translateY(3px)}
 #btnDash{--p:1;width:84px;height:84px;background:conic-gradient(var(--mint) calc(var(--p)*1turn),var(--ink-2) 0);
   box-shadow:0 6px 0 var(--ink-deep)}
 #btnDash::before{content:"";position:absolute;inset:7px;border-radius:50%;background:var(--ink)}
 #btnDash span{position:relative;display:flex;flex-direction:column;align-items:center;line-height:1.05;font-size:15px}
 #btnDash small{font-family:'Fredoka',sans-serif;font-size:12px;opacity:.7;margin-top:3px}
 #btnDash.ready span{color:var(--mint)}
-body.touch #btnJump,body.touch #btnGo,body.touch #btnBrake{display:grid}
-body.touch #btnDash small{display:none}
+body.touch .steer-pad{display:flex}
+body.touch #btnGo{display:grid}
+body.touch #btnDash{display:none}
 @media (hover: none), (pointer: coarse){
-  #btnJump,#btnGo,#btnBrake{display:grid}
-  #btnDash small{display:none}
+  .steer-pad{display:flex}
+  #btnGo{display:grid}
+  #btnDash{display:none}
   .hint{display:none}
 }
+@media (max-width:400px){
+  #btnGo{width:92px;height:92px;font-size:18px}
+  .steer-pad{width:min(42vw,168px);height:70px}
+}
 @media (max-height:520px){
-  #btnJump{width:68px;height:68px;font-size:14px}
   #btnDash{width:62px;height:62px}
-  #btnGo,#btnBrake{width:60px;height:60px;font-size:13px}
+  #btnGo{width:78px;height:78px;font-size:16px}
+  .steer-pad{height:60px;width:min(34vw,180px)}
+  .coach{bottom:calc(env(safe-area-inset-bottom,0px) + 96px)}
 }
 .hint{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);
   display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:15px;font-weight:500;padding:8px 16px;
@@ -237,7 +262,7 @@ body.touch .hint{display:none}
 .loadbar i{display:block;height:100%;width:0%;background:var(--sun);border-radius:99px;transition:width .25s ease-out}
 .chip.combo{padding:8px 14px 10px;color:var(--ink);background:var(--mint);box-shadow:0 4px 0 #149e88}
 .chip.combo b{font-family:'Bungee',sans-serif;font-weight:400;font-size:22px;line-height:1}
-.coach{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 118px);transform:translateX(-50%);
+.coach{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 136px);transform:translateX(-50%);
   z-index:14;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;max-width:min(520px,92vw)}
 .coach-card{background:var(--ink);border-radius:24px;padding:14px 18px 16px;text-align:center;box-shadow:0 6px 0 var(--ink-deep);
   animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
@@ -395,7 +420,10 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
 .day.now{box-shadow:0 0 0 3px var(--sun),0 4px 0 var(--ink-deep);transform:translateY(-4px)}
 .day.gift b{font-size:17px}
 @media (max-width:420px){.daily-row{gap:5px}.day{padding:7px 1px 8px}.day b{font-size:13px}}
-.mission-chip{display:inline-flex;align-items:center;gap:8px;margin-top:14px;border:0;border-radius:99px;padding:9px 16px;cursor:pointer;
+.menu-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.daily-week{margin-top:8px;font-family:'Bungee',sans-serif;font-weight:400;font-size:13px;letter-spacing:.08em;color:var(--ink);
+  display:inline-block;background:var(--mint);border-radius:99px;padding:5px 10px}
+.mission-chip{display:inline-flex;align-items:center;gap:8px;margin-top:0;border:0;border-radius:99px;padding:9px 16px;cursor:pointer;
   background:rgba(27,31,59,.82);color:var(--paper);font:600 15px 'Fredoka',ui-rounded,sans-serif;box-shadow:0 4px 0 var(--ink-deep)}
 .mission-chip b{font-family:'Bungee',sans-serif;font-weight:400;color:var(--mint)}
 .mission-chip.all b{color:var(--sun)}
@@ -453,11 +481,13 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
       </div>
     </div>
     <div class="chip hint" id="hintChip"><span><kbd>←</kbd><kbd>→</kbd> steer</span><span><kbd>↑</kbd> faster</span><span><kbd>Space</kbd> jump</span><span><kbd>Shift</kbd> dash</span></div>
+    <div class="steer-pad" id="steerPad" role="slider" aria-label="Steer" aria-valuemin="-1" aria-valuemax="1" aria-valuenow="0">
+      <div class="steer-track"><i id="steerThumb"></i></div>
+      <b>Steer</b>
+    </div>
+    <button class="round" id="btnGo" type="button" aria-label="Accelerate. Double-tap when charged to dash"><span>Go<small>Dash</small></span><i class="go-ring" aria-hidden="true"></i></button>
     <div class="controls">
-      <button class="round display" id="btnBrake" type="button" aria-label="Brake">Brake</button>
-      <button class="round display" id="btnJump" type="button" aria-label="Jump">Jump</button>
       <button class="round display" id="btnDash" type="button" aria-label="Dash"><span>Dash<small>Shift</small></span></button>
-      <button class="round display" id="btnGo" type="button" aria-label="Accelerate">Go</button>
     </div>
   </div>
   <div class="banner display" id="banner"></div>
@@ -492,7 +522,10 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
         <span style="--c:#ffd23f;--r:-4deg;--d:.05s">R</span><span style="--c:#ff6b1a;--r:3deg;--d:.12s">O</span><span style="--c:#2de2c2;--r:-2deg;--d:.19s">L</span><span style="--c:#ff3d7f;--r:4deg;--d:.26s">L</span><span style="--c:#7aa7ff;--r:-3deg;--d:.33s">O</span><span style="--c:#b6f04a;--r:2deg;--d:.40s">U</span><span style="--c:#ffd23f;--r:-5deg;--d:.47s">T</span>
       </h1>
       <button class="btn big" id="btnPlay">Play</button>
-      <button class="mission-chip" id="btnMissions" type="button"><span aria-hidden="true">🎯</span> Daily missions <b id="missionCount">0/3</b></button>
+      <div class="menu-chips">
+        <button class="mission-chip" id="btnDailyOpen" type="button"><span aria-hidden="true">🎁</span> Daily <b id="dailyChip">Day 1</b></button>
+        <button class="mission-chip" id="btnMissions" type="button"><span aria-hidden="true">🎯</span> Daily missions <b id="missionCount">0/3</b></button>
+      </div>
       <p class="week-line" id="weekLine"></p>
     </div>
     <nav class="menu-dock" aria-label="More">
@@ -522,9 +555,13 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
   <section class="screen dim" id="scrDaily">
     <div class="panel">
       <h2>Daily reward</h2>
+      <p class="daily-week" id="dailyBadge">Week 1</p>
       <p id="dailyText">Come back tomorrow to start a streak.</p>
       <div class="daily-row" id="dailyRow"></div>
-      <div class="actions"><button class="btn big" id="btnDailyClaim" type="button">Collect</button></div>
+      <div class="actions">
+        <button class="btn big" id="btnDailyClaim" type="button">Collect</button>
+        <button class="btn ghost" id="btnDailyLater" type="button">Later</button>
+      </div>
     </div>
   </section>
 
@@ -596,6 +633,7 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
           <button type="button" data-joy="left">Left</button>
           <button type="button" data-joy="right">Right</button>
         </span></div>
+        <p class="set-quiet" id="touchHelp">On a phone the wheel sits on the joystick side and Go sits on the other. Drag that half of the screen to steer. Hold Go, and let go to coast. Swipe up to jump. Swipe down to brake. When Go glows, double-tap it to dash.</p>
         <h3 class="set-h" id="ctrlHead">Controls</h3>
         <div class="set-row"><span>Layout</span><span class="set-seg" id="ctrlSeg">
           <button type="button" data-layout="arrows">Arrows</button>
@@ -623,15 +661,15 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
       <h2>How to play</h2>
       <div class="how">
         <div><i>🏁</i><span>Thirty marbles race down four tracks. Only the first 22 across stage 1 go through, then 15, then 8. First home in the final wins.</span></div>
-        <div><i>↔️</i><span id="howSteer">Steer with the arrow keys or A and D. On a phone, drag anywhere. With a mouse, drag to steer and click to jump.</span></div>
-        <div><i>⚡</i><span id="howAccel">Hold Up or W to go faster. Down or S brakes for a tight corner. On a phone, hold Go or drag upward and keep holding. Brake slows you. Hold the right mouse button to accelerate.</span></div>
-        <div><i>🦘</i><span id="howJump">Jump with Space, a click, or a quick flick up. Jump at the lip of a ramp to clear the gap.</span></div>
-        <div><i>💨</i><span id="howDash">Dash with Shift for a charged burst. It comes back after a few seconds. Accelerate is the steady push.</span></div>
+        <div><i>↔️</i><span id="howSteer">Steer with the arrow keys or A and D. On a phone, drag the wheel or that half of the screen. With a mouse, drag to steer and click to jump.</span></div>
+        <div><i>⚡</i><span id="howAccel">Hold Up or W to go faster. Down or S brakes. On a phone, hold Go and let go to coast. Swipe down to brake. Hold the right mouse button to accelerate.</span></div>
+        <div><i>🦘</i><span id="howJump">Jump with Space, a click, or a swipe up. Jump at the lip of a ramp to clear the gap.</span></div>
+        <div><i>💨</i><span id="howDash">Dash with Shift. On a phone, double-tap Go when it glows. The burst comes back after a few seconds.</span></div>
         <div><i>🔀</i><span>Some roads split into lanes. Boost lanes are fast but have a spinner. Honey lanes are safe but sticky. Bumper lanes are chaos.</span></div>
         <div><i>🟣</i><span>Purple pads launch you into the air. Pink bumpers knock you away, and blue blocks slide across the road.</span></div>
         <div><i>🪙</i><span>Grab coins on the track, often in risky spots or up in the air. Spend them on new marbles.</span></div>
         <div><i>✨</i><span>Pick an upgrade before every stage. Upgrades stack, so build a marble that suits how you race.</span></div>
-        <div><i>🎯</i><span>Three daily missions pay coins and XP the moment you finish them. A 7-day streak on the menu pays more each day you come back. Miss a day and it starts over.</span></div>
+        <div><i>🎯</i><span>Three daily missions pay coins and XP the moment you finish them. The daily streak pays more through day 7, then starts again at day 1. Miss a day and the current cycle starts over.</span></div>
         <div><i>🍓</i><span id="howRival">One marble is your rival in solo. Pass them, or keep them behind. Blue orbs block one wall hit. Gold orbs pull coins in for a few seconds. They show up after your first race.</span></div>
         <div><i>😅</i><span>A close graze on the rail keeps your combo going. The rank chip turns mint when you are safe, yellow near the cut, and red when you are out. “Last spot!” means one place is left.</span></div>
         <div><i>📅</i><span id="howWeek">A weekly goal sits under Daily missions. Finish it once for a bigger coin payout.</span></div>
@@ -3268,13 +3306,13 @@ function renderHow(){
   const A = Controls.primary('accel') || '↑', B = Controls.primary('brake') || '↓';
   const J = Controls.primary('jump') || 'Space', D = Controls.primary('dash') || 'Shift';
   const steer = $('howSteer'), acc = $('howAccel'), jump = $('howJump'), dash = $('howDash');
-  if (steer) steer.innerHTML = `Steer with ${kbd(L)} and ${kbd(R)}. On a phone, drag anywhere. With a mouse, drag to steer and click to jump.`;
-  if (acc) acc.innerHTML = `Hold ${kbd(A)} to go faster. ${kbd(B)} brakes for a tight corner. On a phone, hold Go or drag upward and keep holding. Brake slows you. Hold the right mouse button to accelerate.`;
-  if (jump) jump.innerHTML = `Jump with ${kbd(J)}, a click, or a quick flick up. Jump at the lip of a ramp to clear the gap.`;
-  if (dash) dash.innerHTML = `Dash with ${kbd(D)} for a charged burst. It comes back after a few seconds. Accelerate is the steady push.`;
+  if (steer) steer.innerHTML = `Steer with ${kbd(L)} and ${kbd(R)}. On a phone, drag the wheel or that half of the screen. With a mouse, drag to steer and click to jump.`;
+  if (acc) acc.innerHTML = `Hold ${kbd(A)} to go faster. ${kbd(B)} brakes. On a phone, hold Go and let go to coast. Swipe down to brake. Hold the right mouse button to accelerate.`;
+  if (jump) jump.innerHTML = `Jump with ${kbd(J)}, a click, or a swipe up. Jump at the lip of a ramp to clear the gap.`;
+  if (dash) dash.innerHTML = `Dash with ${kbd(D)}. On a phone, double-tap Go when it glows. The burst comes back after a few seconds.`;
 }
 function stageHint(){
-  if (document.body.classList.contains('touch')) return 'Drag to steer. Hold Go to speed up. Brake slows you. Flick up to jump.';
+  if (document.body.classList.contains('touch')) return 'Drag the wheel to steer. Hold Go. Swipe up to jump.';
   const L = Controls.primary('left'), R = Controls.primary('right'), A = Controls.primary('accel'), J = Controls.primary('jump'), D = Controls.primary('dash');
   return `${L} and ${R} steer. ${A} speeds up. ${J} jumps. ${D} dashes.`;
 }
@@ -3287,7 +3325,7 @@ function inputPacket(extra){
 
 const Input = {
   codes: new Set(), touchSteer: 0, pid: null, sx: 0, sy: 0, st: 0, flicked: false,
-  mouseAccel: false, touchAccel: false, btnAccel: false, btnBrake: false,
+  mouseAccel: false, btnAccel: false, swipeBrake: false, jumpCount: 0,
 };
 Input.steer = () => {
   let s = 0;
@@ -3295,14 +3333,16 @@ Input.steer = () => {
   if (Controls.isDown('right')) s += 1;
   return s || Input.touchSteer;
 };
-Input.accel = () => Controls.isDown('accel') || Input.mouseAccel || Input.touchAccel || Input.btnAccel;
-Input.brake = () => Controls.isDown('brake') || Input.btnBrake;
+Input.accel = () => Controls.isDown('accel') || Input.mouseAccel || Input.btnAccel;
+Input.brake = () => Controls.isDown('brake') || Input.swipeBrake;
 const canControl = () => G.mode !== 'attract' && G.player && !G.player.out && !G.player.done && !G.spectating
   && G.state === 'race' && !G.paused && G.racers.includes(G.player);
 function doJump(){
-  if (!canControl()) return;
+  if (!canControl()) return false;
+  Input.jumpCount++;
   if (G.mode === 'client'){ Net.send(inputPacket({ j: 1 })); Sfx.play('jump'); }
   else G.player.jumpBuf = .15;
+  return true;
 }
 function doDash(){
   if (!canControl()) return;
@@ -3326,7 +3366,7 @@ addEventListener('keydown', e => {
   if (boundTo(e.code, 'pause')) togglePause();
 }, { passive: false });
 addEventListener('keyup', e => { if (e.code) Input.codes.delete(e.code); });
-addEventListener('blur', () => { Input.codes.clear(); Input.mouseAccel = false; Input.touchAccel = false; Input.btnAccel = false; Input.btnBrake = false; });
+addEventListener('blur', () => { Input.codes.clear(); Input.mouseAccel = false; Input.btnAccel = false; Input.swipeBrake = false; Input.touchSteer = 0; });
 addEventListener('contextmenu', e => e.preventDefault());
 addEventListener('wheel', e => {
   const sc = e.target && e.target.closest && e.target.closest('.screen, .skin-grid, .panel');
@@ -3338,49 +3378,110 @@ addEventListener('touchend', () => { if (Sfx.ctx && Sfx.ctx.state === 'suspended
 const cv = renderer.domElement;
 cv.addEventListener('pointerdown', e => {
   Sfx.ensure();
-  if (e.pointerType !== 'mouse') document.body.classList.add('touch');
-  if (e.pointerType === 'mouse' && e.button === 2){ Input.mouseAccel = true; e.preventDefault(); return; }
-  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  if (e.pointerType !== 'mouse') return;
+  if (e.button === 2){ Input.mouseAccel = true; e.preventDefault(); return; }
+  if (e.button !== 0) return;
   if (Input.pid !== null) return;
-  Input.pid = e.pointerId; Input.sx = e.clientX; Input.sy = e.clientY; Input.st = performance.now(); Input.flicked = false; Input.touchAccel = false;
+  Input.pid = e.pointerId; Input.sx = e.clientX; Input.sy = e.clientY; Input.st = performance.now(); Input.flicked = false;
   try { cv.setPointerCapture(e.pointerId); } catch (_) {}
 });
 cv.addEventListener('pointermove', e => {
-  if (e.pointerId !== Input.pid) return;
+  if (e.pointerType !== 'mouse' || e.pointerId !== Input.pid) return;
   const dx = e.clientX - Input.sx, sens = Opts.sens || 1, reach = 55 / sens, limit = 70 / sens;
   if (dx > limit) Input.sx = e.clientX - limit; if (dx < -limit) Input.sx = e.clientX + limit;
   Input.touchSteer = clamp((e.clientX - Input.sx) / reach, -1, 1);
   const dy = Input.sy - e.clientY, held = performance.now() - Input.st;
   if (!Input.flicked && dy > 45 && held < 320){ Input.flicked = true; doJump(); }
-  if (e.pointerType !== 'mouse' && dy > 50 && held > 280) Input.touchAccel = true;
-  else if (e.pointerType !== 'mouse' && dy < 24) Input.touchAccel = false;
 });
 const endPtr = e => {
+  if (e.pointerType !== 'mouse') return;
   if (e.button === 2){ Input.mouseAccel = false; if (e.pointerId !== Input.pid) return; }
   if (e.pointerId !== Input.pid) return;
-  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  if (e.button !== 0) return;
   const moved = Math.hypot(e.clientX - Input.sx, e.clientY - Input.sy);
   const quick = performance.now() - Input.st < 280;
-  Input.pid = null; Input.touchSteer = 0; Input.touchAccel = false;
-  if (e.pointerType === 'mouse' && moved < 10 && quick) doJump();
+  Input.pid = null; Input.touchSteer = 0;
+  if (moved < 10 && quick) doJump();
 };
 cv.addEventListener('pointerup', endPtr); cv.addEventListener('pointercancel', endPtr);
 addEventListener('pointerup', e => { if (e.button === 2) Input.mouseAccel = false; });
 if (matchMedia('(pointer: coarse), (hover: none)').matches) document.body.classList.add('touch');
 
+function steerHalf(x){
+  return (Opts.joy === 'left') ? x < innerWidth * 0.5 : x >= innerWidth * 0.5;
+}
+function classifyTouch(dx, dy, zone, gesture){
+  if (gesture) return gesture;
+  const adx = Math.abs(dx), ady = Math.abs(dy);
+  if (zone === 'steer' && adx > 16 && adx >= ady) return 'steer';
+  if (dy > 46 && dy > adx * 1.2) return 'jump';
+  if (-dy > 46 && -dy > adx * 1.2) return 'brake';
+  if (zone === 'steer' && adx > 22) return 'steer';
+  return '';
+}
+const TouchG = { id: null, sx: 0, sy: 0, zone: '', gesture: '', jumped: false };
+function applySteer(clientX){
+  const sens = Opts.sens || 1, reach = 55 / sens, limit = 70 / sens;
+  const dx = clientX - TouchG.sx;
+  if (dx > limit) TouchG.sx = clientX - limit;
+  if (dx < -limit) TouchG.sx = clientX + limit;
+  Input.touchSteer = clamp((clientX - TouchG.sx) / reach, -1, 1);
+}
+function onTouchDown(e){
+  if (e.pointerType === 'mouse') return;
+  document.body.classList.add('touch');
+  const blocked = e.target.closest && e.target.closest('button, a, input, textarea, .screen, .coach');
+  if (blocked || TouchG.id !== null) return;
+  e.preventDefault();
+  TouchG.id = e.pointerId; TouchG.sx = e.clientX; TouchG.sy = e.clientY;
+  TouchG.zone = steerHalf(e.clientX) ? 'steer' : 'other';
+  TouchG.gesture = ''; TouchG.jumped = false;
+  try { e.target.setPointerCapture(e.pointerId); } catch (_) {}
+}
+function onTouchMove(e){
+  if (e.pointerType === 'mouse' || e.pointerId !== TouchG.id) return;
+  const dx = e.clientX - TouchG.sx, dy = TouchG.sy - e.clientY;
+  TouchG.gesture = classifyTouch(dx, dy, TouchG.zone, TouchG.gesture);
+  if (TouchG.gesture === 'steer') applySteer(e.clientX);
+  else if (TouchG.gesture === 'jump'){
+    Input.touchSteer = 0;
+    if (!TouchG.jumped){ TouchG.jumped = true; doJump(); }
+  } else if (TouchG.gesture === 'brake'){
+    Input.touchSteer = 0; Input.swipeBrake = true;
+  }
+}
+function onTouchUp(e){
+  if (e.pointerType === 'mouse' || e.pointerId !== TouchG.id) return;
+  TouchG.id = null; Input.touchSteer = 0; Input.swipeBrake = false;
+}
+addEventListener('pointerdown', onTouchDown);
+addEventListener('pointermove', onTouchMove);
+addEventListener('pointerup', onTouchUp);
+addEventListener('pointercancel', onTouchUp);
+
 const press = (el, fn) => el.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); Sfx.ensure(); fn(); });
-press($('btnJump'), doJump);
 press($('btnDash'), doDash);
-const holdBtn = (el, set) => {
-  if (!el) return;
-  const down = e => { e.preventDefault(); e.stopPropagation(); Sfx.ensure(); set(true); try { el.setPointerCapture(e.pointerId); } catch (_) {} };
-  const up = e => { if (e.pointerId != null && el.hasPointerCapture && el.hasPointerCapture(e.pointerId)){ /* keep until up */ } set(false); };
-  el.addEventListener('pointerdown', down);
-  el.addEventListener('pointerup', up);
-  el.addEventListener('pointercancel', up);
-};
-holdBtn($('btnGo'), v => { Input.btnAccel = v; });
-holdBtn($('btnBrake'), v => { Input.btnBrake = v; });
+let goLast = 0, goGesture = '', goJumped = false, goX = 0, goY = 0;
+const goBtn = $('btnGo');
+goBtn.addEventListener('pointerdown', e => {
+  e.preventDefault(); e.stopPropagation();
+  Sfx.ensure(); document.body.classList.add('touch');
+  Input.btnAccel = true; goGesture = ''; goJumped = false; goX = e.clientX; goY = e.clientY;
+  const now = performance.now(), charged = G.player && G.player.dashT <= 0;
+  if (charged && now - goLast < 340){ doDash(); goLast = 0; }
+  else goLast = now;
+  try { goBtn.setPointerCapture(e.pointerId); } catch (_) {}
+});
+goBtn.addEventListener('pointermove', e => {
+  if (!Input.btnAccel) return;
+  const dx = e.clientX - goX, dy = goY - e.clientY;
+  goGesture = classifyTouch(dx, dy, 'other', goGesture);
+  if (goGesture === 'jump' && !goJumped){ goJumped = true; doJump(); }
+  if (goGesture === 'brake') Input.swipeBrake = true;
+});
+const goUp = () => { Input.btnAccel = false; Input.swipeBrake = false; };
+goBtn.addEventListener('pointerup', goUp);
+goBtn.addEventListener('pointercancel', goUp);
 $('ctrlSeg').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || !b.dataset.layout) return;
   Sfx.ensure(); Sfx.play('click');
@@ -3782,6 +3883,12 @@ function renderMissionChip(){
   const n = Missions.doneCount(), chip = $('btnMissions');
   if ($('missionCount')) $('missionCount').textContent = `${n}/3`;
   if (chip) chip.classList.toggle('all', n === 3);
+  const daily = $('dailyChip');
+  if (daily){
+    if (Daily.ready()) daily.textContent = `Day ${Daily.next()}`;
+    else if (Daily.streak >= 7) daily.textContent = `Week ${Math.max(1, Daily.cycles)}`;
+    else daily.textContent = Daily.streak ? `Day ${Daily.streak}` : 'Ready';
+  }
   Week.ensure();
   const line = $('weekLine');
   if (line){
@@ -3808,56 +3915,110 @@ $('btnMissions').addEventListener('click', () => { Sfx.ensure(); Sfx.play('click
 $('btnMissionsBack').addEventListener('click', () => { Sfx.play('click'); showScreen('scrMenu'); });
 $('btnMissionsPlay').addEventListener('click', () => $('btnPlay').click());
 
-/* ---------- Daily reward: a 7-day streak that resets if you miss a day ---------- */
+/* ---------- Daily reward: a 7-day cycle. Day 7 pays 150, then the next day is day 1. ---------- */
 const DAILY_COINS = [20, 30, 40, 50, 70, 90, 150];
 const dayKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const DATE_KEY = /^\d{4}-\d{2}-\d{2}$/;
 const Daily = {
-  last: '', streak: 0, claiming: false,
+  last: '', streak: 0, cycles: 0, prompted: '', claiming: false,
   load(raw){
     try {
       const o = JSON.parse(raw);
       const last = String(o.last || '');
       if (last && !DATE_KEY.test(last)) return;
+      let streak = Math.max(0, Math.min(99, o.streak | 0));
+      let cycles = Math.max(0, Math.min(999, o.cycles | 0));
+      if (o.cycles == null && streak >= 7){
+        const completed = Math.floor(streak / 7);
+        const pos = streak % 7;
+        cycles = completed;
+        streak = pos === 0 ? 7 : pos;
+      }
       this.last = last;
-      this.streak = Math.max(0, Math.min(99, o.streak | 0));
+      this.streak = Math.max(0, Math.min(7, streak));
+      this.cycles = cycles;
+      const prompted = String(o.prompted || '');
+      this.prompted = DATE_KEY.test(prompted) ? prompted : '';
     } catch (e) {}
   },
-  save(){ CG.save('rollout_daily', JSON.stringify({ last: this.last, streak: this.streak })); },
+  save(){ CG.save('rollout_daily', JSON.stringify({ last: this.last, streak: this.streak, cycles: this.cycles, prompted: this.prompted })); },
   ready(){
     const today = dayKey();
     if (!this.last) return true;
     return this.last < today;
   },
+  yesterday(){ const y = new Date(); y.setDate(y.getDate() - 1); return dayKey(y); },
+  kind(){
+    if (!this.last) return 'first';
+    if (this.last === this.yesterday() && this.streak >= 7) return 'new';
+    if (this.last === this.yesterday()) return 'continue';
+    return 'miss';
+  },
   next(){
-    const y = new Date(); y.setDate(y.getDate() - 1);
-    return this.last === dayKey(y) ? Math.min(99, this.streak + 1) : 1;
+    if (this.last === this.yesterday() && this.streak > 0 && this.streak < 7) return this.streak + 1;
+    return 1;
+  },
+  week(){
+    if (!this.ready() && this.streak >= 7) return Math.max(1, this.cycles);
+    return this.cycles + 1;
   },
   amount(st){ return DAILY_COINS[Math.min(7, Math.max(1, st)) - 1]; },
 };
-function maybeDaily(){
-  if (!G.coachDone || !Daily.ready() || G.mode !== 'attract' || !$('scrMenu').classList.contains('on')) return false;
-  const st = Daily.next(), cur = Math.min(7, st);
+function paintDaily(){
+  const ready = Daily.ready();
+  const st = ready ? Daily.next() : Math.min(7, Math.max(1, Daily.streak || 1));
+  const week = Daily.week();
+  $('dailyBadge').textContent = `Week ${week}`;
   $('dailyRow').innerHTML = DAILY_COINS.map((c, i) => {
-    const d = i + 1, cls = d < cur ? 'done' : d === cur ? 'now' : '';
-    return `<div class="day ${cls}${d === 7 ? ' gift' : ''}"><span>${d === 7 && st > 7 ? 'Day ' + st : 'Day ' + d}</span><b>${d === 7 ? '🎁' : '<i class="coin"></i>'}${c}</b></div>`;
+    const d = i + 1;
+    const cls = ready ? (d < st ? 'done' : d === st ? 'now' : '') : (d <= Daily.streak ? 'done' : '');
+    return `<div class="day ${cls}${d === 7 ? ' gift' : ''}"><span>Day ${d}</span><b>${d === 7 ? '🎁' : '<i class="coin"></i>'}${c}</b></div>`;
   }).join('');
-  $('dailyText').textContent = st > 1
-    ? `Day ${st}. Miss a day and the streak starts over. Day 7 stays the big one.`
-    : 'Day 1. Collect this, then come back tomorrow. Day 7 is the big one.';
-  $('btnDailyClaim').textContent = `Collect ${Daily.amount(st)} coins`;
-  showScreen('scrDaily');
+  const claim = $('btnDailyClaim'), later = $('btnDailyLater');
+  if (!ready){
+    $('dailyText').textContent = Daily.streak >= 7
+      ? `Week ${Daily.cycles} is complete. Tomorrow starts week ${Daily.cycles + 1} at day 1.`
+      : `Day ${Daily.streak || 1} is collected. Come back tomorrow.`;
+    claim.hidden = true;
+    later.textContent = 'Back';
+  } else {
+    const kind = Daily.kind();
+    $('dailyText').textContent = kind === 'first'
+      ? 'Day 1. Collect this, then come back tomorrow. Day 7 is the big one.'
+      : kind === 'new'
+        ? `Week ${week}, day 1. A new cycle. Day 7 is the big one again.`
+        : kind === 'miss'
+          ? `Week ${week}, day 1. A missed day starts this cycle over.`
+          : `Week ${week}, day ${st}. Miss a day and this cycle starts over. Day 7 is the big one.`;
+    claim.hidden = false;
+    claim.textContent = `Collect ${Daily.amount(st)} coins`;
+    later.textContent = 'Later';
+  }
+}
+function openDaily(){ paintDaily(); showScreen('scrDaily'); }
+function maybeDaily(){
+  if (!G.coachDone || !Daily.ready() || Daily.prompted === dayKey() || G.mode !== 'attract' || !$('scrMenu').classList.contains('on')) return false;
+  Daily.prompted = dayKey();
+  Daily.save();
+  openDaily();
   return true;
 }
+$('btnDailyOpen').addEventListener('click', () => { Sfx.ensure(); Sfx.play('click'); openDaily(); });
+$('btnDailyLater').addEventListener('click', () => {
+  Sfx.play('click');
+  if (Daily.ready() && Daily.prompted !== dayKey()){ Daily.prompted = dayKey(); Daily.save(); }
+  showScreen('scrMenu');
+});
 $('btnDailyClaim').addEventListener('click', () => {
   if (Daily.claiming || !Daily.ready()){ showScreen('scrMenu'); return; }
   Daily.claiming = true;
   const st = Daily.next(), amt = Daily.amount(st);
-  Daily.streak = st; Daily.last = dayKey(); Daily.save();
+  if (st >= 7) Daily.cycles = Math.min(999, Daily.cycles + 1);
+  Daily.streak = st; Daily.last = dayKey(); Daily.prompted = dayKey(); Daily.save();
   G.coins += amt; CG.save('rollout_coins', String(G.coins));
   Sfx.ensure(); Sfx.play('buy'); renderStats(); showScreen('scrMenu');
   Daily.claiming = false;
-  toast(st >= 7 ? `Day ${st}! +${amt} coins` : `+${amt} coins. See you tomorrow.`);
+  toast(st >= 7 ? `Week ${Daily.cycles} complete! +${amt} coins` : `+${amt} coins. See you tomorrow.`);
 });
 
 /* ---------- Weekly goal: one seeded challenge, paid once ---------- */
@@ -4199,7 +4360,17 @@ function updateHUD(dt){
   const span = tr.finishS - tr.startS;
   for (const [m, el] of dotEls){ const p = clamp((m.s - tr.startS) / span, 0, 1); el.style.left = (p * 100).toFixed(2) + '%'; }
   const pl = G.player;
-  if (pl){ const f = pl.dashT > 0 ? 1 - pl.dashT / pl.stats.dashCd : 1; $('btnDash').style.setProperty('--p', f.toFixed(3)); $('btnDash').classList.toggle('ready', f >= 1); }
+  if (pl){
+    const f = pl.dashT > 0 ? 1 - pl.dashT / pl.stats.dashCd : 1;
+    const dash = $('btnDash');
+    if (dash){ dash.style.setProperty('--p', f.toFixed(3)); dash.classList.toggle('ready', f >= 1); }
+    const go = $('btnGo');
+    if (go){ go.style.setProperty('--p', f.toFixed(3)); go.classList.toggle('charged', f >= 1); }
+  }
+  const thumb = $('steerThumb');
+  if (thumb) thumb.style.transform = `translateX(${(Input.touchSteer * 46).toFixed(0)}px)`;
+  const pad = $('steerPad');
+  if (pad) pad.setAttribute('aria-valuenow', Input.touchSteer.toFixed(2));
 }
 function bumpCoins(){ const c = $('coinChip'); c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); $('hudCoins').textContent = G.run.gems; }
 
@@ -4459,9 +4630,9 @@ function showCoach(step){
   const touch = document.body.classList.contains('touch');
   const keys = (...ids) => ids.map(id => Controls.primary(id)).filter(Boolean);
   const copy = touch ? {
-    steer: ['Steer', 'Drag anywhere to slide left and right.', []],
-    jump: ['Jump', 'Flick up, or tap Jump. Hold Go to speed up.', []],
-    dash: ['Dash', 'Tap Dash when the ring is full. Brake slows you for a tight corner.', []],
+    steer: ['Steer', 'Drag the wheel, or anywhere on that side.', []],
+    jump: ['Jump', 'Swipe up. Hold Go to speed up, and let go to coast.', []],
+    dash: ['Dash', 'When Go glows, double-tap it. Swipe down to brake.', []],
     go: COACH_COPY.go,
   }[step] : {
     steer: ['Steer', 'Hold a direction and pick a line.', keys('left', 'right')],
@@ -4584,7 +4755,8 @@ function posterSetup(which){
           vs: p ? +p.vs.toFixed(2) : 0, steer: p ? p.input.steer : 0,
           accel: !!(p && p.input.accel), brake: !!(p && p.input.brake),
           botVs: +((G.racers.filter(m => !m.isPlayer && !m.done).reduce((a, m) => a + m.vs, 0) / Math.max(1, G.racers.filter(m => !m.isPlayer && !m.done).length)) || 0).toFixed(2),
-          chain: G.run.chain || 0,
+          chain: G.run.chain || 0, jumps: Input.jumpCount,
+          dashT: p ? +p.dashT.toFixed(2) : 0,
           q: G.q, through: G.finish.length, slow: +((G.slowT || 0).toFixed(2)),
           finish: G.track ? +G.track.finishS.toFixed(1) : 0,
           mem: navigator.deviceMemory || 0, sdkMuted: Sfx.sdkMuted,
@@ -4609,7 +4781,7 @@ function posterSetup(which){
       mute: (v) => CG.onSettings({ muteAudio: !!v }),
       held: (code, down) => { if (!code) return Input.codes.size; if (down) Input.codes.add(code); else Input.codes.delete(code); },
       controls: () => ({ layout: Controls.layout, binds: JSON.parse(JSON.stringify(Controls.binds)) }),
-      daily: () => ({ last: Daily.last, streak: Daily.streak, ready: Daily.ready(), next: Daily.next() }),
+      daily: () => ({ last: Daily.last, streak: Daily.streak, cycles: Daily.cycles, prompted: Daily.prompted, ready: Daily.ready(), next: Daily.next(), week: Daily.week(), kind: Daily.kind(), amount: Daily.amount(Daily.ready() ? Daily.next() : Daily.streak || 1) }),
       missions: () => ({ day: Missions.day, list: JSON.parse(JSON.stringify(Missions.list)) }),
       week: () => ({ key: Week.key, id: Week.id, done: Week.done }),
       portrait: () => !!G.portrait,
@@ -4631,12 +4803,15 @@ function posterSetup(which){
         G.lastSpot = false; G.state = 'race';
         return G.finish.length;
       },
-      pokeDaily: (last, streak) => {
+      pokeDaily: (last, streak, cycles, prompted) => {
         Daily.last = String(last || '');
-        Daily.streak = Math.max(0, Math.min(99, streak | 0));
+        Daily.streak = Math.max(0, Math.min(7, streak | 0));
+        if (cycles != null) Daily.cycles = Math.max(0, Math.min(999, cycles | 0));
+        Daily.prompted = prompted == null ? '' : String(prompted);
         Daily.save();
-        return { ready: Daily.ready(), next: Daily.next(), last: Daily.last, streak: Daily.streak };
+        return window.__rollout.daily();
       },
+      loadDaily: (raw) => { Daily.load(raw); return window.__rollout.daily(); },
       adDuringRace: () => {
         const prev = { mode: G.mode, state: G.state, ad: G.adPause };
         G.mode = 'host'; G.state = 'race';

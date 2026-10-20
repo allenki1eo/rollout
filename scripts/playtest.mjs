@@ -239,9 +239,12 @@ const resumed = await evalJson(`!document.getElementById('scrPause').classList.c
 await go(base, 800, 450, true);
 const mobile = await waitSnap(s => s.mode === 'attract' || s.mode === 'solo', 'mobile');
 const touchUi = await evalJson(`(() => {
+  const go = document.getElementById('btnGo');
+  const pad = document.getElementById('steerPad');
   const jump = document.getElementById('btnJump');
-  const cs = getComputedStyle(jump);
-  return { display: cs.display, touch: document.body.classList.contains('touch'), w: innerWidth, h: innerHeight };
+  const brake = document.getElementById('btnBrake');
+  const shown = (el) => el ? getComputedStyle(el).display : 'none';
+  return { display: shown(go), pad: shown(pad), jump: shown(jump), brake: shown(brake), touch: document.body.classList.contains('touch'), w: innerWidth, h: innerHeight };
 })()`);
 await shot('playtest-mobile.png');
 
@@ -281,7 +284,7 @@ console.log(JSON.stringify(report, null, 2));
 chrome.kill('SIGKILL');
 server.close();
 const narrowOk = Array.isArray(narrow) && narrow.every(x => x.ok);
-if (errors.length || failedUrls.length || !menuOn || !howOn || skins < 10 || !watchHidden || !paused || smooth !== 'low' || !resumed || touchUi.display === 'none' || after.racers !== 30 || !(after.s > rolling.s + 1) || !narrowOk){
+if (errors.length || failedUrls.length || !menuOn || !howOn || skins < 10 || !watchHidden || !paused || smooth !== 'low' || !resumed || touchUi.display === 'none' || touchUi.pad === 'none' || touchUi.jump !== 'none' || touchUi.brake !== 'none' || after.racers !== 30 || !(after.s > rolling.s + 1) || !narrowOk){
   console.error('movement', rolling && rolling.s, '->', after.s);
   process.exit(1);
 }
