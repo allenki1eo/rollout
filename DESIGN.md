@@ -14,7 +14,7 @@ Bots now have a personality (safe lane, balanced, or the fast lane with the spin
 
 ## First thirty seconds
 
-A brand-new player skips the menu and drops into heat 1. A coach card asks for a steer, then a jump, then a dash, then gets out of the way. Skip is always there. The first upgrade pick waits until the next heat, so the opening is driving, not a menu. After that, or if you quit, the game remembers and opens on the menu. One click starts the next race. An invite link skips the menu and joins that room. Instant multiplayer opens a fresh room instead of the coach.
+A brand-new player skips the menu and drops into heat 1. A coach card asks for a steer, then a jump, then a dash, then gets out of the way. Skip is always there. The first upgrade pick waits until the next heat, so the opening is driving, not a menu. The daily reward waits until that first race is over, and invite links and instant multiplayer skip it. After that, the menu offers a 7-day streak, three missions that change with the local date, and one weekly goal. Solo races also name a rival marble, leave a shield orb and a magnet orb after the coach is done, and pay the combo for a close graze. A photo finish in solo can briefly slow down. Multiplayer does not.
 
 ## Sessions
 
