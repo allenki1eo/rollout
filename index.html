@@ -4398,8 +4398,10 @@ function clientTick(dt){
   }
 }
 
+let viewW = 0, viewH = 0;
 function resize(){
   const w = innerWidth, h = innerHeight;
+  viewW = w; viewH = h;
   G.portrait = h > w * 1.05;
   renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
 }
@@ -4408,6 +4410,7 @@ addEventListener('resize', resize);
 let last = performance.now(), lastFrame = 0;
 function frame(now){
   requestAnimationFrame(frame);
+  if (viewW !== innerWidth || viewH !== innerHeight) resize();
   lastFrame = performance.now();
   const dt = Math.min(.05, (now - last) / 1000); last = now;
   update(dt); syncMeshes(dt); updateCamera(dt); updateHUD(dt);
@@ -4610,11 +4613,11 @@ function posterSetup(which){
       missions: () => ({ day: Missions.day, list: JSON.parse(JSON.stringify(Missions.list)) }),
       week: () => ({ key: Week.key, id: Week.id, done: Week.done }),
       portrait: () => !!G.portrait,
-      orbs: () => (G.orbs || []).map(o => ({ kind: o.kind, s: +o.s.toFixed(1), taken: !!o.taken, shield: G.player ? G.player.shield : 0, magnet: G.player ? +((G.player.magnet || 0).toFixed(1)) : 0 })),
+      orbs: () => (G.orbs || []).map(o => ({ kind: o.kind, s: +o.s.toFixed(2), d: +o.d.toFixed(2), taken: !!o.taken, shield: G.player ? G.player.shield : 0, magnet: G.player ? +((G.player.magnet || 0).toFixed(1)) : 0 })),
       rival: () => G.rival ? G.rival.name : '',
       warp: (s, d, vs) => {
         const p = G.player; if (!p || !G.track) return false;
-        p.s = s; p.d = d || 0; G.track.get(s, SA); p.y = SA.y; p.grounded = true; p.vs = vs == null ? 16 : +vs; p.falling = false; camSnap = true;
+        p.s = s; p.d = d || 0; G.track.get(s, SA); p.y = SA.y; p.grounded = true; p.vd = 0; p.vs = vs == null ? 16 : +vs; p.falling = false; camSnap = true;
         return true;
       },
       armCut: () => {

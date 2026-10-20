@@ -4398,8 +4398,10 @@ function clientTick(dt){
   }
 }
 
+let viewW = 0, viewH = 0;
 function resize(){
   const w = innerWidth, h = innerHeight;
+  viewW = w; viewH = h;
   G.portrait = h > w * 1.05;
   renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
 }
@@ -4408,6 +4410,7 @@ addEventListener('resize', resize);
 let last = performance.now(), lastFrame = 0;
 function frame(now){
   requestAnimationFrame(frame);
+  if (viewW !== innerWidth || viewH !== innerHeight) resize();
   lastFrame = performance.now();
   const dt = Math.min(.05, (now - last) / 1000); last = now;
   update(dt); syncMeshes(dt); updateCamera(dt); updateHUD(dt);
@@ -4582,6 +4585,8 @@ function posterSetup(which){
           accel: !!(p && p.input.accel), brake: !!(p && p.input.brake),
           botVs: +((G.racers.filter(m => !m.isPlayer && !m.done).reduce((a, m) => a + m.vs, 0) / Math.max(1, G.racers.filter(m => !m.isPlayer && !m.done).length)) || 0).toFixed(2),
           chain: G.run.chain || 0,
+          q: G.q, through: G.finish.length, slow: +((G.slowT || 0).toFixed(2)),
+          finish: G.track ? +G.track.finishS.toFixed(1) : 0,
           mem: navigator.deviceMemory || 0, sdkMuted: Sfx.sdkMuted,
         };
       },
@@ -4608,22 +4613,29 @@ function posterSetup(which){
       missions: () => ({ day: Missions.day, list: JSON.parse(JSON.stringify(Missions.list)) }),
       week: () => ({ key: Week.key, id: Week.id, done: Week.done }),
       portrait: () => !!G.portrait,
-      orbs: () => (G.orbs || []).map(o => ({ kind: o.kind, s: +o.s.toFixed(1), taken: !!o.taken, shield: G.player ? G.player.shield : 0, magnet: G.player ? +((G.player.magnet || 0).toFixed(1)) : 0 })),
+      orbs: () => (G.orbs || []).map(o => ({ kind: o.kind, s: +o.s.toFixed(2), d: +o.d.toFixed(2), taken: !!o.taken, shield: G.player ? G.player.shield : 0, magnet: G.player ? +((G.player.magnet || 0).toFixed(1)) : 0 })),
       rival: () => G.rival ? G.rival.name : '',
-      warp: (s, d) => {
+      warp: (s, d, vs) => {
         const p = G.player; if (!p || !G.track) return false;
-        p.s = s; p.d = d || 0; G.track.get(s, SA); p.y = SA.y; p.grounded = true; p.vs = 16; p.falling = false; camSnap = true;
+        p.s = s; p.d = d || 0; G.track.get(s, SA); p.y = SA.y; p.grounded = true; p.vd = 0; p.vs = vs == null ? 16 : +vs; p.falling = false; camSnap = true;
         return true;
       },
       armCut: () => {
         if (!G.player || G.mode === 'attract') return false;
         const need = Math.max(0, G.q - 1);
         for (const m of G.racers){
-          if (m === G.player || G.finish.length >= need) break;
-          if (!m.done){ m.done = true; m.finIdx = G.finish.length; G.finish.push(m); }
+          if (G.finish.length >= need) break;
+          if (m === G.player || m.done) continue;
+          m.done = true; m.finIdx = G.finish.length; G.finish.push(m);
         }
         G.lastSpot = false; G.state = 'race';
         return G.finish.length;
+      },
+      pokeDaily: (last, streak) => {
+        Daily.last = String(last || '');
+        Daily.streak = Math.max(0, Math.min(99, streak | 0));
+        Daily.save();
+        return { ready: Daily.ready(), next: Daily.next(), last: Daily.last, streak: Daily.streak };
       },
       adDuringRace: () => {
         const prev = { mode: G.mode, state: G.state, ad: G.adPause };
