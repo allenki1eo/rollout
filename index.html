@@ -326,6 +326,7 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
 .chip.coins.bump{animation:bump .32s ease-out}
 @keyframes bump{40%{transform:scale(1.2)}}
 .dot.friend{box-shadow:0 0 0 2px var(--mint),0 0 0 3.5px var(--ink);z-index:1}
+.dot.rival{box-shadow:0 0 0 2px var(--berry);z-index:1}
 .earn{color:var(--sun);font-weight:600;display:flex;justify-content:center;align-items:center;gap:8px}
 .pod .ball{width:42px;height:42px;background:none;box-shadow:none}
 
@@ -386,6 +387,52 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
 .prog .bar i{display:block;height:100%;background:var(--mint);border-radius:99px;transition:width .8s ease-out}
 .prog .xp{white-space:nowrap;font-size:15px}
 .unlock{color:var(--sun);font-family:'Bungee',sans-serif;font-size:18px;margin-top:10px}
+.daily-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-top:20px}
+.day{background:var(--ink-2);border-radius:14px;padding:9px 2px 10px;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;font-weight:600;box-shadow:0 4px 0 var(--ink-deep)}
+.day b{font-family:'Bungee',sans-serif;font-weight:400;font-size:15px;color:var(--sun);display:flex;align-items:center;gap:3px}
+.day .coin{font-size:12px}
+.day.done{opacity:.4}
+.day.now{box-shadow:0 0 0 3px var(--sun),0 4px 0 var(--ink-deep);transform:translateY(-4px)}
+.day.gift b{font-size:17px}
+@media (max-width:420px){.daily-row{gap:5px}.day{padding:7px 1px 8px}.day b{font-size:13px}}
+.mission-chip{display:inline-flex;align-items:center;gap:8px;margin-top:14px;border:0;border-radius:99px;padding:9px 16px;cursor:pointer;
+  background:rgba(27,31,59,.82);color:var(--paper);font:600 15px 'Fredoka',ui-rounded,sans-serif;box-shadow:0 4px 0 var(--ink-deep)}
+.mission-chip b{font-family:'Bungee',sans-serif;font-weight:400;color:var(--mint)}
+.mission-chip.all b{color:var(--sun)}
+.week-line{margin:8px 0 0;font-weight:600;font-size:14px;color:var(--paper);text-shadow:0 2px 0 rgba(13,16,48,.55)}
+.week-line b{font-family:'Bungee',sans-serif;font-weight:400;color:var(--sun)}
+.missions{list-style:none;display:grid;gap:10px;margin-top:18px;text-align:left}
+.mission{display:flex;align-items:center;gap:14px;background:var(--ink-2);border-radius:18px;padding:12px 16px;box-shadow:0 4px 0 var(--ink-deep)}
+.mission > div{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+.mission b{font-weight:600;font-size:16px}
+.mission small{font-size:13px;opacity:.75}
+.mbar{height:9px;border-radius:99px;background:var(--ink);overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--mint);border-radius:99px}
+.mission em{font-style:normal;font-family:'Bungee',sans-serif;font-size:15px;color:var(--sun);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.mission.done{opacity:.6}
+.mission.done em{color:var(--mint)}
+/* Portrait phones: rank, coins and buttons on one row, the progress strip full width under them */
+@media (orientation:portrait) and (max-width:760px){
+  .hud-top{flex-wrap:wrap;row-gap:8px;gap:8px}
+  .hud-top > .chip{flex:none}
+  .hud-top > .strip{order:10;flex:1 1 100%;max-width:none;margin:0}
+  .hud-btns{margin-left:auto}
+  .hud-btns .icon-btn{width:40px;height:40px}
+  #rankNum{font-size:28px}
+  .chip.coins{padding:8px 11px;font-size:16px}
+  .banner{top:30%}
+}
+.chip.rank{transition:box-shadow .2s}
+.chip.rank.safe{box-shadow:0 0 0 3px var(--mint),0 5px 0 var(--ink-deep)}
+.chip.rank.edge{box-shadow:0 0 0 3px var(--sun),0 5px 0 var(--ink-deep)}
+.chip.rank.danger{box-shadow:0 0 0 3px var(--berry),0 5px 0 var(--ink-deep);animation:danger 1s ease-in-out infinite}
+.chip.rank.danger #rankNum,.chip.rank.danger #rankSuf{color:var(--berry)}
+@keyframes danger{50%{box-shadow:0 0 0 5px var(--berry),0 5px 0 var(--ink-deep)}}
+@media (prefers-reduced-motion:reduce){.chip.rank.danger{animation:none}}
+.next-goal{margin-top:12px;font-weight:600;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.next-goal span{font-family:'Bungee',sans-serif;font-size:12px;letter-spacing:.06em;padding:3px 9px;border-radius:99px;background:var(--mint);color:var(--ink)}
+.next-goal b{color:var(--sun);font-weight:600}
+.next-sub{font-size:14px;opacity:.8;margin-top:4px}
 </style>
 </head>
 <body>
@@ -445,6 +492,8 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
         <span style="--c:#ffd23f;--r:-4deg;--d:.05s">R</span><span style="--c:#ff6b1a;--r:3deg;--d:.12s">O</span><span style="--c:#2de2c2;--r:-2deg;--d:.19s">L</span><span style="--c:#ff3d7f;--r:4deg;--d:.26s">L</span><span style="--c:#7aa7ff;--r:-3deg;--d:.33s">O</span><span style="--c:#b6f04a;--r:2deg;--d:.40s">U</span><span style="--c:#ffd23f;--r:-5deg;--d:.47s">T</span>
       </h1>
       <button class="btn big" id="btnPlay">Play</button>
+      <button class="mission-chip" id="btnMissions" type="button"><span aria-hidden="true">🎯</span> Daily missions <b id="missionCount">0/3</b></button>
+      <p class="week-line" id="weekLine"></p>
     </div>
     <nav class="menu-dock" aria-label="More">
       <button class="dock-btn" id="btnSkins" type="button" aria-label="Marbles">
@@ -468,6 +517,26 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
         <span class="dock-lbl">Settings</span>
       </button>
     </nav>
+  </section>
+
+  <section class="screen dim" id="scrDaily">
+    <div class="panel">
+      <h2>Daily reward</h2>
+      <p id="dailyText">Come back tomorrow to start a streak.</p>
+      <div class="daily-row" id="dailyRow"></div>
+      <div class="actions"><button class="btn big" id="btnDailyClaim" type="button">Collect</button></div>
+    </div>
+  </section>
+
+  <section class="screen dim" id="scrMissions">
+    <div class="panel">
+      <h2>Daily missions</h2>
+      <p>Three new ones every day. Finish them in any race, solo or with friends.</p>
+      <ul class="missions" id="missionList"></ul>
+      <p class="set-quiet" id="weekNote"></p>
+      <p class="set-quiet" id="missionReset"></p>
+      <div class="actions"><button class="btn" id="btnMissionsPlay" type="button">Play</button><button class="btn ghost" id="btnMissionsBack" type="button">Back</button></div>
+    </div>
   </section>
 
   <section class="screen dim" id="scrProfile">
@@ -562,6 +631,10 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
         <div><i>🟣</i><span>Purple pads launch you into the air. Pink bumpers knock you away, and blue blocks slide across the road.</span></div>
         <div><i>🪙</i><span>Grab coins on the track, often in risky spots or up in the air. Spend them on new marbles.</span></div>
         <div><i>✨</i><span>Pick an upgrade before every stage. Upgrades stack, so build a marble that suits how you race.</span></div>
+        <div><i>🎯</i><span>Three daily missions pay coins and XP the moment you finish them. A 7-day streak on the menu pays more each day you come back. Miss a day and it starts over.</span></div>
+        <div><i>🍓</i><span id="howRival">One marble is your rival in solo. Pass them, or keep them behind. Blue orbs block one wall hit. Gold orbs pull coins in for a few seconds. They show up after your first race.</span></div>
+        <div><i>😅</i><span>A close graze on the rail keeps your combo going. The rank chip turns mint when you are safe, yellow near the cut, and red when you are out. “Last spot!” means one place is left.</span></div>
+        <div><i>📅</i><span id="howWeek">A weekly goal sits under Daily missions. Finish it once for a bigger coin payout.</span></div>
       </div>
       <div class="actions"><button class="btn" id="btnHowBack">Got it</button></div>
     </div>
@@ -716,7 +789,7 @@ function loadScript(src, timeout = 4000){
    CrazyGames SDK wrapper (no-ops gracefully off-platform)
    ========================================================= */
 const memStore = {};
-const SAVE_KEYS = ['rollout_stats','rollout_coins','rollout_owned','rollout_skin','rollout_name','rollout_prog','rollout_world','rollout_muted','rollout_music','rollout_coach','rollout_quality','rollout_reward_at','rollout_audio','rollout_opts','rollout_avatar','rollout_controls'];
+const SAVE_KEYS = ['rollout_stats','rollout_coins','rollout_owned','rollout_skin','rollout_name','rollout_prog','rollout_world','rollout_muted','rollout_music','rollout_coach','rollout_quality','rollout_reward_at','rollout_audio','rollout_opts','rollout_avatar','rollout_controls','rollout_daily','rollout_missions','rollout_week'];
 const CG = {
   sdk: null, ready: false, playing: false, adsBlocked: false, adLock: false,
   async init(){
@@ -1007,6 +1080,7 @@ const Sfx = {
         this.tone(880 * Math.pow(1.06, step), .22, 'triangle', .1, 0, .04); break; }
       case 'boing': this.tone(170, .45, 'sine', .3, 3.2); this.tone(340, .3, 'triangle', .06, 2.6); break;
       case 'whack': this.noise(.1, .3, 900); this.tone(150, .16, 'square', .1, .5); break;
+      case 'whoosh': this.noise(.9, .16, 700, 'bandpass', 0, .6, .25); this.tone(220, .9, 'sine', .08, .5); Music.duck(1.2); break;
       case 'buy': [784, 988, 1175, 1568].forEach((f, i) => this.tone(f, .2, 'square', .06, 0, i * .06)); break;
     }
   },
@@ -2078,6 +2152,7 @@ function setupStage(i, grid){
   G.racers = grid ? grid.map(r => G.marbles[r[0]]) : G.alive.slice();
   tuneBots();
   G.finish = []; G.stageT = 0; G.acc = 0; G.simT = 0; G.snapT = 0;
+  G.lastSpot = false; G.slowUsed = false; G.slowT = 0; G.orbs = [];
   G.run.lastPos = null;
   G.q = G.mode === 'attract' ? 8 : Math.min(STAGES[i], G.racers.length - 1);
   for (const m of G.marbles) m.mesh.visible = false;
@@ -2098,7 +2173,7 @@ function setupStage(i, grid){
     m.s = s; m.d = d; tr.get(s, SA); m.y = SA.y;
     m.vs = 0; m.vd = 0; m.vy = 0; m.grounded = true; m.falling = false; m.ghost = 0; m.out = false;
     m.done = false; m.dashT = 0; m.jumpBuf = 0; m.glow = 0; m.airLeft = m.stats.airJumps; m.onPad = false;
-    m.input.steer = 0; m.input.dash = false; m.input.accel = false; m.input.brake = false; m.jumpRoll = false; m.forkId = -1; m.buf = [];
+    m.input.steer = 0; m.input.dash = false; m.input.accel = false; m.input.brake = false; m.shield = 0; m.magnet = 0; m.jumpRoll = false; m.forkId = -1; m.buf = [];
     m.lane = Math.random() * 2 - 1;
     m.mesh.visible = true;
   }
@@ -2132,6 +2207,7 @@ function styleHit(label){
   run.chainT = 2.35;
   run.score = (run.score || 0) + run.chain;
   if (run.chain > (run.bestChain || 0)) run.bestChain = run.chain;
+  Missions.hit(label); Missions.best('combo', run.chain);
   updateComboHud();
   if (run.chain >= 2) Sfx.play('chain', run.chain);
   if (run.chain === 3 || run.chain === 6 || run.chain === 10) banner('x' + run.chain, 'mint pop', label || '');
@@ -2158,7 +2234,46 @@ function checkPass(){
     const behind = rank[pos + 1];
     if (behind && p.s - behind.s < 2.4 && p.s - behind.s > -.2) styleHit('Overtake');
   }
+  if (G.rival && G.mode === 'solo' && !G.coaching && G.run.lastPos != null && pos >= 0 && performance.now() - (G.rivalAt || 0) > 6500){
+    if (pos < G.run.lastPos && rank[pos + 1] === G.rival){ G.rivalAt = performance.now(); toast('You passed ' + G.rival.name + '.'); }
+    else if (pos > G.run.lastPos && rank[pos - 1] === G.rival){ G.rivalAt = performance.now(); toast(G.rival.name + ' slips by.'); }
+  }
   if (pos >= 0) G.run.lastPos = pos;
+}
+function pickRival(){
+  G.rival = null;
+  if (G.mode !== 'solo') return;
+  const bots = G.marbles.filter(m => !m.isPlayer);
+  if (!bots.length) return;
+  const r = bots[Math.abs(G.seed | 0) % bots.length];
+  r.rival = true;
+  if (!G.coaching) r.skill0 = Math.min(.96, (r.skill0 ?? .5) + .08);
+  G.rival = r;
+}
+function placeOrbs(){
+  G.orbs = [];
+  if (G.mode !== 'solo' || G.coaching || !G.track || !trackGroup) return;
+  const tr = G.track, span = tr.finishS - tr.startS;
+  if (span < 28) return;
+  const rnd = mulberry32((G.seed + G.stage * 17) | 0);
+  ['shield', 'magnet'].forEach((kind, i) => {
+    let s = tr.startS + span * (.3 + i * .28);
+    tr.get(s, SA);
+    for (let n = 0; n < 16 && !SA.floor; n++){ s += 1.2; tr.get(s, SA); }
+    if (!SA.floor || s > tr.finishS - 8) return;
+    const d = (i ? -1 : 1) * (.9 + rnd() * .5);
+    tr.get(s, SA);
+    const mat = new THREE.MeshStandardMaterial({
+      color: kind === 'shield' ? 0x7aa7ff : 0xffd23f,
+      emissive: kind === 'shield' ? 0x27407a : 0x8a5a00,
+      emissiveIntensity: .65, roughness: .32, metalness: .15,
+    });
+    const mesh = new THREE.Mesh(new THREE.SphereGeometry(.32, 14, 10), mat);
+    mesh.userData.ownMat = true; mesh.castShadow = true;
+    mesh.position.set(SA.x - Math.cos(SA.h) * d, SA.y + .72, SA.z + Math.sin(SA.h) * d);
+    trackGroup.add(mesh);
+    G.orbs.push({ kind, s, d, y: SA.y + .5, mesh, taken: false });
+  });
 }
 
 function startAttract(){
@@ -2180,6 +2295,7 @@ function startSolo(){
   G.marbles = createMarbles([{ slot: 0, name: 'You', skin: G.skin, isMe: true }]);
   G.player = G.marbles[0]; G.alive = G.marbles.slice();
   G.seed = (Math.random() * 1e9) | 0; G.stage = 0;
+  pickRival();
   buildTags();
   if (!G.coachDone){
     G.coaching = true; G.coachStep = 'steer';
@@ -2208,9 +2324,12 @@ function beginStage(){
   showScreen(null); setHud(true);
   G.state = 'countdown'; G.cd = 3.2; G.cdShown = -1;
   if (G.player && G.racers.includes(G.player)) CG.gameplayStart();
+  if (G.stage === STAGES.length - 1 && G.mode !== 'attract' && G.player && G.racers.includes(G.player) && !G.spectating) Missions.hit('final');
+  placeOrbs();
   syncCrazyRoom();
   if (G.stage === 0 && G.player && G.racers.includes(G.player) && !G.coaching){
     later(.4, () => toast(stageHint()));
+    if (G.mode === 'solo' && G.rival) later(2.4, () => { if (G.rival && (G.state === 'countdown' || G.state === 'race')) toast(G.rival.name + ' is your rival this race.'); });
   }
 }
 
@@ -2227,6 +2346,7 @@ function onFinish(m){
 }
 function showThrough(m){
   if (G.stage >= STAGES.length - 1) return;
+  Missions.hit('heat');
   Sfx.play('through');
   banner('Through!', 'mint hold', `${m.finIdx + 1}${ord(m.finIdx + 1)} across the line`);
   CG.gameplayStop();
@@ -2310,6 +2430,7 @@ function presentEnd(last, qual, out){
     later(1.8, showOut);
     return;
   }
+  if (G.mode === 'client' && raced && qual.includes(p)) Missions.hit('heat');
   if (!raced) banner(`${out.length} knocked out`, 'small hold');
 }
 
@@ -2318,6 +2439,7 @@ function finishRun(place, cleared){
   G.run.awarded = true;
   if (place === 1) G.stats.wins++;
   G.stats.played = (G.stats.played | 0) + 1;
+  if (place <= 3) Missions.hit('podium');
   if (!G.stats.best || place < G.stats.best) G.stats.best = place;
   const bonus = place === 1 ? 80 : place === 2 ? 40 : place === 3 ? 25 : 0;
   const styleBonus = Math.min(48, (G.run.bestChain || 0) * 2 + Math.floor((G.run.score || 0) / 5));
@@ -2327,6 +2449,8 @@ function finishRun(place, cleared){
   const before = levelOf(G.xp);
   G.run.xp = 20 + cleared * 25 + (cleared >= 3 ? 40 : 0) + (place === 1 ? 150 : place === 2 ? 90 : place === 3 ? 60 : 0) + G.run.gems * 2;
   G.xp += G.run.xp;
+  const weekXp = Week.claim(place);
+  if (weekXp) G.run.xp += weekXp;
   const after = levelOf(G.xp);
   G.run.levelUp = after > before;
   G.run.unlocked = WORLDS.filter(w => w.level > before && w.level <= after);
@@ -2348,6 +2472,7 @@ function stepMarble(m, dt){
   const tr = G.track, st = m.stats;
   if (m.ghost > 0) m.ghost -= dt;
   if (m.dashT > 0) m.dashT -= dt;
+  if (m.magnet > 0) m.magnet -= dt;
   if (m.jumpBuf > 0) m.jumpBuf -= dt;
   if (m.glow > 0) m.glow -= dt * 1.6;
   tr.get(m.s, SA);
@@ -2454,6 +2579,16 @@ function stepMarble(m, dt){
 
 function wallHit(m){
   const imp = Math.abs(m.vd);
+  if (m.isPlayer && m.shield > 0 && G.mode === 'solo' && imp > 1){
+    m.shield--; m.vd = -m.vd * .2;
+    toast('Shield popped'); Sfx.play('boing');
+    return;
+  }
+  if (m.isPlayer && imp > 1.4 && imp < 3.6 && performance.now() - (G.nearAt || 0) > 2400){
+    G.nearAt = performance.now();
+    styleHit('Close');
+    if (!G.run.nearTold){ G.run.nearTold = true; toast('Close! A graze keeps the combo going.'); }
+  }
   m.vs *= 1 - Math.min(.15, .025 * imp) / (1 + m.stats.rubber);
   m.vd = -m.vd * .35;
   if (m.isPlayer && imp > 3){ Sfx.play('bump', imp / 6); playerJuice(imp > 6 ? .8 : .45, imp < 5); }
@@ -3262,7 +3397,7 @@ $('btnCtrlReset').addEventListener('click', () => { Sfx.ensure(); Sfx.play('clic
 /* =========================================================
    UI
    ========================================================= */
-const SCREENS = ['scrLoad', 'scrMenu', 'scrHow', 'scrPerk', 'scrOut', 'scrResult', 'scrPause', 'scrSkins', 'scrFriends', 'scrLobby', 'scrWait', 'scrWorlds', 'scrSettings', 'scrProfile'];
+const SCREENS = ['scrMissions', 'scrDaily', 'scrLoad', 'scrMenu', 'scrHow', 'scrPerk', 'scrOut', 'scrResult', 'scrPause', 'scrSkins', 'scrFriends', 'scrLobby', 'scrWait', 'scrWorlds', 'scrSettings', 'scrProfile'];
 function showScreen(id){
   for (const s of SCREENS) $(s).classList.toggle('on', s === id);
   const btn = id && $(id).querySelector('.btn:not([disabled]):not([hidden])');
@@ -3563,10 +3698,220 @@ function showResult(){
   syncCrazyRoom();
 }
 
+/* ---------- Daily missions: three per day, the same for everyone on that date ---------- */
+const MISSION_POOL = [
+  { id: 'coin', icon: '🪙', n: [12, 18, 25], txt: n => `Grab ${n} coins on the track` },
+  { id: 'heat', icon: '🏁', n: [3, 4, 6], txt: n => `Get through ${n} heats` },
+  { id: 'Overtake', icon: '💨', n: [5, 8, 12], txt: n => `Make ${n} overtakes` },
+  { id: 'Clean jump', icon: '🦘', n: [2, 3, 5], txt: n => `Land ${n} clean jumps` },
+  { id: 'Bumper', icon: '🔴', n: [4, 6, 10], txt: n => `Hit ${n} bumpers` },
+  { id: 'final', icon: '👑', n: [1, 1, 2], txt: n => n > 1 ? `Reach the final ${n} times` : 'Reach the final' },
+  { id: 'podium', icon: '🏆', n: [1, 1, 2], txt: n => n > 1 ? `Finish in the top 3, ${n} times` : 'Finish in the top 3' },
+  { id: 'combo', icon: '✨', n: [4, 5, 7], txt: n => `Build an x${n} combo`, best: true },
+];
+const MISSION_COINS = [40, 60, 90], MISSION_XP = 25;
+const Missions = {
+  day: '', list: [],
+  load(raw){
+    try {
+      const o = JSON.parse(raw);
+      if (!o || !/^\d{4}-\d{2}-\d{2}$/.test(o.day || '') || !Array.isArray(o.list) || o.list.length !== 3) return;
+      const list = [];
+      for (const m of o.list){
+        const def = MISSION_POOL.find(x => x.id === m.id);
+        const n = m.n | 0;
+        if (!def || n < 1 || n > 99) return;
+        list.push({ id: m.id, n, p: Math.max(0, Math.min(n, m.p | 0)), done: !!m.done, coins: [40, 60, 90].includes(m.coins | 0) ? m.coins | 0 : 40 });
+      }
+      this.day = o.day; this.list = list;
+    } catch (e) {}
+  },
+  save(){ CG.save('rollout_missions', JSON.stringify({ day: this.day, list: this.list })); },
+  ensure(){
+    const today = dayKey();
+    if (this.day === today && this.list.length === 3 && this.list.every(m => this.def(m.id) && m.n > 0)) return;
+    let seed = 0; for (const ch of 'missions' + today) seed = (seed * 31 + ch.charCodeAt(0)) | 0;
+    const rnd = mulberry32(seed), picks = shuffle(MISSION_POOL.slice(), rnd).slice(0, 3);
+    this.day = today;
+    this.list = picks.map((m, k) => ({ id: m.id, n: m.n[k], p: 0, done: false, coins: MISSION_COINS[k] }));
+    this.save();
+  },
+  def(id){ return MISSION_POOL.find(m => m.id === id); },
+  counts(){ return G.mode !== 'attract' && !!G.player; },
+  hit(id, amt = 1){
+    if (!this.counts()) return;
+    const def = this.def(id);
+    if (!def || def.best) return;
+    this.ensure();
+    let changed = false;
+    for (const m of this.list) if (m.id === id && !m.done){
+      const p = Math.min(m.n, m.p + amt);
+      if (p === m.p) continue;
+      m.p = p; changed = true;
+      if (m.p >= m.n) this.complete(m);
+    }
+    if (changed) this.save();
+  },
+  best(id, v){
+    if (!this.counts()) return;
+    const def = this.def(id);
+    if (!def || !def.best) return;
+    this.ensure();
+    let changed = false;
+    for (const m of this.list) if (m.id === id && !m.done && v > m.p){
+      m.p = Math.min(m.n, v); changed = true;
+      if (m.p >= m.n) this.complete(m);
+    }
+    if (changed) this.save();
+  },
+  complete(m){
+    if (m.done) return;
+    m.done = true;
+    const before = levelOf(G.xp);
+    const coins = m.coins | 0;
+    G.coins += coins; G.xp += MISSION_XP;
+    CG.save('rollout_coins', String(G.coins)); CG.save('rollout_prog', JSON.stringify({ xp: G.xp, stars: G.stars }));
+    const def = this.def(m.id);
+    Sfx.play('buy'); toast(`Mission done: ${def ? def.txt(m.n) : 'goal'}. +${coins} coins`);
+    if (levelOf(G.xp) > before) later(1.4, () => toast(`Level ${levelOf(G.xp)}!`));
+    renderMissionChip();
+  },
+  doneCount(){ this.ensure(); return this.list.filter(m => m.done).length; },
+};
+function renderMissionChip(){
+  const n = Missions.doneCount(), chip = $('btnMissions');
+  if ($('missionCount')) $('missionCount').textContent = `${n}/3`;
+  if (chip) chip.classList.toggle('all', n === 3);
+  Week.ensure();
+  const line = $('weekLine');
+  if (line){
+    const w = Week.def();
+    line.innerHTML = Week.done ? `This week: <b>done</b>` : `This week: <b>${esc(w.txt)}</b>`;
+  }
+}
+function openMissions(){
+  Missions.ensure(); Week.ensure();
+  $('missionList').innerHTML = Missions.list.map(m => {
+    const d = Missions.def(m.id), f = Math.min(1, m.p / m.n);
+    return `<li class="mission${m.done ? ' done' : ''}"><span aria-hidden="true">${d.icon}</span><div><b>${esc(d.txt(m.n))}</b>`
+      + `<span class="mbar"><i style="width:${(f * 100).toFixed(0)}%"></i></span><small>${m.done ? 'Done' : `${m.p} of ${m.n}`}</small></div>`
+      + `<em>${m.done ? '✓' : `<i class="coin"></i>${m.coins}`}</em></li>`;
+  }).join('');
+  const mid = new Date(); mid.setHours(24, 0, 0, 0);
+  const hrs = Math.max(1, Math.round((mid - Date.now()) / 3600000));
+  const w = Week.def();
+  $('weekNote').textContent = Week.done ? `Weekly goal done: ${w.txt}.` : `This week: ${w.txt}. Worth ${w.pay} coins.`;
+  $('missionReset').textContent = `New missions in about ${hrs} hour${hrs === 1 ? '' : 's'}. Each one also gives ${MISSION_XP} XP.`;
+  showScreen('scrMissions');
+}
+$('btnMissions').addEventListener('click', () => { Sfx.ensure(); Sfx.play('click'); openMissions(); });
+$('btnMissionsBack').addEventListener('click', () => { Sfx.play('click'); showScreen('scrMenu'); });
+$('btnMissionsPlay').addEventListener('click', () => $('btnPlay').click());
+
+/* ---------- Daily reward: a 7-day streak that resets if you miss a day ---------- */
+const DAILY_COINS = [20, 30, 40, 50, 70, 90, 150];
+const dayKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const DATE_KEY = /^\d{4}-\d{2}-\d{2}$/;
+const Daily = {
+  last: '', streak: 0, claiming: false,
+  load(raw){
+    try {
+      const o = JSON.parse(raw);
+      const last = String(o.last || '');
+      if (last && !DATE_KEY.test(last)) return;
+      this.last = last;
+      this.streak = Math.max(0, Math.min(99, o.streak | 0));
+    } catch (e) {}
+  },
+  save(){ CG.save('rollout_daily', JSON.stringify({ last: this.last, streak: this.streak })); },
+  ready(){
+    const today = dayKey();
+    if (!this.last) return true;
+    return this.last < today;
+  },
+  next(){
+    const y = new Date(); y.setDate(y.getDate() - 1);
+    return this.last === dayKey(y) ? Math.min(99, this.streak + 1) : 1;
+  },
+  amount(st){ return DAILY_COINS[Math.min(7, Math.max(1, st)) - 1]; },
+};
+function maybeDaily(){
+  if (!G.coachDone || !Daily.ready() || G.mode !== 'attract' || !$('scrMenu').classList.contains('on')) return false;
+  const st = Daily.next(), cur = Math.min(7, st);
+  $('dailyRow').innerHTML = DAILY_COINS.map((c, i) => {
+    const d = i + 1, cls = d < cur ? 'done' : d === cur ? 'now' : '';
+    return `<div class="day ${cls}${d === 7 ? ' gift' : ''}"><span>${d === 7 && st > 7 ? 'Day ' + st : 'Day ' + d}</span><b>${d === 7 ? '🎁' : '<i class="coin"></i>'}${c}</b></div>`;
+  }).join('');
+  $('dailyText').textContent = st > 1
+    ? `Day ${st}. Miss a day and the streak starts over. Day 7 stays the big one.`
+    : 'Day 1. Collect this, then come back tomorrow. Day 7 is the big one.';
+  $('btnDailyClaim').textContent = `Collect ${Daily.amount(st)} coins`;
+  showScreen('scrDaily');
+  return true;
+}
+$('btnDailyClaim').addEventListener('click', () => {
+  if (Daily.claiming || !Daily.ready()){ showScreen('scrMenu'); return; }
+  Daily.claiming = true;
+  const st = Daily.next(), amt = Daily.amount(st);
+  Daily.streak = st; Daily.last = dayKey(); Daily.save();
+  G.coins += amt; CG.save('rollout_coins', String(G.coins));
+  Sfx.ensure(); Sfx.play('buy'); renderStats(); showScreen('scrMenu');
+  Daily.claiming = false;
+  toast(st >= 7 ? `Day ${st}! +${amt} coins` : `+${amt} coins. See you tomorrow.`);
+});
+
+/* ---------- Weekly goal: one seeded challenge, paid once ---------- */
+const WEEK_POOL = [
+  { id: 'win', txt: 'Win the show', pay: 150 },
+  { id: 'podium', txt: 'Finish in the top 3', pay: 80 },
+  { id: 'combo', txt: 'Build an x5 combo in one show', pay: 100 },
+  { id: 'coins', txt: 'Grab 15 track coins in one show', pay: 90 },
+];
+const weekKey = (d = new Date()) => {
+  const t = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const start = new Date(t.getFullYear(), 0, 1);
+  const week = Math.floor((t - start) / 86400000 / 7) + 1;
+  return t.getFullYear() + '-W' + String(week).padStart(2, '0');
+};
+const Week = {
+  key: '', id: 'win', done: false,
+  load(raw){
+    try {
+      const o = JSON.parse(raw);
+      if (!o || !/^\d{4}-W\d{2}$/.test(o.key || '') || !WEEK_POOL.some(w => w.id === o.id)) return;
+      this.key = o.key; this.id = o.id; this.done = !!o.done;
+    } catch (e) {}
+  },
+  save(){ CG.save('rollout_week', JSON.stringify({ key: this.key, id: this.id, done: this.done })); },
+  ensure(){
+    const key = weekKey();
+    if (this.key === key && WEEK_POOL.some(w => w.id === this.id)) return;
+    let seed = 0; for (const ch of 'week' + key) seed = (seed * 33 + ch.charCodeAt(0)) | 0;
+    const rnd = mulberry32(seed >>> 0);
+    this.key = key; this.id = WEEK_POOL[Math.floor(rnd() * WEEK_POOL.length)].id; this.done = false;
+    this.save();
+  },
+  def(){ return WEEK_POOL.find(w => w.id === this.id) || WEEK_POOL[0]; },
+  claim(place){
+    if (G.mode === 'attract' || !G.player) return 0;
+    this.ensure();
+    if (this.done) return 0;
+    const id = this.id;
+    const ok = id === 'win' ? place === 1 : id === 'podium' ? place > 0 && place <= 3 : id === 'combo' ? (G.run.bestChain || 0) >= 5 : (G.run.gems || 0) >= 15;
+    if (!ok) return 0;
+    this.done = true; this.save();
+    const pay = this.def().pay;
+    G.coins += pay; G.xp += 40;
+    toast(`Weekly done: ${this.def().txt}. +${pay} coins`);
+    return 40;
+  },
+};
+
 function toMenu(){
   if (G.coaching) finishCoach();
   CG.gameplayStop(); clearBanner(); G.paused = false;
   startAttract(); renderStats(); showScreen('scrMenu');
+  maybeDaily();
 }
 function renderWorldPick(){
   const w = WORLD_BY[G.world] || WORLDS[0], open = isUnlocked(w.id), st = G.stars[w.id] || 0;
@@ -3590,7 +3935,20 @@ function progHTML(){
   const L = levelOf(G.xp), a = xpFor(L), b = xpFor(L + 1), f = Math.min(1, (G.xp - a) / (b - a));
   let html = `<div class="prog"><span class="lvl">Level ${L}</span><span class="bar"><i style="width:${(f * 100).toFixed(1)}%"></i></span><span class="xp">+${G.run.xp || 0} XP</span></div>`;
   for (const w of G.run.unlocked || []) html += `<p class="unlock">${w.icon} ${esc(w.name)} unlocked!</p>`;
+  const done = Missions.doneCount();
+  html += `<p class="next-goal"><span>Next</span>${nextGoal()}</p><p class="next-sub">🎯 Daily missions ${done}/3${done < 3 ? '' : ', all done'}</p>`;
   return html;
+}
+// One concrete thing to chase after every race: a world, then missions, then stars
+function nextGoal(){
+  const L = levelOf(G.xp);
+  const locked = WORLDS.filter(w => w.level > L).sort((a, b) => a.level - b.level)[0];
+  if (locked) return `<b>${xpFor(locked.level) - G.xp} XP</b> to unlock ${locked.icon} ${esc(locked.name)}`;
+  const left = 3 - Missions.doneCount();
+  if (left > 0) return `<b>${left}</b> daily mission${left > 1 ? 's' : ''} left today`;
+  const w = WORLDS.find(x => (G.stars[x.id] || 0) < 3);
+  if (w) return `Win in ${w.icon} ${esc(w.name)} for all <b>3 stars</b>`;
+  return 'New missions and a streak day tomorrow';
 }
 function showProgress(prefix){
   $(prefix + 'Prog').innerHTML = progHTML();
@@ -3724,6 +4082,7 @@ function renderStats(){
   const bar = $('pfProg'); if (bar) bar.innerHTML = levelBar();
   drawPreview($('menuBall').getContext('2d'), G.skin, 30);
   renderIdentity();
+  renderMissionChip();
 }
 
 function playSelected(){
@@ -3810,7 +4169,7 @@ let dotEls = [];
 function buildDots(){
   const bar = $('stripBar'); bar.innerHTML = ''; dotEls = [];
   for (const m of G.racers){
-    const d = document.createElement('i'); d.className = 'dot' + (m.isPlayer ? ' me' : '') + (m.human && !m.isPlayer ? ' friend' : '');
+    const d = document.createElement('i'); d.className = 'dot' + (m.isPlayer ? ' me' : '') + (m.rival ? ' rival' : '') + (m.human && !m.isPlayer ? ' friend' : '');
     d.style.setProperty('--c', m.color);
     bar.appendChild(d); dotEls.push([m, d]);
   }
@@ -3826,6 +4185,16 @@ function updateHUD(dt){
   $('rankOf').textContent = `of ${G.racers.length}`;
   $('stageLbl').textContent = `${curWorld.icon} ` + (G.stage === 3 ? 'Final' : `Stage ${G.stage + 1} of 3`);
   $('thruLbl').textContent = G.stage === 3 ? 'First home wins' : `${G.finish.length} of ${G.q} through`;
+  // rank chip shows which side of the cut you are on
+  const chip = $('rankNum').parentElement, me = G.player;
+  let zone = '';
+  if (me && focus === me && G.state === 'race'){
+    if (me.done) zone = 'safe';
+    else if (G.stage === 3) zone = pos === 1 ? 'safe' : pos <= 3 ? 'edge' : '';
+    else zone = pos <= G.q - 3 ? 'safe' : pos <= G.q ? 'edge' : 'danger';
+    if (!G.paused && !G.adPause && G.stage < 3 && !me.done && !G.lastSpot && G.finish.length === G.q - 1){ G.lastSpot = true; banner('Last spot!', 'berry small pop'); Sfx.play('beep'); }
+  }
+  chip.classList.toggle('safe', zone === 'safe'); chip.classList.toggle('edge', zone === 'edge'); chip.classList.toggle('danger', zone === 'danger');
   $('hudCoins').textContent = G.run.gems;
   const span = tr.finishS - tr.startS;
   for (const [m, el] of dotEls){ const p = clamp((m.s - tr.startS) / span, 0, 1); el.style.left = (p * 100).toFixed(2) + '%'; }
@@ -3837,9 +4206,19 @@ function bumpCoins(){ const c = $('coinChip'); c.classList.remove('bump'); void 
 function checkGems(){
   const p = G.player, tr = G.track;
   if (!tr || !tr.gems || !canControl()) return;
+  const pull = p.magnet > 0 && G.mode === 'solo';
+  const rs = pull ? 2.6 : .8, rd = pull ? 1.9 : .75, ry = pull ? 1.6 : .85;
   for (const g of tr.gems){
-    if (g.taken || Math.abs(g.s - p.s) > .8) continue;
-    if (Math.abs(g.d - p.d) < .75 && Math.abs(p.y + R - g.y) < .85){ g.taken = true; G.run.gems++; Sfx.play('coin'); p.fx = Math.max(p.fx || 0, .55); styleHit('Coin'); bumpCoins(); }
+    if (g.taken || Math.abs(g.s - p.s) > rs) continue;
+    if (Math.abs(g.d - p.d) < rd && Math.abs(p.y + R - g.y) < ry){ g.taken = true; G.run.gems++; Missions.hit('coin'); Sfx.play('coin'); p.fx = Math.max(p.fx || 0, .55); styleHit('Coin'); bumpCoins(); }
+  }
+  if (G.mode !== 'solo' || !G.orbs) return;
+  for (const o of G.orbs){
+    if (o.taken || Math.abs(o.s - p.s) > 1.15 || Math.abs(o.d - p.d) > .9 || Math.abs(p.y - o.y) > 1.5) continue;
+    o.taken = true; if (o.mesh) o.mesh.visible = false;
+    if (o.kind === 'shield'){ p.shield = (p.shield || 0) + 1; toast('Shield. The next wall clip is free.'); }
+    else { p.magnet = 7; toast('Magnet. Coins pull in for a few seconds.'); }
+    Sfx.play('buy');
   }
 }
 function forkHints(){
@@ -3917,12 +4296,14 @@ function updateCamera(dt){
   const k = camSnap ? 1 : 1 - Math.exp(-3.5 * dt);
   camH = camSnap ? SB.h : camH + (SB.h - camH) * k;
   const tx = Math.sin(camH), tz = Math.cos(camH);
-  tmpV.set(wp.x - tx * 7.4, wp.y + 3.3, wp.z - tz * 7.4);
+  // a tall screen sees less road side to side, so pull back and up a little
+  const back = G.portrait ? 9.6 : 7.4, up = G.portrait ? 4.6 : 3.3;
+  tmpV.set(wp.x - tx * back, wp.y + up, wp.z - tz * back);
   tmpL.set(wp.x + tx * 5, wp.y + .2, wp.z + tz * 5);
   camPos.lerp(tmpV, camSnap ? 1 : 1 - Math.exp(-7 * dt)); camLook.lerp(tmpL, camSnap ? 1 : 1 - Math.exp(-9 * dt));
   camSnap = false;
   camera.position.copy(camPos); camera.lookAt(camLook);
-  const fov = 60 + clamp((m.vs - 12) * .9, -2, 10);
+  const fov = (G.portrait ? 70 : 60) + clamp((m.vs - 12) * .9, -2, 10);
   if (Math.abs(camera.fov - fov) > .05){ camera.fov += (fov - camera.fov) * (1 - Math.exp(-3 * dt)); camera.updateProjectionMatrix(); }
   if (Opts.shake && Juice.shake > .004 && G.mode !== 'attract'){
     const mag = Juice.shake * .42;
@@ -3938,7 +4319,25 @@ function updateCamera(dt){
    Main loop
    ========================================================= */
 const STEP = 1 / 120;
+const REDUCE_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function cutLine(dt){
+  // Solo only: a fight for the last spots slows the world for a moment at the line
+  if (G.paused || G.adPause || REDUCE_MOTION) return dt;
+  const p = G.player;
+  if (G.mode !== 'solo' || G.state !== 'race' || !G.track || !p || p.done || !G.racers.includes(p)) { G.slowT = 0; return dt; }
+  if (!G.slowUsed){
+    const left = G.q - G.finish.length, toLine = G.track.finishS - p.s;
+    if (left <= 2 && toLine > 0 && toLine < 5){
+      let ahead = G.finish.length; for (const m of G.racers) if (!m.done && m !== p && m.s > p.s) ahead++;
+      const rank = ahead + 1;
+      if (rank >= G.q - 1 && rank <= G.q + 2){ G.slowUsed = true; G.slowT = 1.1; Sfx.play('whoosh'); }
+    }
+  }
+  if (G.slowT > 0){ G.slowT -= dt; return dt * .4; }
+  return dt;
+}
 function update(dt){
+  dt = cutLine(dt);
   if (Juice.hit > 0 && G.state === 'race' && G.mode !== 'attract'){
     const cut = Math.min(dt, Juice.hit);
     Juice.hit -= dt;
@@ -3992,7 +4391,7 @@ function clientTick(dt){
     if (Math.abs(s - Net.lastS) > .05 || a !== Net.lastA || b !== Net.lastB || now - Net.lastT > 150){
       Net.lastS = s; Net.lastA = a; Net.lastB = b; Net.lastT = now; Net.send({ t: 'in', s, a, b });
     }
-    checkGems(); forkHints();
+    checkGems(); forkHints(); checkPass(); tickStyle(dt);
   } else if (Net.lastA || Net.lastB || Net.lastS){
     Net.lastS = 0; Net.lastA = 0; Net.lastB = 0; Net.lastT = performance.now();
     Net.send({ t: 'in', s: 0, a: 0, b: 0 });
@@ -4001,6 +4400,7 @@ function clientTick(dt){
 
 function resize(){
   const w = innerWidth, h = innerHeight;
+  G.portrait = h > w * 1.05;
   renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
 }
 addEventListener('resize', resize);
@@ -4136,6 +4536,9 @@ function posterSetup(which){
   load('rollout_muted', v => { if (v === '1'){ Sfx.muted = true; renderMute(); } });
   load('rollout_music', v => { if (v === '0'){ Sfx.musicOn = false; renderMute(); } });
   load('rollout_coach', v => { if (v === '1') G.coachDone = true; });
+  load('rollout_daily', v => Daily.load(v));
+  load('rollout_missions', v => Missions.load(v));
+  load('rollout_week', v => Week.load(v));
   load('rollout_reward_at', v => { G.rewardAt = parseInt(v, 10) || 0; });
   load('rollout_quality', v => { if (Quality.labels[v]){ Quality.pref = v; Quality.apply(); } });
   load('rollout_audio', v => {
@@ -4201,6 +4604,27 @@ function posterSetup(which){
       mute: (v) => CG.onSettings({ muteAudio: !!v }),
       held: (code, down) => { if (!code) return Input.codes.size; if (down) Input.codes.add(code); else Input.codes.delete(code); },
       controls: () => ({ layout: Controls.layout, binds: JSON.parse(JSON.stringify(Controls.binds)) }),
+      daily: () => ({ last: Daily.last, streak: Daily.streak, ready: Daily.ready(), next: Daily.next() }),
+      missions: () => ({ day: Missions.day, list: JSON.parse(JSON.stringify(Missions.list)) }),
+      week: () => ({ key: Week.key, id: Week.id, done: Week.done }),
+      portrait: () => !!G.portrait,
+      orbs: () => (G.orbs || []).map(o => ({ kind: o.kind, s: +o.s.toFixed(1), taken: !!o.taken, shield: G.player ? G.player.shield : 0, magnet: G.player ? +((G.player.magnet || 0).toFixed(1)) : 0 })),
+      rival: () => G.rival ? G.rival.name : '',
+      warp: (s, d) => {
+        const p = G.player; if (!p || !G.track) return false;
+        p.s = s; p.d = d || 0; G.track.get(s, SA); p.y = SA.y; p.grounded = true; p.vs = 16; p.falling = false; camSnap = true;
+        return true;
+      },
+      armCut: () => {
+        if (!G.player || G.mode === 'attract') return false;
+        const need = Math.max(0, G.q - 1);
+        for (const m of G.racers){
+          if (m === G.player || G.finish.length >= need) break;
+          if (!m.done){ m.done = true; m.finIdx = G.finish.length; G.finish.push(m); }
+        }
+        G.lastSpot = false; G.state = 'race';
+        return G.finish.length;
+      },
       adDuringRace: () => {
         const prev = { mode: G.mode, state: G.state, ad: G.adPause };
         G.mode = 'host'; G.state = 'race';
@@ -4217,7 +4641,7 @@ function posterSetup(which){
   if (invite.length === 5){ await enterInvite(invite); return; }
   if (CG.instantMultiplayer()){ await enterInstant(); return; }
   if (!G.coachDone){ setLoad(.94, 'Lining up the marbles…'); startSolo(); }
-  else { startAttract(); showScreen('scrMenu'); }
+  else { startAttract(); showScreen('scrMenu'); maybeDaily(); }
 })();
 })();
 

@@ -8,7 +8,7 @@ Rollout: 30-Marble Knockout
 
 ## Short description
 
-Thirty marbles, four heats, one way down. Steer, jump, and dash. Finish too late and you are out.
+Thirty marbles, four heats, one way down. Steer, jump, and dash. Come back for a daily streak, three missions, and a weekly goal.
 
 ## Full description
 
@@ -17,6 +17,8 @@ Rollout is a 30-marble knockout. Everyone starts together. Each heat keeps a sma
 Steer with the keyboard, a mouse drag, or a finger. Jump the gaps. Dash for a burst when it is charged. Some roads split into a fast lane, a sticky safe lane, and a bumper lane. Coins sit on the risky lines. Grab them in a chain and the combo climbs. Between heats, pick an upgrade that stacks for the rest of the show.
 
 Coins buy new marble skins. Leveling up opens more worlds: Toy Box, Savanna, Candy Canyon, Frost Peak, and Neon Night. Play solo against the pack, or open a room and race friends, with bots filling the empty spots.
+
+Come back once a day for a streak that pays 20 coins and climbs to 150 on day 7. Miss a day and it starts over. Three daily missions, the same for every player on that date, pay coins and XP the moment you finish them. A weekly goal pays a bigger purse once. In solo, one marble is your rival, a blue orb blocks a wall hit, and a gold orb pulls coins in. The rank chip shows whether you are safe, close to the cut, or out.
 
 Rounds are short. When you are knocked out you can watch the rest or jump straight into another race.
 
