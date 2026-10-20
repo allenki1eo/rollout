@@ -24,7 +24,7 @@ Rounds are short. When you are knocked out you can watch the rest or jump straig
 
 ## Controls
 
-Keyboard: the Arrow layout is the default. Up accelerates, Down brakes, Left and Right steer, Space jumps, Shift dashes. WASD does the same jobs as a second set of keys (W accelerate, S brake, A and D steer). Settings can switch the labels to WASD or rebind every action. Keys are stored by physical key and shown with the letter your keyboard prints, so AZERTY can be rebound once. P or Esc pauses.
+Keyboard: the Arrow layout is the default. Up accelerates, Down brakes, Left and Right steer, Space jumps, Shift dashes. WASD does the same jobs as a second set of keys (W accelerate, S brake, A and D steer). Settings can switch the labels to WASD or rebind every action. Keys are stored by physical key and shown with the letter your keyboard prints, so AZERTY can be rebound once. P pauses.
 
 Mouse: drag left and right to steer. Click to jump. Hold the right button to accelerate.
 

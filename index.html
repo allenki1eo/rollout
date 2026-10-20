@@ -287,7 +287,6 @@ body[data-poster="portrait"] .poster-sub{font-size:4.2vw}
 body[data-poster="square"] #poster{align-items:flex-end;justify-content:center;text-align:center}
 body[data-poster="square"] .poster-title{font-size:13vw}
 body[data-poster="square"] .poster-sub{font-size:3.4vw;margin-left:auto;margin-right:auto}
-#skinWatch{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:15px;padding:12px 16px;white-space:normal;max-width:100%}
 .qmark{font-family:'Bungee',sans-serif;font-size:13px;letter-spacing:.04em}
 
 @media (max-width:520px){
@@ -648,7 +647,7 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
           <button type="button" data-layout="custom">Custom</button>
         </span></div>
         <div id="ctrlBinds"></div>
-        <p class="set-quiet" id="ctrlListen">Click a key, then press a new one. Esc cancels.</p>
+        <p class="set-quiet" id="ctrlListen">Click a key, then press a new one. Click it again to cancel.</p>
         <div class="actions" style="margin-top:8px"><button class="btn ghost" id="btnCtrlReset" type="button">Reset to default</button></div>
         <div class="set-row"><span>Show FPS</span><button class="tog" id="togFps" type="button" aria-pressed="false">Off</button></div>
         <div class="set-row dim"><span>Language</span><span class="set-val" id="langVal">English</span></div>
@@ -694,7 +693,6 @@ input{font:inherit;-webkit-user-select:text;user-select:text;touch-action:manipu
           <strong id="skinName">Sunny</strong>
           <span id="skinNote"></span>
           <button class="btn" id="skinAct">In use</button>
-          <button class="btn ghost" id="skinWatch" type="button" hidden>Watch a video to unlock</button>
         </div>
         <div class="skin-grid" id="skinGrid"></div>
       </div>
@@ -857,7 +855,6 @@ const CG = {
   loadingStart(){ this.call(s => s.game.loadingStart()); },
   loadingStop(){ this.call(s => s.game.loadingStop()); },
   happytime(){ this.call(s => s.game.happytime()); },
-  canReward(){ return this.ready && !this.adsBlocked; },
   migrate(){
     if (!this.ready || !this.sdk.data) return;
     for (const k of SAVE_KEYS){
@@ -898,10 +895,6 @@ const CG = {
   midgame(done){
     if (!this.ready || this.adsBlocked){ done(); return; }
     this.requestAd('midgame', () => done());
-  },
-  rewarded(onReward, onFail){
-    if (!this.canReward()){ onFail && onFail(); return; }
-    this.requestAd('rewarded', (ok) => { if (!ok && onFail) onFail(); }, onReward);
   },
   cachedLink: '', cachedCode: '', inviteShown: false, roomLive: false,
   roomParams(code){ return { room: String(code) }; },
@@ -2266,7 +2259,7 @@ const G = {
   camTarget: null, acc: 0, timers: [], seed: 1, grid: null, pendingGrid: null, snapT: 0,
   stats: { wins: 0, best: 0, played: 0 }, coins: 0, owned: FREE_SKINS.slice(), skin: 'sunny', name: '', avatar: 'skin',
   run: { gems: 0, earned: 0, awarded: false, chain: 0, chainT: 0, bestChain: 0, score: 0, lastPos: null }, pending: new Set(), perkTok: 0,
-  coachDone: false, coaching: false, coachStep: '', adPause: false, rewardAt: 0, happyChain: false,
+  coachDone: false, coaching: false, coachStep: '', adPause: false, happyChain: false,
   world: 'toy', trackWorld: 'toy', xp: 0, stars: {},
 };
 // Level L starts at xpFor(L): 0, 100, 250, 450, 700, 1000, 1350, ...
@@ -2440,7 +2433,7 @@ function startSolo(){
     showCoach('steer');
     return;
   }
-  perkPhase(true);
+  beginStage();
 }
 
 function startHostGame(){
@@ -3239,7 +3232,7 @@ const CTRL_PRESETS = {
     brake: [{ code: 'ArrowDown', label: '↓' }, { code: 'KeyS', label: 'S' }],
     jump: [{ code: 'Space', label: 'Space' }],
     dash: [{ code: 'ShiftLeft', label: 'Shift' }],
-    pause: [{ code: 'KeyP', label: 'P' }, { code: 'Escape', label: 'Esc' }],
+    pause: [{ code: 'KeyP', label: 'P' }],
   },
   wasd: {
     left: [{ code: 'KeyA', label: 'A' }, { code: 'ArrowLeft', label: '←' }],
@@ -3248,7 +3241,7 @@ const CTRL_PRESETS = {
     brake: [{ code: 'KeyS', label: 'S' }, { code: 'ArrowDown', label: '↓' }],
     jump: [{ code: 'Space', label: 'Space' }],
     dash: [{ code: 'ShiftLeft', label: 'Shift' }],
-    pause: [{ code: 'KeyP', label: 'P' }, { code: 'Escape', label: 'Esc' }],
+    pause: [{ code: 'KeyP', label: 'P' }],
   },
 };
 const actionName = id => (CTRL_ACTIONS.find(a => a.id === id) || {}).name || 'That action';
@@ -3296,7 +3289,7 @@ const Controls = {
     const src = CTRL_PRESETS[name]; if (!src) return;
     this.layout = name; this.binds = cloneBinds(src); this.listen = null;
     this.save(); this.render(); renderHints(); renderHow();
-    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Esc cancels.';
+    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Click it again to cancel.';
   },
   assign(action, slot, bind){
     const slots = this.binds[action];
@@ -3320,18 +3313,18 @@ const Controls = {
     this.layout = this.matchesPreset();
     this.listen = null;
     this.save(); this.render(); renderHints(); renderHow();
-    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Esc cancels.';
+    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Click it again to cancel.';
   },
   arm(action, slot){
     this.listen = { action, slot };
     const note = $('ctrlListen');
-    if (note) note.textContent = 'Press a key for ' + actionName(action) + '. Esc cancels.';
+    if (note) note.textContent = 'Press a key for ' + actionName(action) + '. Click it again to cancel.';
     this.render();
     if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
   },
   cancel(){
     this.listen = null;
-    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Esc cancels.';
+    const note = $('ctrlListen'); if (note) note.textContent = 'Click a key, then press a new one. Click it again to cancel.';
     this.render();
   },
   onCapture(e){
@@ -3360,7 +3353,7 @@ const Controls = {
         const arr = Array.isArray(o.binds[a.id]) ? o.binds[a.id] : [];
         for (const s of arr.slice(0, 2)){
           if (s == null){ binds[a.id].push(null); continue; }
-          if (typeof s.code !== 'string' || !/^[A-Za-z0-9]+$/.test(s.code)){ binds[a.id].push(null); continue; }
+          if (typeof s.code !== 'string' || !/^[A-Za-z0-9]+$/.test(s.code) || s.code === 'Escape'){ binds[a.id].push(null); continue; }
           let label = typeof s.label === 'string' ? s.label.replace(/[\u0000-\u001f]/g, '').slice(0, 16) : '';
           binds[a.id].push({ code: s.code, label: label || presetLabel(s.code) });
         }
@@ -3590,7 +3583,9 @@ $('ctrlSeg').addEventListener('click', e => {
 $('ctrlBinds').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || !b.dataset.act) return;
   Sfx.ensure();
-  Controls.arm(b.dataset.act, +b.dataset.slot || 0);
+  const slot = +b.dataset.slot || 0;
+  if (Controls.listen && Controls.listen.action === b.dataset.act && Controls.listen.slot === slot){ Controls.cancel(); return; }
+  Controls.arm(b.dataset.act, slot);
 });
 $('btnCtrlReset').addEventListener('click', () => { Sfx.ensure(); Sfx.play('click'); Controls.applyPreset('arrows'); toast('Controls reset'); });
 
@@ -3713,12 +3708,6 @@ function renderSkins(){
   else if (owned){ act.textContent = 'Use this marble'; act.disabled = false; $('skinNote').textContent = 'You own this one.'; }
   else { act.innerHTML = `Buy for ${sk.price}`; act.disabled = G.coins < sk.price;
     $('skinNote').textContent = G.coins >= sk.price ? `You have ${G.coins} coins.` : `You need ${sk.price - G.coins} more coins. Grab them on the track.`; }
-  const watch = $('skinWatch');
-  const cooled = Date.now() - (G.rewardAt || 0) > 180000;
-  const offer = !owned && CG.canReward();
-  watch.hidden = !offer;
-  watch.disabled = !cooled;
-  watch.textContent = cooled ? 'Watch a video to unlock' : 'Video ready again soon';
 }
 $('skinAct').addEventListener('click', () => {
   const sk = SKIN_BY[skinSel];
@@ -3731,24 +3720,6 @@ $('skinAct').addEventListener('click', () => {
   G.skin = sk.id; CG.save('rollout_skin', sk.id);
   renderSkins(); renderStats();
 });
-$('skinWatch').addEventListener('click', () => {
-  const sk = SKIN_BY[skinSel];
-  if (!sk || G.owned.includes(sk.id) || !CG.canReward()) return;
-  if (Date.now() - (G.rewardAt || 0) < 180000) return;
-  Sfx.ensure();
-  CG.rewarded(() => {
-    if (!G.owned.includes(sk.id)) G.owned.push(sk.id);
-    G.rewardAt = Date.now();
-    CG.save('rollout_owned', JSON.stringify(G.owned));
-    CG.save('rollout_reward_at', String(G.rewardAt));
-    Sfx.play('buy'); toast(`${sk.name} unlocked`);
-    renderSkins();
-  }, () => {
-    toast(CG.adsBlocked ? 'Videos are off here. Coins still unlock marbles.' : 'No video right now. You can still buy it with coins.');
-    renderSkins();
-  });
-});
-
 /* ---------- Friends & lobby ---------- */
 let roomTimer = 0;
 function roomCodeOf(raw){ return String(raw || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
@@ -4839,7 +4810,6 @@ function posterSetup(which){
   load('rollout_daily', v => Daily.load(v));
   load('rollout_missions', v => Missions.load(v));
   load('rollout_week', v => Week.load(v));
-  load('rollout_reward_at', v => { G.rewardAt = parseInt(v, 10) || 0; });
   load('rollout_quality', v => { if (Quality.labels[v]){ Quality.pref = v; Quality.apply(); } });
   load('rollout_audio', v => {
     const o = JSON.parse(v);
