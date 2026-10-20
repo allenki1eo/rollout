@@ -14,7 +14,7 @@ Thirty marbles, four heats, one way down. Steer, jump, and dash. Come back for a
 
 Rollout is a 30-marble knockout. Everyone starts together. Each heat keeps a smaller field: 22, then 15, then 8, then a final where first across the line wins.
 
-Steer with the keyboard, a mouse drag, or a finger. Jump the gaps. Dash for a burst when it is charged. Some roads split into a fast lane, a sticky safe lane, and a bumper lane. Coins sit on the risky lines. Grab them in a chain and the combo climbs. Between heats, pick an upgrade that stacks for the rest of the show.
+A yellow ring marks your marble. Steer with the keyboard, a mouse drag, or a finger. Jump the gaps. Dash for a burst when it is charged. Some roads split into a fast lane, a sticky safe lane, and a bumper lane. Coins sit on the risky lines. Grab them in a chain and the combo climbs. Between heats, pick an upgrade that stacks for the rest of the show.
 
 Coins buy new marble skins. Leveling up opens more worlds: Toy Box, Savanna, Candy Canyon, Frost Peak, and Neon Night. Play solo against the pack, or open a room and race friends, with bots filling the empty spots.
 
